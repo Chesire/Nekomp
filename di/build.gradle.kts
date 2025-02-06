@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -23,25 +23,20 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "login"
+            baseName = "di"
             isStatic = true
         }
     }
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.compose.material3)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
-            implementation(libs.koin.compose.viewmodel)
+            implementation(projects.feature.login)
             implementation(libs.koin.core)
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
         iosMain.dependencies {
         }
@@ -49,13 +44,9 @@ kotlin {
 }
 
 android {
-    namespace = "com.chesire.nekomp.feature.login"
+    namespace = "com.chesire.nekomp.di"
     compileSdk = 35
     defaultConfig {
         minSdk = 27
-    }
-
-    buildFeatures {
-        compose = true
     }
 }

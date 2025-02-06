@@ -36,12 +36,14 @@ android {
 
 dependencies {
     implementation(projects.core.network)
+    implementation(projects.di)
     implementation(projects.feature.login)
     implementation(projects.library.datasource.auth)
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.koin.android)
     implementation(libs.kotlinx.coroutines.android)
     debugImplementation(libs.compose.ui.tooling)
 }
