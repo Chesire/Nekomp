@@ -3,6 +3,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -22,18 +25,38 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            baseName = "auth"
             isStatic = true
         }
     }
 
     sourceSets {
+        androidMain.dependencies {
+        }
         commonMain.dependencies {
-            // put your multiplatform dependencies here
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlin.serialization.json)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktorfit.converters.response)
+            implementation(libs.ktorfit.lib)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+        iosMain.dependencies {
+        }
+    }
+}
+
+dependencies {
+    with(libs.ktorfit.ksp) {
+        add("kspAndroid", this)
+        add("kspCommonMainMetadata", this)
+        add("kspIosArm64", this)
+        add("kspIosSimulatorArm64", this)
+        add("kspIosX64", this)
     }
 }
 
