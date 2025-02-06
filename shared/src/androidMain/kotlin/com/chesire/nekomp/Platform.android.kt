@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package com.chesire.nekomp
 
 class AndroidPlatform : Platform {
