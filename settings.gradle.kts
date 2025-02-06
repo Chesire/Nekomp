@@ -17,4 +17,5 @@ dependencyResolutionManagement {
 rootProject.name = "Nekomp"
 include(":androidNekomp")
 include(":core:network")
+include(":feature:login")
 include(":library:datasource:auth")

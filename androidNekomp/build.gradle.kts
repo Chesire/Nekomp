@@ -27,9 +27,16 @@ android {
             isMinifyEnabled = false
         }
     }
+    lint {
+        abortOnError = false
+        checkDependencies = true
+        xmlReport = true
+    }
 }
 
 dependencies {
+    implementation(projects.core.network)
+    implementation(projects.feature.login)
     implementation(projects.library.datasource.auth)
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.material3)
