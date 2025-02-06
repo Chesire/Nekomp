@@ -38,13 +38,9 @@ kotlin {
 }
 
 android {
-    namespace = "com.chesire.nekomp"
+    namespace = "com.chesire.nekomp.library.datasource.auth"
     compileSdk = 35
     defaultConfig {
         minSdk = 27
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }

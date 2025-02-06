@@ -1,4 +1,4 @@
-package com.chesire.nekomp.android
+package com.chesire.nekomp
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
