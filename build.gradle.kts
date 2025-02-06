@@ -63,8 +63,8 @@ subprojects {
 
                 configure<com.android.build.gradle.BaseExtension> {
                     compileOptions {
-                        sourceCompatibility = JavaVersion.VERSION_17
-                        targetCompatibility = JavaVersion.VERSION_17
+                        sourceCompatibility = JavaVersion.VERSION_21
+                        targetCompatibility = JavaVersion.VERSION_21
                     }
                     testOptions {
                         unitTests {
