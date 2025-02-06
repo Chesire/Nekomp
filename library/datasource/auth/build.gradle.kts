@@ -35,7 +35,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlin.serialization.json)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktorfit.converters.response)
@@ -44,6 +44,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
         iosMain.dependencies {
         }
