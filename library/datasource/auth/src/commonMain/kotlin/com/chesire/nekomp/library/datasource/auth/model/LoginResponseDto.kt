@@ -1,4 +1,4 @@
-package com.chesire.nekomp.model
+package com.chesire.nekomp.library.datasource.auth.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,38 +1,13 @@
-package com.chesire.nekomp.api
+package com.chesire.nekomp.core.network
 
-import com.chesire.nekomp.model.LoginRequestDto
-import com.chesire.nekomp.model.LoginResponseDto
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.Converter
 import de.jensklingenberg.ktorfit.converter.KtorfitResult
 import de.jensklingenberg.ktorfit.converter.TypeData
-import de.jensklingenberg.ktorfit.http.Body
-import de.jensklingenberg.ktorfit.http.Headers
-import de.jensklingenberg.ktorfit.http.POST
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-
-interface AuthApi {
-
-    @Headers(
-        //"Accept: application/vnd.api+json",
-        "Content-Type: application/json"
-    )
-    @POST("api/oauth/token")
-    suspend fun login(@Body body: LoginRequestDto): Either<LoginResponseDto>
-}
-
-sealed class Either<T> {
-    data class Success<T>(val data: T) : Either<T>()
-    class Error(val ex: Throwable) : Either<Nothing>()
-
-    companion object {
-        fun <T> success(data: T) = Success(data)
-        fun error(ex: Throwable) = Error(ex)
-    }
-}
 
 class EitherConverterFactory : Converter.Factory {
 
@@ -81,9 +56,3 @@ class EitherConverterFactory : Converter.Factory {
         return null
     }
 }
-
-data class ApiError(
-    val code: Int,
-    val reason: String = "",
-    val body: String
-) : Throwable()

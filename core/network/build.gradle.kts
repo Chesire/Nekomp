@@ -25,7 +25,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "auth"
+            baseName = "network"
             isStatic = true
         }
     }
@@ -34,7 +34,6 @@ kotlin {
         androidMain.dependencies {
         }
         commonMain.dependencies {
-            implementation(projects.core.network)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.content.negotiation)
@@ -63,7 +62,7 @@ dependencies {
 }
 
 android {
-    namespace = "com.chesire.nekomp.library.datasource.auth"
+    namespace = "com.chesire.nekomp.core.network"
     compileSdk = 35
     defaultConfig {
         minSdk = 27

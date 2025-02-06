@@ -1,9 +1,9 @@
-package com.chesire.nekomp
+package com.chesire.nekomp.library.datasource.auth
 
-import com.chesire.nekomp.api.Either
-import com.chesire.nekomp.api.EitherConverterFactory
 import com.chesire.nekomp.api.createAuthApi
-import com.chesire.nekomp.model.LoginRequestDto
+import com.chesire.nekomp.library.datasource.auth.api.Either
+import com.chesire.nekomp.library.datasource.auth.api.EitherConverterFactory
+import com.chesire.nekomp.library.datasource.auth.model.LoginRequestDto
 import de.jensklingenberg.ktorfit.ktorfitBuilder
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
