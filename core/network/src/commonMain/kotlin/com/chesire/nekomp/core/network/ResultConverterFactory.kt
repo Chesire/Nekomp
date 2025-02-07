@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught")
+
 package com.chesire.nekomp.core.network
 
 import de.jensklingenberg.ktorfit.Ktorfit

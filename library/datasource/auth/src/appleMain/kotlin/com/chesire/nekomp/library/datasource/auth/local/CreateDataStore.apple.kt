@@ -16,5 +16,5 @@ internal actual fun producePath(): String {
         create = false,
         error = null,
     )
-    return requireNotNull(documentDirectory).path + "/$dataStoreFileName"
+    return requireNotNull(documentDirectory).path + "/$AUTH_DATASTORE_NAME"
 }
