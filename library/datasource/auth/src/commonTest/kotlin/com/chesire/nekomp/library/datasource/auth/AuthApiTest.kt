@@ -39,11 +39,9 @@ class AuthApiTest {
             )
             converterFactories(ResultConverterFactory())
         }.build().createAuthApi()
+
         val result = api.login(body)
-
-
-
-        if (result.getOrNull() != null) {
+        if (result.isSuccess) {
             val data = result.getOrThrow()
             val token = data.accessToken
             assertTrue { token.isNotBlank() }
