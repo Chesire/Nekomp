@@ -8,7 +8,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
-actual fun producePath(): String {
+internal actual fun producePath(): String {
     val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
         directory = NSDocumentDirectory,
         inDomain = NSUserDomainMask,
