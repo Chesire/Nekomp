@@ -9,16 +9,15 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 
-class EitherConverterFactory : Converter.Factory {
+class ResultConverterFactory : Converter.Factory {
 
     override fun suspendResponseConverter(
         typeData: TypeData,
         ktorfit: Ktorfit
     ): Converter.SuspendResponseConverter<HttpResponse, *>? {
-        if (typeData.typeInfo.type == Either::class) {
-            return object : Converter.SuspendResponseConverter<HttpResponse, Any> {
-
-                override suspend fun convert(result: KtorfitResult): Any {
+        if (typeData.typeInfo.type == Result::class) {
+            return object : Converter.SuspendResponseConverter<HttpResponse, Result<Any>> {
+                override suspend fun convert(result: KtorfitResult): Result<Any> {
                     return when (result) {
                         is KtorfitResult.Success -> {
                             val response = result.response
@@ -31,24 +30,22 @@ class EitherConverterFactory : Converter.Factory {
                                         )
                                         ?.convert(result)
                                         ?: response.body(typeData.typeArgs.first().typeInfo)
-                                    Either.success(convertedBody)
+                                    Result.success(convertedBody)
                                 } catch (ex: Throwable) {
-                                    Either.error(ex)
+                                    Result.failure(ex)
                                 }
 
-                                else -> Either.error(
+                                else -> Result.failure(
                                     ApiError(
                                         response.status.value,
-                                        response.status.description,
-                                        response.bodyAsText()
+                                        response.bodyAsText(),
+                                        response.status.description
                                     )
                                 )
                             }
                         }
 
-                        is KtorfitResult.Failure -> {
-                            Either.error(result.throwable)
-                        }
+                        is KtorfitResult.Failure -> Result.failure(result.throwable)
                     }
                 }
             }

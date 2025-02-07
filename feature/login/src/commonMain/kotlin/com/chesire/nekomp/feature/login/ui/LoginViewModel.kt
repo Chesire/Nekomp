@@ -38,7 +38,11 @@ class LoginViewModel(private val performLogin: PerformLoginUseCase) : ViewModel(
         _uiState.update {
             it.copy(
                 isPendingLogin = false,
-                viewEvent = if (result) ViewEvent.LoginSuccessful else ViewEvent.LoginFailure("Failure")
+                viewEvent = if (result.isSuccess) {
+                    ViewEvent.LoginSuccessful
+                } else {
+                    ViewEvent.LoginFailure("Failure")
+                }
             )
         }
     }

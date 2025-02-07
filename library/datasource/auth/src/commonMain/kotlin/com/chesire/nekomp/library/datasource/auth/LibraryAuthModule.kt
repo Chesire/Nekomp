@@ -1,13 +1,14 @@
 package com.chesire.nekomp.library.datasource.auth
 
-import com.chesire.nekomp.core.network.EitherConverterFactory
-import com.chesire.nekomp.library.datasource.auth.api.AuthApi
-import com.chesire.nekomp.library.datasource.auth.api.createAuthApi
+import com.chesire.nekomp.core.network.ResultConverterFactory
+import com.chesire.nekomp.library.datasource.auth.remote.AuthApi
+import com.chesire.nekomp.library.datasource.auth.remote.createAuthApi
 import de.jensklingenberg.ktorfit.ktorfitBuilder
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val libraryAuthModule = module {
@@ -26,7 +27,8 @@ val libraryAuthModule = module {
                     }
                 }
             )
-            converterFactories(EitherConverterFactory())
+            converterFactories(ResultConverterFactory())
         }.build().createAuthApi()
     }
+    singleOf(::AuthRepository)
 }
