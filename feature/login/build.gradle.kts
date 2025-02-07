@@ -37,8 +37,11 @@ kotlin {
             implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
+            implementation(projects.core.network)
+            implementation(projects.library.datasource.auth)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
+            implementation(libs.timber)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

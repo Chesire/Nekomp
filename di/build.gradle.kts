@@ -34,6 +34,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.feature.login)
+            implementation(projects.library.datasource.auth)
             implementation(libs.koin.core)
         }
         commonTest.dependencies {

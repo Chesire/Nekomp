@@ -2,7 +2,8 @@
 
 package com.chesire.nekomp.di
 
-import com.chesire.nekomp.feature.login.loginFeatureModule
+import com.chesire.nekomp.feature.login.featureLoginModule
+import com.chesire.nekomp.library.datasource.auth.libraryAuthModule
 import kotlin.experimental.ExperimentalObjCRefinement
 import kotlin.native.HiddenFromObjC
 import org.koin.core.context.startKoin
@@ -14,7 +15,8 @@ fun initKoin(appDeclaration: KoinAppDeclaration) {
         appDeclaration()
         modules(
             listOf(
-                loginFeatureModule
+                featureLoginModule,
+                libraryAuthModule
             )
         )
     }

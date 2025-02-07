@@ -45,5 +45,6 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.koin.android)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.timber)
     debugImplementation(libs.compose.ui.tooling)
 }
