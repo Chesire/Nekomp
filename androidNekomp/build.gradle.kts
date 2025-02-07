@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    namespace = "com.chesire.nekomp.android"
+    namespace = "com.chesire.nekomp"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.chesire.nekomp.android"
+        applicationId = "com.chesire.nekomp"
         minSdk = 27
         targetSdk = 35
         versionCode = 1
@@ -27,20 +27,24 @@ android {
             isMinifyEnabled = false
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    lint {
+        abortOnError = false
+        checkDependencies = true
+        xmlReport = true
     }
 }
 
 dependencies {
-    implementation(projects.shared)
+    implementation(projects.core.network)
+    implementation(projects.di)
+    implementation(projects.feature.login)
+    implementation(projects.library.datasource.auth)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.compose.material3)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.koin.android)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.timber)
     debugImplementation(libs.compose.ui.tooling)
 }

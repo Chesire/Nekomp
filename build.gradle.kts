@@ -8,7 +8,10 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin.android).apply(false)
     alias(libs.plugins.kotlin.multiplatform).apply(false)
+    alias(libs.plugins.kotlin.serialization).apply(false)
     alias(libs.plugins.kover)
+    alias(libs.plugins.ksp).apply(false)
+    alias(libs.plugins.ktorfit).apply(false)
 }
 
 tasks.register<Detekt>("detektCheck") {
@@ -31,7 +34,12 @@ tasks.register<Detekt>("detektCheck") {
     }
 }
 
-private val excludeProjects = emptySet<String>()
+private val excludeProjects = setOf(
+    ":core", // Container project
+    ":feature", // Container project
+    ":library", // Container project
+    ":library:datasource" // Container project
+)
 dependencies {
     detektPlugins(libs.detekt.compose.rules)
     detektPlugins(libs.detekt.formatting)
@@ -60,8 +68,8 @@ subprojects {
 
                 configure<com.android.build.gradle.BaseExtension> {
                     compileOptions {
-                        sourceCompatibility = JavaVersion.VERSION_17
-                        targetCompatibility = JavaVersion.VERSION_17
+                        sourceCompatibility = JavaVersion.VERSION_21
+                        targetCompatibility = JavaVersion.VERSION_21
                     }
                     testOptions {
                         unitTests {
