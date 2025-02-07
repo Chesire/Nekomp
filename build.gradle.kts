@@ -34,7 +34,12 @@ tasks.register<Detekt>("detektCheck") {
     }
 }
 
-private val excludeProjects = emptySet<String>()
+private val excludeProjects = setOf(
+    ":core", // Container project
+    ":feature", // Container project
+    ":library", // Container project
+    ":library:datasource" // Container project
+)
 dependencies {
     detektPlugins(libs.detekt.compose.rules)
     detektPlugins(libs.detekt.formatting)
