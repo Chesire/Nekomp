@@ -35,6 +35,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.network)
+            implementation(libs.androidx.datastore.preferences)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)

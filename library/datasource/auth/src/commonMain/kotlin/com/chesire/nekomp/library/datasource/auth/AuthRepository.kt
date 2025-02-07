@@ -1,31 +1,28 @@
 package com.chesire.nekomp.library.datasource.auth
 
+import com.chesire.nekomp.library.datasource.auth.local.AuthStorage
 import com.chesire.nekomp.library.datasource.auth.remote.AuthApi
 import com.chesire.nekomp.library.datasource.auth.remote.model.LoginRequestDto
 
 class AuthRepository(
     private val authApi: AuthApi,
-    // local storage
+    private val authStorage: AuthStorage
 ) {
-    var accessToken: String
-        get() = "" // retrieve
-        private set(token) {
-            // set
-        }
 
-    var refreshToken: String
-        get() = ""
-        private set(token) {
-            // set
+    suspend fun accessToken(): String? = authStorage.acquireAccessToken()
+    suspend fun refreshToken(): String? = authStorage.acquireRefreshToken()
+
+    private suspend fun updateTokens(accessToken: String, refreshToken: String) {
+        authStorage.apply {
+            updateAccessToken(accessToken)
+            updateRefreshToken(refreshToken)
         }
+    }
 
     suspend fun authenticate(username: String, password: String): Result<String> {
         return authApi
             .login(LoginRequestDto(username, password, "password"))
-            .onSuccess {
-                accessToken = it.accessToken
-                refreshToken = it.refreshToken
-            }
+            .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
             .map { it.accessToken }
     }
 }

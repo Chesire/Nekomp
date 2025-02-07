@@ -1,6 +1,8 @@
 package com.chesire.nekomp.library.datasource.auth
 
 import com.chesire.nekomp.core.network.ResultConverterFactory
+import com.chesire.nekomp.library.datasource.auth.local.AuthStorage
+import com.chesire.nekomp.library.datasource.auth.local.createDataStore
 import com.chesire.nekomp.library.datasource.auth.remote.AuthApi
 import com.chesire.nekomp.library.datasource.auth.remote.createAuthApi
 import de.jensklingenberg.ktorfit.ktorfitBuilder
@@ -31,4 +33,7 @@ val libraryAuthModule = module {
         }.build().createAuthApi()
     }
     singleOf(::AuthRepository)
+    single<AuthStorage> {
+        AuthStorage(createDataStore())
+    }
 }
