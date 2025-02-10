@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalForeignApi::class)
 
-package com.chesire.nekomp.library.datasource.auth.local
+package com.chesire.nekomp.core.preferences
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
@@ -8,7 +8,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
-internal actual fun producePath(): String {
+internal actual fun producePath(filename: String): String {
     val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
         directory = NSDocumentDirectory,
         inDomain = NSUserDomainMask,
@@ -16,5 +16,5 @@ internal actual fun producePath(): String {
         create = false,
         error = null,
     )
-    return requireNotNull(documentDirectory).path + "/$AUTH_DATASTORE_NAME"
+    return requireNotNull(documentDirectory).path + "/$filename"
 }
