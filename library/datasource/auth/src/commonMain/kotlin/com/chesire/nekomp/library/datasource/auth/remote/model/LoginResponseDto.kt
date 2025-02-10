@@ -1,4 +1,4 @@
-package com.chesire.nekomp.library.datasource.auth.model
+package com.chesire.nekomp.library.datasource.auth.remote.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

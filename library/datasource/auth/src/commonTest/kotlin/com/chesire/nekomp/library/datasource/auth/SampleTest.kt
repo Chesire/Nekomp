@@ -1,6 +1,6 @@
 package com.chesire.nekomp.library.datasource.auth
 
-import com.chesire.nekomp.library.datasource.auth.model.LoginRequestDto
+import com.chesire.nekomp.library.datasource.auth.remote.model.LoginRequestDto
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
