@@ -37,6 +37,7 @@ kotlin {
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.library.datasource.auth)
+            implementation(projects.library.datasource.user)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)

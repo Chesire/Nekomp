@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.feature.login.core.PerformLoginUseCase
 import com.chesire.nekomp.feature.login.core.RetrieveLibraryUseCase
+import com.chesire.nekomp.feature.login.core.RetrieveUserUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +14,8 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val performLogin: PerformLoginUseCase,
-    private val retrieveLibrary: RetrieveLibraryUseCase
+    private val retrieveLibrary: RetrieveLibraryUseCase,
+    private val retrieveUser: RetrieveUserUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
@@ -39,11 +41,16 @@ class LoginViewModel(
     private fun onLoginPressed() = viewModelScope.launch {
         val state = _uiState.updateAndGet { it.copy(isPendingLogin = true) }
         val result = performLogin(state.email, state.password)
+            .map { retrieveUser() }
+            .map { retrieveLibrary() }
+            .mapCatching {
+                val s = ""
+            }
+
         _uiState.update {
             it.copy(
                 isPendingLogin = false,
                 viewEvent = if (result.isSuccess) {
-                    retrieveLibrary()
                     ViewEvent.LoginSuccessful
                 } else {
                     ViewEvent.LoginFailure("Failure")
