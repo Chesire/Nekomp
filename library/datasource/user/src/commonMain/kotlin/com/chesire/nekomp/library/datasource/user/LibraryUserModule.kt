@@ -27,6 +27,7 @@ val libraryUserModule = module {
                             Json {
                                 isLenient = true
                                 ignoreUnknownKeys = true
+                                explicitNulls = false
                             }
                         )
                     }

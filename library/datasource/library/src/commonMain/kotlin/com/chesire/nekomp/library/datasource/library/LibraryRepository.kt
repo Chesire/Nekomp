@@ -9,6 +9,16 @@ class LibraryRepository(
 ) {
 
     suspend fun retrieve(): Result<String> {
-        return libraryApi.retrieve(userRepository.user.id)
+        return libraryApi.retrieveAnime(userRepository.user.id, 0, 20)
+            .map {
+                "Test"
+            }
+            .recover {
+                val ex = it
+                "Test"
+            }
+            .onSuccess {
+                // save
+            }
     }
 }

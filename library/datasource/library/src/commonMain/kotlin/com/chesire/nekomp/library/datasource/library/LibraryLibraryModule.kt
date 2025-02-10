@@ -26,6 +26,7 @@ val libraryLibraryModule = module {
                             Json {
                                 isLenient = true
                                 ignoreUnknownKeys = true
+                                explicitNulls = false
                             }
                         )
                     }
