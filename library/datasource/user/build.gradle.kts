@@ -25,7 +25,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "auth"
+            baseName = "user"
             isStatic = true
         }
     }
@@ -36,10 +36,12 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.network)
             implementation(projects.core.preferences)
+            implementation(projects.library.datasource.auth)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -66,7 +68,7 @@ dependencies {
 }
 
 android {
-    namespace = "com.chesire.nekomp.library.datasource.auth"
+    namespace = "com.chesire.nekomp.library.datasource.user"
     compileSdk = 35
     defaultConfig {
         minSdk = 27

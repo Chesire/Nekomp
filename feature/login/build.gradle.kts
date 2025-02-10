@@ -39,6 +39,8 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.network)
             implementation(projects.library.datasource.auth)
+            implementation(projects.library.datasource.library)
+            implementation(projects.library.datasource.user)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.timber)
