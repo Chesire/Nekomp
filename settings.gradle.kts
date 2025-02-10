@@ -16,6 +16,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Nekomp"
 include(":androidNekomp")
+include(":core:database")
 include(":core:network")
 include(":core:preferences")
 include(":di")

@@ -2,10 +2,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.androidx.room)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -25,7 +25,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "user"
+            baseName = "database"
             isStatic = true
         }
     }
@@ -34,18 +34,11 @@ kotlin {
         androidMain.dependencies {
         }
         commonMain.dependencies {
-            implementation(projects.core.network)
-            implementation(projects.core.preferences)
-            implementation(projects.library.datasource.auth)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.ktor.client.auth)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.serialization)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktorfit.converters.response)
-            implementation(libs.ktorfit.lib)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -56,8 +49,12 @@ kotlin {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
-    with(libs.ktorfit.ksp) {
+    with(libs.androidx.room.compiler) {
         add("kspAndroid", this)
         add("kspCommonMainMetadata", this)
         add("kspIosArm64", this)
@@ -67,7 +64,7 @@ dependencies {
 }
 
 android {
-    namespace = "com.chesire.nekomp.library.datasource.user"
+    namespace = "com.chesire.nekomp.core.database"
     compileSdk = 35
     defaultConfig {
         minSdk = 27

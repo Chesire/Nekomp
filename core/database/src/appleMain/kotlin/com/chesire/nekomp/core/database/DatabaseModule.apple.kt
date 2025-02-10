@@ -1,13 +1,22 @@
 @file:OptIn(ExperimentalForeignApi::class)
 
-package com.chesire.nekomp.core.preferences
+package com.chesire.nekomp.core.database
 
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
-internal actual fun producePath(filename: String): String {
+actual fun roomBuilder(dbName: String): RoomDatabase.Builder<AppDatabase> {
+    val dbFilePath = documentDirectory() + "/$dbName"
+    return Room.databaseBuilder<AppDatabase>(
+        name = dbFilePath,
+    )
+}
+
+private fun documentDirectory(): String {
     val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
         directory = NSDocumentDirectory,
         inDomain = NSUserDomainMask,
@@ -15,5 +24,5 @@ internal actual fun producePath(filename: String): String {
         create = false,
         error = null,
     )
-    return requireNotNull(documentDirectory).path + "/$filename"
+    return requireNotNull(documentDirectory?.path)
 }

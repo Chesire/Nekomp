@@ -33,6 +33,7 @@ kotlin {
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
+            implementation(projects.core.database)
             implementation(projects.feature.login)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
