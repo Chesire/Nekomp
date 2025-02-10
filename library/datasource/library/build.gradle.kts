@@ -25,7 +25,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "auth"
+            baseName = "library"
             isStatic = true
         }
     }
@@ -66,7 +66,7 @@ dependencies {
 }
 
 android {
-    namespace = "com.chesire.nekomp.library.datasource.auth"
+    namespace = "com.chesire.nekomp.library.datasource.library"
     compileSdk = 35
     defaultConfig {
         minSdk = 27

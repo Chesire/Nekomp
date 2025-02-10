@@ -39,6 +39,7 @@ dependencies {
     implementation(projects.di)
     implementation(projects.feature.login)
     implementation(projects.library.datasource.auth)
+    implementation(projects.library.datasource.library)
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui)
