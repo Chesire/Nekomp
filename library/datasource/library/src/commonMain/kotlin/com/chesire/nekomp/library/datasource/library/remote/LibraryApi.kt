@@ -12,4 +12,5 @@ interface LibraryApi {
     )
     @GET("api/edge/users/{userId}/library-entries?filter[kind]=anime")
     suspend fun retrieve(@Path("userId") userId: Int): Result<String>
+    // filter[user_id]=userId maybe?
 }
