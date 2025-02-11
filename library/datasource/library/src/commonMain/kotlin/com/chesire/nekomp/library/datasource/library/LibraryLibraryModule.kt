@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.library
 
 import com.chesire.nekomp.core.network.ResultConverterFactory
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
+import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
 import com.chesire.nekomp.library.datasource.library.remote.createLibraryApi
 import de.jensklingenberg.ktorfit.ktorfitBuilder
@@ -58,4 +59,5 @@ val libraryLibraryModule = module {
         }.build().createLibraryApi()
     }
     singleOf(::LibraryRepository)
+    singleOf(::LibraryStorage)
 }

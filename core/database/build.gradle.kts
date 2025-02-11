@@ -56,7 +56,6 @@ room {
 dependencies {
     with(libs.androidx.room.compiler) {
         add("kspAndroid", this)
-        add("kspCommonMainMetadata", this)
         add("kspIosArm64", this)
         add("kspIosSimulatorArm64", this)
         add("kspIosX64", this)

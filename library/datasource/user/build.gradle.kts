@@ -34,6 +34,7 @@ kotlin {
         androidMain.dependencies {
         }
         commonMain.dependencies {
+            implementation(projects.core.database)
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.library.datasource.auth)
