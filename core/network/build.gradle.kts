@@ -30,6 +30,8 @@ kotlin {
         }
     }
 
+    jvm("desktop")
+
     sourceSets {
         androidMain.dependencies {
         }
@@ -58,6 +60,7 @@ dependencies {
         add("kspIosArm64", this)
         add("kspIosSimulatorArm64", this)
         add("kspIosX64", this)
+        add("kspJvm", this)
     }
 }
 

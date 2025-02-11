@@ -27,7 +27,3 @@ val databaseModule = module {
 }
 
 expect fun roomBuilder(dbName: String): RoomDatabase.Builder<AppDatabase>
-
-// TODO:
-// Add desktop to project
-// Make sure DB does work
