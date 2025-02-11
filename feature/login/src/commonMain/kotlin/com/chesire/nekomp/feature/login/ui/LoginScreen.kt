@@ -9,21 +9,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.androidx.compose.koinViewModel
-import timber.log.Timber
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = koinViewModel()) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
-            is ViewEvent.LoginFailure -> Timber.d("Login successful")
-            ViewEvent.LoginSuccessful -> Timber.w("Login failure")
+            is ViewEvent.LoginFailure -> {
+                // Log success
+            }
+
+            ViewEvent.LoginSuccessful -> {
+                // Log failure
+            }
+
             null -> Unit
         }
 

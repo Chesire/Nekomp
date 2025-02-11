@@ -1,7 +1,60 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.kotlin.multiplatform)
+}
+
+kotlin {
+    androidTarget {
+        compilations.all {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_21)
+                }
+            }
+        }
+    }
+
+    jvm()
+
+    sourceSets {
+        val jvmMain by getting
+
+        androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
+            implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.timber)
+        }
+        commonMain.dependencies {
+            implementation(projects.core.network)
+            implementation(projects.di)
+            implementation(projects.feature.login)
+            implementation(projects.library.datasource.auth)
+            implementation(projects.library.datasource.library)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+            implementation(compose.foundation)
+            // implementation(compose.material) // maybe not needed
+            implementation(compose.material3) //
+            implementation(compose.runtime)
+            implementation(compose.ui)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.core)
+            implementation(libs.kotlinx.coroutines.core)
+        }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
+        }
+    }
 }
 
 android {
@@ -34,18 +87,20 @@ android {
     }
 }
 
+compose.desktop {
+    application {
+        mainClass = "com.chesire.nekomp.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            modules("jdk.unsupported") // For datastore
+            modules("jdk.unsupported.desktop") // For datastore
+            packageName = "com.chesire.nekomp"
+            packageVersion = "1.0.0"
+        }
+    }
+}
+
 dependencies {
-    implementation(projects.core.network)
-    implementation(projects.di)
-    implementation(projects.feature.login)
-    implementation(projects.library.datasource.auth)
-    implementation(projects.library.datasource.library)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.koin.android)
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.timber)
     debugImplementation(libs.compose.ui.tooling)
 }
