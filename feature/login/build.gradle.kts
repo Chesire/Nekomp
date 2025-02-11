@@ -63,9 +63,9 @@ kotlin {
 
 android {
     namespace = "com.chesire.nekomp.feature.login"
-    compileSdk = 35
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
     buildFeatures {

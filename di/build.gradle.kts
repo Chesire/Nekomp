@@ -51,8 +51,8 @@ kotlin {
 
 android {
     namespace = "com.chesire.nekomp.di"
-    compileSdk = 35
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

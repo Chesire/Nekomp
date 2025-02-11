@@ -67,8 +67,8 @@ dependencies {
 
 android {
     namespace = "com.chesire.nekomp.core.database"
-    compileSdk = 35
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
