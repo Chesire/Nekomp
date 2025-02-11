@@ -2,41 +2,41 @@ name: Master checks
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: 21
-        distribution: temurin
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        cache-read-only: false
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
 
-    - name: Make Gradle executable
-      run: chmod +x gradlew
+      - name: Make Gradle executable
+        run: chmod +x gradlew
 
-    - name: Run tests
-      run: ./gradlew koverXmlReportMerged
+      - name: Run tests
+        run: ./gradlew koverXmlReportMerged
 
-    - uses: codecov/codecov-action@v4
-      with:
-        files: ./build/reports/kover/reportMerged.xml
+      - uses: codecov/codecov-action@v4
+        with:
+          files: ./build/reports/kover/reportMerged.xml
 
-    - name: Run Detekt
-      run: ./gradlew detektCheck
+      - name: Run Detekt
+        run: ./gradlew detektCheck
 
-    - name: Run Lint
-      run: ./gradlew lintDebug
+      - name: Run Lint
+        run: ./gradlew lintDebug
 
-    - name: Assemble android app
-      run: ./gradlew :androidNekomp:assemble
+      - name: Assemble android app
+        run: ./gradlew :appNekomp:assemble
