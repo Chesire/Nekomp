@@ -9,8 +9,7 @@ class RetrieveLibraryUseCase(private val libraryRepository: LibraryRepository) {
 
     suspend operator fun invoke(): Result<Unit> {
         return withContext(Dispatchers.IO) {
-            libraryRepository.retrieve()
-                .map { Unit }
+            libraryRepository.retrieve().map { Unit }
         }
     }
 }

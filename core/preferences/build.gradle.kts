@@ -29,6 +29,8 @@ kotlin {
         }
     }
 
+    jvm()
+
     sourceSets {
         androidMain.dependencies {
         }
@@ -45,9 +47,9 @@ kotlin {
 }
 
 android {
-    namespace = "com.chesire.nekomp.core.network"
-    compileSdk = 35
+    namespace = "com.chesire.nekomp.core.preferences"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

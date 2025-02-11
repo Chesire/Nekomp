@@ -30,6 +30,8 @@ kotlin {
         }
     }
 
+    jvm()
+
     sourceSets {
         androidMain.dependencies {
         }
@@ -62,13 +64,14 @@ dependencies {
         add("kspIosArm64", this)
         add("kspIosSimulatorArm64", this)
         add("kspIosX64", this)
+        add("kspJvm", this)
     }
 }
 
 android {
     namespace = "com.chesire.nekomp.library.datasource.auth"
-    compileSdk = 35
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

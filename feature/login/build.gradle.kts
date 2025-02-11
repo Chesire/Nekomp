@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.multiplatform)
 }
 
@@ -28,11 +29,11 @@ kotlin {
         }
     }
 
+    jvm()
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.material3)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
         }
@@ -41,6 +42,10 @@ kotlin {
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.user)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.runtime)
+            implementation(compose.ui)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.timber)
@@ -50,17 +55,24 @@ kotlin {
         }
         iosMain.dependencies {
         }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+        }
     }
 }
 
 android {
     namespace = "com.chesire.nekomp.feature.login"
-    compileSdk = 35
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
     buildFeatures {
         compose = true
     }
+}
+
+dependencies {
+    debugImplementation(libs.compose.ui.tooling)
 }

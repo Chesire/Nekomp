@@ -28,11 +28,14 @@ kotlin {
         }
     }
 
+    jvm()
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
+            implementation(projects.core.database)
             implementation(projects.feature.login)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
@@ -48,8 +51,8 @@ kotlin {
 
 android {
     namespace = "com.chesire.nekomp.di"
-    compileSdk = 35
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

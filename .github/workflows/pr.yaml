@@ -12,124 +12,159 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 100
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
 
-    - name: Setup JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: 21
-        distribution: temurin
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    - name: Make Gradle executable
-      run: chmod +x gradlew
+      - name: Make Gradle executable
+        run: chmod +x gradlew
 
-    - name: Run tests
-      run: ./gradlew iosSimulatorArm64Test
+      - name: Run tests
+        run: ./gradlew iosSimulatorArm64Test
 
-    - name: Publish unit test results
-      uses: EnricoMi/publish-unit-test-result-action/macos@v2
-      if: always()
-      with:
-        check_name: iOS Test Results
-        files: ./**/build/test-results/**/*.xml
-        action_fail: true
-        action_fail_on_inconclusive: true
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action/macos@v2
+        if: always()
+        with:
+          check_name: iOS Test Results
+          files: ./**/build/test-results/**/*.xml
+          action_fail: true
+          action_fail_on_inconclusive: true
+
+  test-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Run tests
+        run: ./gradlew koverXmlReportMerged
+
+      - uses: codecov/codecov-action@v4
+        with:
+          files: ./build/reports/kover/reportMerged.xml
+
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          check_name: Android Test Results
+          files: ./**/build/test-results/**/*.xml
+          action_fail: true
+          action_fail_on_inconclusive: true
 
   test-jvm:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 100
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
 
-    - name: Setup JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: 21
-        distribution: temurin
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    - name: Make Gradle executable
-      run: chmod +x gradlew
+      - name: Make Gradle executable
+        run: chmod +x gradlew
 
-    - name: Run tests
-      run: ./gradlew koverXmlReportMerged
+      - name: Run tests
+        run: ./gradlew jvmTest
 
-    - uses: codecov/codecov-action@v4
-      with:
-        files: ./build/reports/kover/reportMerged.xml
-
-    - name: Publish unit test results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
-      with:
-        check_name: JVM Test Results
-        files: ./**/build/test-results/**/*.xml
-        action_fail: true
-        action_fail_on_inconclusive: true
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          check_name: JVM Test Results
+          files: ./**/build/test-results/**/*.xml
+          action_fail: true
+          action_fail_on_inconclusive: true
 
   lint:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 100
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
 
-    - name: Setup JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: 21
-        distribution: temurin
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    - name: Make Gradle executable
-      run: chmod +x gradlew
+      - name: Make Gradle executable
+        run: chmod +x gradlew
 
-    - name: Run Detekt
-      run: ./gradlew detektCheck
+      - name: Run Detekt
+        run: ./gradlew detektCheck
 
-    - name: Run Lint
-      run: ./gradlew lintDebug
+      - name: Run Lint
+        run: ./gradlew lintDebug
 
-    - name: Set up Ruby 3.0
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.0'
-        bundler-cache: true
+      - name: Set up Ruby 3.0
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
 
-    - name: Run Danger
-      run: bundle exec danger
-      env:
-        DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Danger
+        run: bundle exec danger
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  assemble-android:
+  assemble:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: 21
-        distribution: temurin
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    - name: Make Gradle executable
-      run: chmod +x gradlew
+      - name: Make Gradle executable
+        run: chmod +x gradlew
 
-    - name: Assemble android App
-      run: ./gradlew :androidNekomp:assemble
+      - name: Assemble android app
+        run: ./gradlew :appNekomp:assemble
+
+      - name: Assemble jvm app
+        run: ./gradlew :appNekomp:jvmJar

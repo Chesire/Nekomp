@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val performLogin: PerformLoginUseCase,
-    private val retrieveLibrary: RetrieveLibraryUseCase,
-    private val retrieveUser: RetrieveUserUseCase
+    private val retrieveUser: RetrieveUserUseCase,
+    private val retrieveLibrary: RetrieveLibraryUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
@@ -43,9 +43,6 @@ class LoginViewModel(
         val result = performLogin(state.email, state.password)
             .map { retrieveUser() }
             .map { retrieveLibrary() }
-            .mapCatching {
-                val s = ""
-            }
 
         _uiState.update {
             it.copy(

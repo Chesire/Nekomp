@@ -30,14 +30,16 @@ kotlin {
         }
     }
 
+    jvm()
+
     sourceSets {
         androidMain.dependencies {
         }
         commonMain.dependencies {
+            implementation(projects.core.database)
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.library.datasource.auth)
-            implementation(libs.androidx.datastore.preferences)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
@@ -64,13 +66,14 @@ dependencies {
         add("kspIosArm64", this)
         add("kspIosSimulatorArm64", this)
         add("kspIosX64", this)
+        add("kspJvm", this)
     }
 }
 
 android {
     namespace = "com.chesire.nekomp.library.datasource.user"
-    compileSdk = 35
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 27
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

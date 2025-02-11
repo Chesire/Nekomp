@@ -9,8 +9,7 @@ class RetrieveUserUseCase(private val userRepository: UserRepository) {
 
     suspend operator fun invoke(): Result<Unit> {
         return withContext(Dispatchers.IO) {
-            userRepository.retrieveUser()
-                .map { Unit }
+            userRepository.retrieve().map { Unit }
         }
     }
 }
