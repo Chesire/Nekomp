@@ -47,7 +47,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.chesire.nekomp.core.network"
+    namespace = "com.chesire.nekomp.core.preferences"
     compileSdk = 35
     defaultConfig {
         minSdk = 27
