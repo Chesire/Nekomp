@@ -40,7 +40,7 @@ jobs:
           action_fail: true
           action_fail_on_inconclusive: true
 
-  test-jvm:
+  test-android:
     runs-on: ubuntu-latest
 
     steps:
@@ -66,6 +66,38 @@ jobs:
       - uses: codecov/codecov-action@v4
         with:
           files: ./build/reports/kover/reportMerged.xml
+
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          check_name: Android Test Results
+          files: ./**/build/test-results/**/*.xml
+          action_fail: true
+          action_fail_on_inconclusive: true
+
+  test-jvm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Run tests
+        run: ./gradlew jvmTest
 
       - name: Publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v2
@@ -131,8 +163,8 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x gradlew
 
-      - name: Assemble android App
+      - name: Assemble android app
         run: ./gradlew :appNekomp:assemble
 
-      - name: Assemble desktop App
+      - name: Assemble jvm app
         run: ./gradlew :appNekomp:jvmJar

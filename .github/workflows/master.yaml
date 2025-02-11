@@ -41,5 +41,5 @@ jobs:
       - name: Assemble android app
         run: ./gradlew :appNekomp:assemble
 
-      - name: Assemble desktop App
+      - name: Assemble jvm app
         run: ./gradlew :appNekomp:jvmJar
