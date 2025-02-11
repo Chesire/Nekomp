@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.chesire.nekomp.feature.login.ui.LoginScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.core.KoinApplication
 
 @Composable
 @Preview

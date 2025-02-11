@@ -19,6 +19,17 @@ kotlin {
         }
     }
 
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "Nekomp"
+            isStatic = true
+        }
+    }
+
     jvm()
 
     sourceSets {
@@ -40,8 +51,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)
-            // implementation(compose.material) // maybe not needed
-            implementation(compose.material3) //
+            implementation(compose.material3)
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(libs.androidx.lifecycle.viewmodel)
