@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -33,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,22 +62,6 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LoginScreen(viewModel: LoginViewModel = koinViewModel()) {
     val state by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(state.viewEvent) {
-        when (state.viewEvent) {
-            is ViewEvent.LoginFailure -> {
-                // Log success
-            }
-
-            ViewEvent.LoginSuccessful -> {
-                // Log failure
-            }
-
-            null -> Unit
-        }
-
-        viewModel.execute(ViewAction.ObservedViewEvent)
-    }
-
     Render(
         state = state,
         execute = { viewModel.execute(it) }
@@ -88,6 +74,22 @@ private fun Render(
     execute: (ViewAction) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(state.viewEvent) {
+        when (state.viewEvent) {
+            is ViewEvent.LoginFailure -> {
+                snackbarHostState.showSnackbar(message = "Failure", duration = SnackbarDuration.Long)
+            }
+
+            ViewEvent.LoginSuccessful -> {
+                snackbarHostState.showSnackbar(message = "Success")
+                // Navigate away
+            }
+
+            null -> Unit
+        }
+
+        execute(ViewAction.ObservedViewEvent)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

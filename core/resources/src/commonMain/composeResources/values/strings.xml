@@ -1,4 +1,5 @@
 <resources>
+    <!-- Generic -->
     <string name="app_name">Nekomp</string>
 
     <!-- Login -->
