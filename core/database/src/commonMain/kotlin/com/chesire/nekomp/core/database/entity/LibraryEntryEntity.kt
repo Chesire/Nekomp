@@ -18,7 +18,7 @@ data class LibraryEntryEntity(
     val progress: Int,
     val totalLength: Int,
     val rating: Int,
-    // val posterImage: ImageModel, TODO
+    val posterImage: String,
     val startDate: String,
     val endDate: String
 )

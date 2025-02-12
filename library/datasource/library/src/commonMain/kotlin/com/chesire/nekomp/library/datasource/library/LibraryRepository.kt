@@ -71,7 +71,7 @@ class LibraryRepository(
             progress = data.attributes.progress,
             totalLength = included.attributes.episodeCount ?: included.attributes.chapterCount ?: 0,
             rating = data.attributes.rating ?: 0,
-            // included.attributes.posterImage ?: ImageModel.empty,
+            posterImage = included.attributes.posterImage?.medium ?: "",
             startDate = included.attributes.startDate ?: "",
             endDate = included.attributes.endDate ?: ""
         )
