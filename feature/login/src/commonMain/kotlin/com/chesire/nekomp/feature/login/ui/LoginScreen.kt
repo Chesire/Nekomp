@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -43,6 +45,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.chesire.nekomp.core.resources.R
+import nekomp.core.resources.generated.resources.login_cta
+import nekomp.core.resources.generated.resources.login_hide_password
+import nekomp.core.resources.generated.resources.login_password
+import nekomp.core.resources.generated.resources.login_show_password
+import nekomp.core.resources.generated.resources.login_subtitle
+import nekomp.core.resources.generated.resources.login_username
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -94,17 +104,23 @@ private fun Render(
                 Column(
                     modifier = Modifier
                         .verticalScroll(rememberScrollState())
+                        .sizeIn(maxWidth = 320.dp)
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    Text(
+                        text = stringResource(R.string.login_subtitle)
+                    )
                     UsernameInput(
                         username = state.email,
+                        modifier = Modifier.fillMaxWidth(),
                         onUsernameChanged = { execute(ViewAction.EmailUpdated(it)) }
                     )
                     PasswordInput(
                         password = state.password,
                         isLoggingIn = state.isPendingLogin,
+                        modifier = Modifier.fillMaxWidth(),
                         onPasswordChanged = { execute(ViewAction.PasswordUpdated(it)) },
                         onLoginPressed = { execute(ViewAction.LoginPressed) }
                     )
@@ -126,12 +142,14 @@ private fun Render(
 @Composable
 private fun UsernameInput(
     username: String,
+    modifier: Modifier = Modifier,
     onUsernameChanged: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     OutlinedTextField(
         value = username,
         onValueChange = onUsernameChanged,
+        modifier = modifier,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
@@ -147,8 +165,7 @@ private fun UsernameInput(
         ),
         singleLine = true,
         label = {
-            //Text(text = stringResource(id = StringResource.login_username))
-            "Username"
+            Text(text = stringResource(R.string.login_username))
         }
     )
 }
@@ -157,6 +174,7 @@ private fun UsernameInput(
 private fun PasswordInput(
     password: String,
     isLoggingIn: Boolean,
+    modifier: Modifier = Modifier,
     onPasswordChanged: (String) -> Unit,
     onLoginPressed: () -> Unit
 ) {
@@ -165,6 +183,7 @@ private fun PasswordInput(
     OutlinedTextField(
         value = password,
         onValueChange = onPasswordChanged,
+        modifier = modifier,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Lock,
@@ -175,7 +194,13 @@ private fun PasswordInput(
             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                 Icon(
                     imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                    contentDescription = null // TODO
+                    contentDescription = stringResource(
+                        if (passwordVisible) {
+                            R.string.login_hide_password
+                        } else {
+                            R.string.login_show_password
+                        }
+                    )
                 )
             }
         },
@@ -194,8 +219,7 @@ private fun PasswordInput(
         ),
         singleLine = true,
         label = {
-            // Text(text = stringResource(id = StringResource.login_password))
-            "Password"
+            Text(text = stringResource(R.string.login_password))
         }
     )
 }
@@ -217,7 +241,7 @@ private fun LoginButton(
             }
         }
     ) {
-        Text(text = "Login")
+        Text(text = stringResource(R.string.login_cta))
     }
 }
 
