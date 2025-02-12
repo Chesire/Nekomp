@@ -1,9 +1,11 @@
 package com.chesire.nekomp.feature.login.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -80,32 +83,41 @@ private fun Render(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(paddingValues)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            UsernameInput(
-                username = state.email,
-                onUsernameChanged = { execute(ViewAction.EmailUpdated(it)) }
-            )
-            PasswordInput(
-                password = state.password,
-                isLoggingIn = state.isPendingLogin,
-                onPasswordChanged = { execute(ViewAction.PasswordUpdated(it)) },
-                onLoginPressed = { execute(ViewAction.LoginPressed) }
-            )
-            if (state.isPendingLogin) {
-                CircularProgressIndicator()
-            } else {
-                LoginButton(
-                    isLoggingIn = state.isPendingLogin,
-                    onLoginPressed = { execute(ViewAction.LoginPressed) }
-                )
+        Box(modifier = Modifier.fillMaxSize()) {
+            ElevatedCard(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.Center)
+                    .padding(paddingValues)
+                    .padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    UsernameInput(
+                        username = state.email,
+                        onUsernameChanged = { execute(ViewAction.EmailUpdated(it)) }
+                    )
+                    PasswordInput(
+                        password = state.password,
+                        isLoggingIn = state.isPendingLogin,
+                        onPasswordChanged = { execute(ViewAction.PasswordUpdated(it)) },
+                        onLoginPressed = { execute(ViewAction.LoginPressed) }
+                    )
+                    if (state.isPendingLogin) {
+                        CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
+                    } else {
+                        LoginButton(
+                            isLoggingIn = state.isPendingLogin,
+                            modifier = Modifier.padding(top = 8.dp),
+                            onLoginPressed = { execute(ViewAction.LoginPressed) }
+                        )
+                    }
+                }
             }
         }
     }
@@ -189,10 +201,15 @@ private fun PasswordInput(
 }
 
 @Composable
-private fun LoginButton(isLoggingIn: Boolean, onLoginPressed: () -> Unit) {
+private fun LoginButton(
+    isLoggingIn: Boolean,
+    modifier: Modifier = Modifier,
+    onLoginPressed: () -> Unit
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Button(
+        modifier = modifier,
         onClick = {
             if (!isLoggingIn) {
                 onLoginPressed()
