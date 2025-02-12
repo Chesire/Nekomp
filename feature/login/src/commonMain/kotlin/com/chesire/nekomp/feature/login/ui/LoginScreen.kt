@@ -34,7 +34,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -59,31 +58,36 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = koinViewModel()) {
+fun LoginScreen(
+    viewModel: LoginViewModel = koinViewModel(),
+    onLoggedIn: () -> Unit
+) {
     val state by viewModel.uiState.collectAsState()
 
     Render(
         state = state,
-        execute = { viewModel.execute(it) }
+        execute = { viewModel.execute(it) },
+        onLoggedIn = onLoggedIn
     )
 }
 
 @Composable
 private fun Render(
     state: UIState,
-    execute: (ViewAction) -> Unit
+    execute: (ViewAction) -> Unit,
+    onLoggedIn: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
             is ViewEvent.LoginFailure -> {
-                snackbarHostState.showSnackbar(message = "Failure", duration = SnackbarDuration.Long)
+                snackbarHostState.showSnackbar(
+                    message = "Failure",
+                    duration = SnackbarDuration.Long
+                )
             }
 
-            ViewEvent.LoginSuccessful -> {
-                snackbarHostState.showSnackbar(message = "Success")
-                // Navigate away
-            }
+            ViewEvent.LoginSuccessful -> onLoggedIn()
 
             null -> Unit
         }
@@ -95,7 +99,11 @@ private fun Render(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
             ElevatedCard(
                 modifier = Modifier
                     .wrapContentSize()
@@ -105,7 +113,6 @@ private fun Render(
             ) {
                 Column(
                     modifier = Modifier
-                        .verticalScroll(rememberScrollState())
                         .sizeIn(maxWidth = 320.dp)
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -258,6 +265,7 @@ private fun Preview() {
     )
     Render(
         state = state,
-        execute = {}
+        execute = {},
+        onLoggedIn = {}
     )
 }
