@@ -1,16 +1,16 @@
 package com.chesire.nekomp.feature.library.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,21 +52,21 @@ private fun Render(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            ElevatedCard(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .align(Alignment.Center)
-                    .padding(paddingValues)
-                    .padding(16.dp)
+        LazyColumn(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(
+                items = state.entries,
+                key = { it.title }
             ) {
-                Column(
+                ElevatedCard(
                     modifier = Modifier
-                        .sizeIn(maxWidth = 320.dp)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .wrapContentSize()
+                        .padding(8.dp)
                 ) {
+                    Text(text = it.title)
                 }
             }
         }
