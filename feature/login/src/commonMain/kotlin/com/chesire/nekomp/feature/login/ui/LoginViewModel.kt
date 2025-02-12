@@ -50,7 +50,8 @@ class LoginViewModel(
                 viewEvent = if (result.isSuccess) {
                     ViewEvent.LoginSuccessful
                 } else {
-                    ViewEvent.LoginFailure("Failure")
+                    // TODO: Use better errors
+                    ViewEvent.LoginFailure("Login Failure, please try again")
                 }
             )
         }

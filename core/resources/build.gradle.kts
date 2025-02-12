@@ -2,8 +2,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -23,7 +24,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "di"
+            baseName = "resources"
             isStatic = true
         }
     }
@@ -31,27 +32,19 @@ kotlin {
     jvm()
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.koin.android)
-        }
         commonMain.dependencies {
-            implementation(projects.core.database)
-            implementation(projects.feature.library)
-            implementation(projects.feature.login)
-            implementation(projects.library.datasource.auth)
-            implementation(projects.library.datasource.library)
-            implementation(projects.library.datasource.user)
-            implementation(libs.koin.core)
-        }
-        commonTest.dependencies {
-        }
-        iosMain.dependencies {
+            implementation(compose.components.resources)
+            implementation(compose.runtime)
         }
     }
 }
 
+compose.resources {
+    publicResClass = true
+}
+
 android {
-    namespace = "com.chesire.nekomp.di"
+    namespace = "com.chesire.nekomp.core.resources"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()

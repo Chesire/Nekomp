@@ -44,7 +44,9 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.network)
+            implementation(projects.core.resources)
             implementation(projects.di)
+            implementation(projects.feature.library)
             implementation(projects.feature.login)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
@@ -56,6 +58,7 @@ kotlin {
             implementation(compose.ui)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.koin.compose)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)

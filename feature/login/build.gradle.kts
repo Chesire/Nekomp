@@ -33,17 +33,22 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(compose.preview)
             implementation(libs.compose.material3)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(projects.core.network)
+            implementation(projects.core.resources)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.user)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(libs.koin.compose.viewmodel)
@@ -74,5 +79,5 @@ android {
 }
 
 dependencies {
-    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(compose.uiTooling)
 }
