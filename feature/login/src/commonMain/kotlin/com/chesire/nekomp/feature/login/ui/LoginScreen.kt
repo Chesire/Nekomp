@@ -46,7 +46,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.chesire.nekomp.core.resources.R
+import com.chesire.nekomp.core.resources.NekoRes
 import nekomp.core.resources.generated.resources.login_cta
 import nekomp.core.resources.generated.resources.login_hide_password
 import nekomp.core.resources.generated.resources.login_password
@@ -119,7 +119,7 @@ private fun Render(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.login_subtitle)
+                        text = stringResource(NekoRes.string.login_subtitle)
                     )
                     UsernameInput(
                         username = state.email,
@@ -174,7 +174,7 @@ private fun UsernameInput(
         ),
         singleLine = true,
         label = {
-            Text(text = stringResource(R.string.login_username))
+            Text(text = stringResource(NekoRes.string.login_username))
         }
     )
 }
@@ -205,9 +205,9 @@ private fun PasswordInput(
                     imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                     contentDescription = stringResource(
                         if (passwordVisible) {
-                            R.string.login_hide_password
+                            NekoRes.string.login_hide_password
                         } else {
-                            R.string.login_show_password
+                            NekoRes.string.login_show_password
                         }
                     )
                 )
@@ -228,7 +228,7 @@ private fun PasswordInput(
         ),
         singleLine = true,
         label = {
-            Text(text = stringResource(R.string.login_password))
+            Text(text = stringResource(NekoRes.string.login_password))
         }
     )
 }
@@ -250,7 +250,7 @@ private fun LoginButton(
             }
         }
     ) {
-        Text(text = stringResource(R.string.login_cta))
+        Text(text = stringResource(NekoRes.string.login_cta))
     }
 }
 
