@@ -3,6 +3,7 @@ package com.chesire.nekomp.library.datasource.auth
 import com.chesire.nekomp.library.datasource.auth.local.AuthStorage
 import com.chesire.nekomp.library.datasource.auth.remote.AuthApi
 import com.chesire.nekomp.library.datasource.auth.remote.model.LoginRequestDto
+import com.chesire.nekomp.library.datasource.auth.remote.model.RefreshRequestDto
 import kotlinx.coroutines.runBlocking
 
 class AuthRepository(
@@ -10,8 +11,9 @@ class AuthRepository(
     private val authStorage: AuthStorage
 ) {
 
+    // This will do for now
+    fun accessTokenSync(): String? = runBlocking { accessToken() }
     suspend fun accessToken(): String? = authStorage.acquireAccessToken()
-    fun accessTokenSync(): String? = runBlocking { authStorage.acquireAccessToken() } // This will do for now
     suspend fun refreshToken(): String? = authStorage.acquireRefreshToken()
 
     private suspend fun updateTokens(accessToken: String, refreshToken: String) {
@@ -24,6 +26,13 @@ class AuthRepository(
     suspend fun authenticate(username: String, password: String): Result<String> {
         return authApi
             .login(LoginRequestDto(username, password, "password"))
+            .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
+            .map { it.accessToken }
+    }
+
+    suspend fun refresh(): Result<String> {
+        return authApi
+            .refresh(RefreshRequestDto(refreshToken() ?: "", "refresh_token"))
             .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
             .map { it.accessToken }
     }
