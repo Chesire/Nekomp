@@ -1,7 +1,5 @@
 package com.chesire.nekomp.library.datasource.library
 
-import com.chesire.nekomp.library.datasource.library.remote.model.ImageModel
-
 data class LibraryEntry(
     val id: Int,
     val userId: Int,
