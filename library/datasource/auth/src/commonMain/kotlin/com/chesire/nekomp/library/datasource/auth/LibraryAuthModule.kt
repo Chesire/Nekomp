@@ -13,7 +13,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-private const val AUTH_DATASTORE_NAME = "auth.preferences_pb"
+private const val AUTH_DATASTORE_NAME = "nekomp.auth.preferences_pb"
 
 val libraryAuthModule = module {
     factory<AuthApi> {

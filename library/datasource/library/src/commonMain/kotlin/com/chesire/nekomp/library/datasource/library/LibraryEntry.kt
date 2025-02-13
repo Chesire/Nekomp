@@ -13,7 +13,7 @@ data class LibraryEntry(
     val progress: Int,
     val totalLength: Int,
     val rating: Int,
-    // val posterImage: ImageModel,
+    val posterImage: String,
     val startDate: String,
     val endDate: String
 )

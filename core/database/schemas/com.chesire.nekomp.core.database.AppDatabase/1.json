@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5ba01d1a233a82fc84e5dfc546aefd9b",
+    "identityHash": "60562a5a5f432e1e85161110fe5e4bf1",
     "entities": [
       {
         "tableName": "LibraryEntryEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `type` TEXT NOT NULL, `subtype` TEXT NOT NULL, `slug` TEXT NOT NULL, `title` TEXT NOT NULL, `seriesStatus` TEXT NOT NULL, `userSeriesStatus` TEXT NOT NULL, `progress` INTEGER NOT NULL, `totalLength` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `type` TEXT NOT NULL, `subtype` TEXT NOT NULL, `slug` TEXT NOT NULL, `title` TEXT NOT NULL, `seriesStatus` TEXT NOT NULL, `userSeriesStatus` TEXT NOT NULL, `progress` INTEGER NOT NULL, `totalLength` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `posterImage` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -75,6 +75,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "posterImage",
+            "columnName": "posterImage",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "startDate",
             "columnName": "startDate",
             "affinity": "TEXT",
@@ -121,7 +127,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5ba01d1a233a82fc84e5dfc546aefd9b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '60562a5a5f432e1e85161110fe5e4bf1')"
     ]
   }
 }

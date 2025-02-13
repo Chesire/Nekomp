@@ -28,7 +28,12 @@ class LibraryViewModel(
                 _uiState.update { state ->
                     state.copy(
                         entries = entries
-                            .map { Entry(title = it.title) }
+                            .map {
+                                Entry(
+                                    title = it.title,
+                                    image = it.posterImage
+                                )
+                            }
                             .toImmutableList()
                     )
                 }

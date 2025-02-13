@@ -23,6 +23,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                     progress = entry.progress,
                     totalLength = entry.totalLength,
                     rating = entry.rating,
+                    posterImage = entry.posterImage,
                     startDate = entry.startDate,
                     endDate = entry.endDate
                 )
@@ -43,6 +44,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                 progress = entry.progress,
                 totalLength = entry.totalLength,
                 rating = entry.rating,
+                posterImage = entry.posterImage,
                 startDate = entry.startDate,
                 endDate = entry.endDate
             )

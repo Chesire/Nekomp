@@ -25,7 +25,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "network"
+            baseName = "corenetwork"
             isStatic = true
         }
     }
