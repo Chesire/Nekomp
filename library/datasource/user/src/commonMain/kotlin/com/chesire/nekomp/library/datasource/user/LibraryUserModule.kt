@@ -11,6 +11,7 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
@@ -32,6 +33,7 @@ val libraryUserModule = module {
                         )
                     }
                     install(Auth) {
+                        reAuthorizeOnResponse { it.status == HttpStatusCode.Forbidden }
                         bearer {
                             loadTokens {
                                 val authRepository = get<AuthRepository>()
@@ -41,16 +43,14 @@ val libraryUserModule = module {
                                 )
                             }
 
-                            // Need to support multiple errors https://github.com/ktorio/ktor/pull/4420
-                            // refreshTokens {
-                            //     val authRepository = get<AuthRepository>()
-                            //     // make call to refresh the token
-                            //
-                            //     BearerTokens(
-                            //         accessToken = authRepository.accessToken() ?: "",
-                            //         refreshToken = authRepository.refreshToken()
-                            //     )
-                            // }
+                            refreshTokens {
+                                val authRepository = get<AuthRepository>()
+                                authRepository.refresh()
+                                BearerTokens(
+                                    accessToken = authRepository.accessToken() ?: "",
+                                    refreshToken = authRepository.refreshToken()
+                                )
+                            }
                         }
                     }
                 }
