@@ -24,7 +24,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "preferences"
+            baseName = "corepreferences"
             isStatic = true
         }
     }

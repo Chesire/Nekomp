@@ -25,7 +25,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "library"
+            baseName = "librarydatasourcelibrary"
             isStatic = true
         }
     }
