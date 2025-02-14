@@ -34,7 +34,6 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
-            implementation(libs.compose.material3)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
         }
@@ -48,15 +47,20 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.material3AdaptiveNavigationSuite)
             implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(libs.compose.material3.adaptive)
+            implementation(libs.compose.material3.adaptive.layout)
+            implementation(libs.compose.material3.adaptive.navigation)
+            implementation(libs.compose.material3.windowsizeclass)
+            implementation(libs.compose.ui.backhandler)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.collections.immutable)
-            implementation(libs.timber)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

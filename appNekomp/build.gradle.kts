@@ -33,35 +33,40 @@ kotlin {
     jvm()
 
     sourceSets {
-        val jvmMain by getting
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.timber)
         }
         commonMain.dependencies {
+            implementation(projects.core.database)
             implementation(projects.core.network)
             implementation(projects.core.resources)
-            implementation(projects.di)
             implementation(projects.feature.library)
             implementation(projects.feature.login)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
+            implementation(projects.library.datasource.user)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.material3AdaptiveNavigationSuite)
+            implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.navigation.compose)
+            implementation(libs.compose.material3.adaptive)
+            implementation(libs.compose.material3.adaptive.layout)
+            implementation(libs.compose.material3.adaptive.navigation)
+            implementation(libs.compose.material3.windowsizeclass)
             implementation(libs.koin.compose)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.touchlab.kermit)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

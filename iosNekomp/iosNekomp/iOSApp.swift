@@ -3,9 +3,8 @@ import Nekomp
 
 @main
 struct iOSApp: App {
-
   init() {
-    InjectionHelperKt.doInitDi()
+    InitKoinKt.doInitKoin()
   }
 
   var body: some Scene {
