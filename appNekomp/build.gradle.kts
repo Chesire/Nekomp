@@ -33,8 +33,6 @@ kotlin {
     jvm()
 
     sourceSets {
-        val jvmMain by getting
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
