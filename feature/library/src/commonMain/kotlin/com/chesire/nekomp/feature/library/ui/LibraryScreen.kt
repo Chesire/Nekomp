@@ -45,6 +45,7 @@ private fun Render(
     state: UIState,
     execute: (ViewAction) -> Unit
 ) {
+    val size = calculate
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
