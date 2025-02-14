@@ -1,6 +1,6 @@
 package com.chesire.nekomp
 
-enum class Route {
+enum class StartingPoint {
     Login,
-    Library
+    LoggedIn
 }

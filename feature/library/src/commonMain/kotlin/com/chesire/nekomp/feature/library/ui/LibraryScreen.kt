@@ -91,7 +91,10 @@ private fun Render(
                             ListContent(
                                 entries = state.entries,
                                 onEntryClick = { entry ->
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, entry)
+                                    navigator.navigateTo(
+                                        ListDetailPaneScaffoldRole.Detail,
+                                        entry
+                                    )
                                 }
                             )
                         }

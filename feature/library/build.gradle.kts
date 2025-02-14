@@ -34,7 +34,6 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
-            implementation(libs.compose.material3)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
         }
