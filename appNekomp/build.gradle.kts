@@ -40,13 +40,14 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
         }
         commonMain.dependencies {
+            implementation(projects.core.database)
             implementation(projects.core.network)
             implementation(projects.core.resources)
-            implementation(projects.di)
             implementation(projects.feature.library)
             implementation(projects.feature.login)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
+            implementation(projects.library.datasource.user)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)

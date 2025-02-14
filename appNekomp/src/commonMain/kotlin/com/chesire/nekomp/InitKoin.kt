@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalObjCRefinement::class)
 
-package com.chesire.nekomp.di
+package com.chesire.nekomp
 
 import com.chesire.nekomp.core.database.databaseModule
 import com.chesire.nekomp.feature.library.featureLibraryModule
