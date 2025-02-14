@@ -1,4 +1,8 @@
-@file:OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalSharedTransitionApi::class)
+@file:OptIn(
+    ExperimentalComposeUiApi::class,
+    ExperimentalMaterial3AdaptiveApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 
 package com.chesire.nekomp.feature.library.ui
 
@@ -36,7 +40,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -72,6 +78,11 @@ private fun Render(
         }
 
         execute(ViewAction.ObservedViewEvent)
+    }
+
+    // TODO: Switch to predictive
+    BackHandler(enabled = navigator.canNavigateBack()) {
+        navigator.navigateBack()
     }
 
     Scaffold(
