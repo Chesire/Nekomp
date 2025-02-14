@@ -53,7 +53,6 @@ kotlin {
             implementation(compose.ui)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
-            implementation(libs.timber)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

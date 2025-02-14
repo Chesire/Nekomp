@@ -38,7 +38,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.timber)
         }
         commonMain.dependencies {
             implementation(projects.core.network)
@@ -66,6 +65,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.touchlab.kermit)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.feature.library.ui.LibraryScreen
 import com.chesire.nekomp.feature.login.ui.LoginScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
@@ -25,6 +26,7 @@ import org.koin.compose.koinInject
 @Composable
 @Preview
 fun App() {
+    Logger.setTag("Nekomp")
     MyApplicationTheme {
         val navController = rememberNavController()
         var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Library) }
