@@ -38,8 +38,7 @@ class LoginViewModel(
 
     private fun onLoginPressed() = viewModelScope.launch {
         val state = _uiState.updateAndGet { it.copy(isPendingLogin = true) }
-        val result = performLogin(state.email, state.password)
-            .map { retrieveUser() }
+        val result = performLogin(state.email, state.password).map { retrieveUser() }
 
         _uiState.update {
             it.copy(
