@@ -7,9 +7,9 @@ import kotlinx.coroutines.withContext
 
 class PerformLoginUseCase(private val authRepository: AuthRepository) {
 
-    suspend operator fun invoke(username: String, password: String): Result<Unit> {
+    suspend operator fun invoke(username: String, password: String): Result<Any> {
         return withContext(Dispatchers.IO) {
-            authRepository.authenticate(username, password).map { Unit }
+            authRepository.authenticate(username, password)
         }
     }
 }

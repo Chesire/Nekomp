@@ -7,9 +7,9 @@ import kotlinx.coroutines.withContext
 
 class RetrieveUserUseCase(private val userRepository: UserRepository) {
 
-    suspend operator fun invoke(): Result<Unit> {
+    suspend operator fun invoke(): Result<Any> {
         return withContext(Dispatchers.IO) {
-            userRepository.retrieve().map { Unit }
+            userRepository.retrieve()
         }
     }
 }
