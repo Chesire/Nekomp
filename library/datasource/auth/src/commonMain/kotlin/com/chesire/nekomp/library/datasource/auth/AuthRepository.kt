@@ -38,4 +38,8 @@ class AuthRepository(
             .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
             .map { it.accessToken }
     }
+
+    suspend fun clear() {
+        authStorage.clear()
+    }
 }

@@ -30,4 +30,10 @@ class AuthStorage(private val preferences: DataStore<Preferences>) {
             it[stringPreferencesKey(REFRESH_TOKEN)] = newToken
         }
     }
+
+    suspend fun clear() {
+        preferences.edit {
+            it.clear()
+        }
+    }
 }
