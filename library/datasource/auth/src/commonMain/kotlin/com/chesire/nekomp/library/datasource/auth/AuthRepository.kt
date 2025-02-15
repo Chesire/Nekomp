@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.auth
 
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.network.NetworkError
 import com.chesire.nekomp.library.datasource.auth.local.AuthStorage
 import com.chesire.nekomp.library.datasource.auth.remote.AuthApi
@@ -74,6 +75,7 @@ class AuthRepository(
     }
 
     suspend fun clear() {
+        Logger.d("AuthRepository") { "Clearing auth tokens" }
         authStorage.clear()
     }
 }

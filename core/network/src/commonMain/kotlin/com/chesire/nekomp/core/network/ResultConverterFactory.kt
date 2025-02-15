@@ -35,7 +35,7 @@ class ResultConverterFactory : Converter.Factory {
                                         ?: response.body(typeData.typeArgs.first().typeInfo)
                                     Result.success(convertedBody)
                                 } catch (ex: Throwable) {
-                                    Logger.d("ResultConverterFactory", ex) {
+                                    Logger.e("ResultConverterFactory", ex) {
                                         "Issue when building result from success call"
                                     }
                                     Result.failure(ex)
@@ -43,7 +43,7 @@ class ResultConverterFactory : Converter.Factory {
 
                                 else -> {
                                     val body = response.bodyAsText()
-                                    Logger.d("ResultConverterFactory") {
+                                    Logger.w("ResultConverterFactory") {
                                         "Did not receive OK status, instead got ${response.status} with body of $body"
                                     }
                                     Result.failure(
@@ -58,7 +58,7 @@ class ResultConverterFactory : Converter.Factory {
                         }
 
                         is KtorfitResult.Failure -> {
-                            Logger.d("ResultConverterFactory", result.throwable) {
+                            Logger.e("ResultConverterFactory", result.throwable) {
                                 "Got Ktorfit result failure"
                             }
                             Result.failure(NetworkError.Generic(result.throwable))
