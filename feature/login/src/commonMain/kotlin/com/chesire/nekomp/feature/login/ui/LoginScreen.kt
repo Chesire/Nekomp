@@ -82,7 +82,7 @@ private fun Render(
         when (state.viewEvent) {
             is ViewEvent.LoginFailure -> {
                 snackbarHostState.showSnackbar(
-                    message = "Failure",
+                    message = state.viewEvent.errorMessage,
                     duration = SnackbarDuration.Long
                 )
             }

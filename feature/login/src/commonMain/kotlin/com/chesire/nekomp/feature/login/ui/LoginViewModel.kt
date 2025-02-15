@@ -2,19 +2,20 @@ package com.chesire.nekomp.feature.login.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.login.core.PerformLoginUseCase
-import com.chesire.nekomp.feature.login.core.RetrieveUserUseCase
+import com.chesire.nekomp.library.datasource.auth.AuthFailure
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import nekomp.core.resources.generated.resources.login_error_generic
+import nekomp.core.resources.generated.resources.login_error_invalid_credentials
+import org.jetbrains.compose.resources.getString
 
-class LoginViewModel(
-    private val performLogin: PerformLoginUseCase,
-    private val retrieveUser: RetrieveUserUseCase
-) : ViewModel() {
+class LoginViewModel(private val performLogin: PerformLoginUseCase) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
@@ -38,16 +39,23 @@ class LoginViewModel(
 
     private fun onLoginPressed() = viewModelScope.launch {
         val state = _uiState.updateAndGet { it.copy(isPendingLogin = true) }
-        val result = performLogin(state.email, state.password).map { retrieveUser() }
+        val loginResult = performLogin(state.email, state.password)
 
         _uiState.update {
             it.copy(
                 isPendingLogin = false,
-                viewEvent = if (result.isSuccess) {
+                viewEvent = if (loginResult.isOk) {
                     ViewEvent.LoginSuccessful
                 } else {
-                    // TODO: Use better errors
-                    ViewEvent.LoginFailure("Login Failure, please try again")
+                    when (loginResult.error) {
+                        AuthFailure.BadRequest -> ViewEvent.LoginFailure(
+                            getString(NekoRes.string.login_error_invalid_credentials)
+                        )
+
+                        AuthFailure.InvalidCredentials -> ViewEvent.LoginFailure(
+                            getString(NekoRes.string.login_error_generic)
+                        )
+                    }
                 }
             )
         }
