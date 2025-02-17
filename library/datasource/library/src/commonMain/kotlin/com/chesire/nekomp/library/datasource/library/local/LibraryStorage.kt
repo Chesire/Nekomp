@@ -51,4 +51,24 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
         }
         libraryEntryDao.upsert(newEntries)
     }
+
+    suspend fun updateEntry(entry: LibraryEntry) {
+        val newEntries = LibraryEntryEntity(
+            id = entry.id,
+            userId = entry.userId,
+            type = entry.type,
+            subtype = entry.subtype,
+            slug = entry.slug,
+            title = entry.title,
+            seriesStatus = entry.seriesStatus,
+            userSeriesStatus = entry.userSeriesStatus,
+            progress = entry.progress,
+            totalLength = entry.totalLength,
+            rating = entry.rating,
+            posterImage = entry.posterImage,
+            startDate = entry.startDate,
+            endDate = entry.endDate
+        )
+        libraryEntryDao.upsert(newEntries)
+    }
 }

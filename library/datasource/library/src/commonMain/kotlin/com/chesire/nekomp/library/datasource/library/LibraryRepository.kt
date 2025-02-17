@@ -121,4 +121,97 @@ class LibraryRepository(
             endDate = included.attributes.endDate ?: ""
         )
     }
+
+    suspend fun addAnime(entryId: Int): Result<LibraryEntry, Unit> {
+        Logger.d("LibraryRepository") { "Making call to add anime $entryId" }
+        val user = userRepository.user.firstOrNull()
+        if (user?.isAuthenticated != true) {
+            Logger.e("LibraryRepository") { "No user object, cancelling add call" }
+            return Err(Unit) // TODO: Add custom error type
+        }
+
+        return addEntry(user.id, entryId, EntryType.ANIME)
+    }
+
+    suspend fun addManga(entryId: Int): Result<LibraryEntry, Unit> {
+        Logger.d("LibraryRepository") { "Making call to add manga $entryId" }
+        val user = userRepository.user.firstOrNull()
+        if (user?.isAuthenticated != true) {
+            Logger.e("LibraryRepository") { "No user object, cancelling add call" }
+            return Err(Unit) // TODO: Add custom error type
+        }
+
+        return addEntry(user.id, entryId, EntryType.MANGA)
+    }
+
+    private suspend fun addEntry(
+        userId: Int,
+        entryId: Int,
+        type: EntryType
+    ): Result<LibraryEntry, Unit> {
+        val addJson = createAddDto(
+            userId,
+            entryId,
+            type.value
+        )
+
+        return when (type) {
+            EntryType.ANIME -> libraryApi.addAnime(addJson)
+            EntryType.MANGA -> libraryApi.addManga(addJson)
+        }
+            .map {
+                val id = it.data.relationships.anime?.data?.id
+                    ?: it.data.relationships.manga?.data?.id
+                it.included
+                    .find { it.id == id }
+                    ?.let { included ->
+                        buildEntry(included, it.data)
+                    }
+                    ?: return@addEntry Err(Unit)
+            }
+            .onSuccess {
+                libraryStorage.updateEntry(it)
+            }
+            .fold(
+                onSuccess = { Ok(it) },
+                onFailure = { Err(Unit) }
+            )
+    }
+}
+
+// TODO: This could probably be some actual DTO classes?
+private fun createAddDto(
+    userId: Int,
+    seriesId: Int,
+    seriesType: String
+) =
+    """
+{
+  "data": {
+    "type": "libraryEntries",
+    "attributes": {
+      "progress": 0,
+      "status": "current"
+    },
+    "relationships": {
+      "$seriesType": {
+        "data": {
+          "type": "$seriesType",
+          "id": $seriesId
+        }
+      },
+      "user": {
+        "data": {
+          "type": "users",
+          "id": $userId
+        }
+      }
+    }
+  }
+}
+        """.trimIndent()
+
+private enum class EntryType(val value: String) {
+    ANIME("anime"),
+    MANGA("manga")
 }
