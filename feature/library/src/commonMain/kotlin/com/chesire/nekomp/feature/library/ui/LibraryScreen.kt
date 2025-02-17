@@ -137,7 +137,7 @@ private fun ListContent(
     ) {
         items(
             items = entries,
-            key = { it.title }
+            key = { it.id }
         ) {
             ListItem(it, onEntryClick)
         }

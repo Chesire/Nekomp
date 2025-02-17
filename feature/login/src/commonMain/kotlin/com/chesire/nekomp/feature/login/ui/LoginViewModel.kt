@@ -49,11 +49,11 @@ class LoginViewModel(private val performLogin: PerformLoginUseCase) : ViewModel(
                 } else {
                     when (loginResult.error) {
                         AuthFailure.BadRequest -> ViewEvent.LoginFailure(
-                            getString(NekoRes.string.login_error_invalid_credentials)
+                            getString(NekoRes.string.login_error_generic)
                         )
 
                         AuthFailure.InvalidCredentials -> ViewEvent.LoginFailure(
-                            getString(NekoRes.string.login_error_generic)
+                            getString(NekoRes.string.login_error_invalid_credentials)
                         )
                     }
                 }

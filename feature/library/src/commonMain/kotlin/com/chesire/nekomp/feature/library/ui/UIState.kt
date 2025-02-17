@@ -9,6 +9,7 @@ data class UIState(
 )
 
 data class Entry(
+    val id: Int,
     val title: String,
     val image: String
 )
