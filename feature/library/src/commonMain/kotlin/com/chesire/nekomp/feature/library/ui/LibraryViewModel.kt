@@ -30,6 +30,7 @@ class LibraryViewModel(
                         entries = entries
                             .map {
                                 Entry(
+                                    id = it.id,
                                     title = it.title,
                                     image = it.posterImage
                                 )
