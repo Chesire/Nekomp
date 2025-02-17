@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.user
 
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.network.ResultConverterFactory
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import com.chesire.nekomp.library.datasource.user.local.UserStorage
@@ -44,6 +45,7 @@ val libraryUserModule = module {
                             }
 
                             refreshTokens {
+                                Logger.i("LibraryUserModule") { "Refreshing auth tokens" }
                                 val authRepository = get<AuthRepository>()
                                 authRepository.refresh()
                                 BearerTokens(

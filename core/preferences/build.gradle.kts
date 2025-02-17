@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.touchlab.kermit)
         }
         commonTest.dependencies {
         }

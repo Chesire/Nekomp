@@ -51,6 +51,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktorfit.converters.response)
             implementation(libs.ktorfit.lib)
+            implementation(libs.touchlab.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

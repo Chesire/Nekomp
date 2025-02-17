@@ -41,6 +41,7 @@ kotlin {
             implementation(projects.core.preferences)
             implementation(projects.library.datasource.auth)
             implementation(libs.koin.core)
+            api(libs.kotlin.result)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.auth)
@@ -49,6 +50,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktorfit.converters.response)
             implementation(libs.ktorfit.lib)
+            implementation(libs.touchlab.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

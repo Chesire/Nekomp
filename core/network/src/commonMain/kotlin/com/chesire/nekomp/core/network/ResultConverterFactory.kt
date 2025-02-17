@@ -2,6 +2,7 @@
 
 package com.chesire.nekomp.core.network
 
+import co.touchlab.kermit.Logger
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.Converter
 import de.jensklingenberg.ktorfit.converter.KtorfitResult
@@ -34,20 +35,34 @@ class ResultConverterFactory : Converter.Factory {
                                         ?: response.body(typeData.typeArgs.first().typeInfo)
                                     Result.success(convertedBody)
                                 } catch (ex: Throwable) {
+                                    Logger.e("ResultConverterFactory", ex) {
+                                        "Issue when building result from success call"
+                                    }
                                     Result.failure(ex)
                                 }
 
-                                else -> Result.failure(
-                                    ApiError(
-                                        response.status.value,
-                                        response.bodyAsText(),
-                                        response.status.description
+                                else -> {
+                                    val body = response.bodyAsText()
+                                    Logger.w("ResultConverterFactory") {
+                                        "Did not receive OK status, instead got ${response.status} with body of $body"
+                                    }
+                                    Result.failure(
+                                        NetworkError.Api(
+                                            response.status.value,
+                                            body,
+                                            response.status.description
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
 
-                        is KtorfitResult.Failure -> Result.failure(result.throwable)
+                        is KtorfitResult.Failure -> {
+                            Logger.e("ResultConverterFactory", result.throwable) {
+                                "Got Ktorfit result failure"
+                            }
+                            Result.failure(NetworkError.Generic(result.throwable))
+                        }
                     }
                 }
             }
