@@ -10,7 +10,6 @@ import de.jensklingenberg.ktorfit.converter.TypeData
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpStatusCode
 
 class ResultConverterFactory : Converter.Factory {
 
@@ -24,8 +23,8 @@ class ResultConverterFactory : Converter.Factory {
                     return when (result) {
                         is KtorfitResult.Success -> {
                             val response = result.response
-                            return when (response.status) {
-                                HttpStatusCode.OK -> try {
+                            return if (response.status.value >= 200 && response.status.value <= 299) {
+                                try {
                                     val convertedBody = ktorfit
                                         .nextSuspendResponseConverter(
                                             null,
@@ -40,20 +39,18 @@ class ResultConverterFactory : Converter.Factory {
                                     }
                                     Result.failure(ex)
                                 }
-
-                                else -> {
-                                    val body = response.bodyAsText()
-                                    Logger.w("ResultConverterFactory") {
-                                        "Did not receive OK status, instead got ${response.status} with body of $body"
-                                    }
-                                    Result.failure(
-                                        NetworkError.Api(
-                                            response.status.value,
-                                            body,
-                                            response.status.description
-                                        )
-                                    )
+                            } else {
+                                val body = response.bodyAsText()
+                                Logger.w("ResultConverterFactory") {
+                                    "Did not receive OK status, instead got ${response.status} with body of $body"
                                 }
+                                Result.failure(
+                                    NetworkError.Api(
+                                        response.status.value,
+                                        body,
+                                        response.status.description
+                                    )
+                                )
                             }
                         }
 
