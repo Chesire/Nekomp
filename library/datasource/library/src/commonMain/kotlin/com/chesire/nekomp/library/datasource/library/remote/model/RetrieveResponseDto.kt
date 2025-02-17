@@ -77,7 +77,7 @@ data class IncludedDto(
         @SerialName("canonicalTitle")
         val canonicalTitle: String,
         @SerialName("titles")
-        val titles: Map<String, String>,
+        val titles: Map<String, String?>,
         @SerialName("startDate")
         val startDate: String?,
         @SerialName("endDate")
