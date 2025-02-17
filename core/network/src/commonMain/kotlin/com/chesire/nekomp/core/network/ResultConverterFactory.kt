@@ -36,7 +36,7 @@ class ResultConverterFactory : Converter.Factory {
                                     Result.success(convertedBody)
                                 } catch (ex: Throwable) {
                                     Logger.e("ResultConverterFactory", ex) {
-                                        "Issue when building result from success call"
+                                        "Issue when building result from success call - $ex"
                                     }
                                     Result.failure(ex)
                                 }
@@ -59,7 +59,7 @@ class ResultConverterFactory : Converter.Factory {
 
                         is KtorfitResult.Failure -> {
                             Logger.e("ResultConverterFactory", result.throwable) {
-                                "Got Ktorfit result failure"
+                                "Got Ktorfit result failure - ${result.throwable}"
                             }
                             Result.failure(NetworkError.Generic(result.throwable))
                         }
