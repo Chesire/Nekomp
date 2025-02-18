@@ -5,13 +5,16 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.chesire.nekomp.core.resources.NekoRes
 import nekomp.core.resources.generated.resources.nav_activity
 import nekomp.core.resources.generated.resources.nav_content_description_activity
+import nekomp.core.resources.generated.resources.nav_content_description_discover
 import nekomp.core.resources.generated.resources.nav_content_description_library
 import nekomp.core.resources.generated.resources.nav_content_description_profile
 import nekomp.core.resources.generated.resources.nav_content_description_settings
+import nekomp.core.resources.generated.resources.nav_discover
 import nekomp.core.resources.generated.resources.nav_library
 import nekomp.core.resources.generated.resources.nav_profile
 import nekomp.core.resources.generated.resources.nav_settings
@@ -26,6 +29,11 @@ enum class AppDestinations(
         label = NekoRes.string.nav_library,
         contentDescription = NekoRes.string.nav_content_description_library,
         icon = Icons.Default.Info
+    ),
+    Discover(
+        label = NekoRes.string.nav_discover,
+        contentDescription = NekoRes.string.nav_content_description_discover,
+        icon = Icons.Default.Star
     ),
     Profile(
         label = NekoRes.string.nav_profile,

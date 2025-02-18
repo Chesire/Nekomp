@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.feature.discover.ui.DiscoverScreen
 import com.chesire.nekomp.feature.library.ui.LibraryScreen
 import com.chesire.nekomp.feature.login.ui.LoginScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
@@ -73,6 +74,7 @@ fun App() {
                     ) {
                         when (currentDestination) {
                             AppDestinations.Library -> LibraryScreen()
+                            AppDestinations.Discover -> DiscoverScreen()
                             AppDestinations.Profile -> LibraryScreen()
                             AppDestinations.Activity -> LibraryScreen()
                             AppDestinations.Settings -> LibraryScreen()
