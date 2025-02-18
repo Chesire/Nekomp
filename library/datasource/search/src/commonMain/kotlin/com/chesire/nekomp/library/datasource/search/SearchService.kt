@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.search
 
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.library.datasource.search.remote.SearchApi
 import com.chesire.nekomp.library.datasource.search.remote.model.SearchResponseDto
 import com.github.michaelbull.result.Err
@@ -10,6 +11,7 @@ import com.github.michaelbull.result.Result
 class SearchService(private val searchApi: SearchApi) {
 
     suspend fun searchForAnime(title: String): Result<List<SearchItem>, Unit> {
+        Logger.d("SearchService") { "Searching for anime $title" }
         return searchApi.searchForAnime(title)
             .map { it.toSearchItems() }
             .fold(
@@ -19,6 +21,7 @@ class SearchService(private val searchApi: SearchApi) {
     }
 
     suspend fun searchForManga(title: String): Result<List<SearchItem>, Unit> {
+        Logger.d("SearchService") { "Searching for manga $title" }
         return searchApi.searchForManga(title)
             .map { it.toSearchItems() }
             .fold(
