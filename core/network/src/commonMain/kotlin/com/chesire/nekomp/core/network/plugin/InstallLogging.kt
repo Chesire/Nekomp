@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.HttpHeaders
 
 fun HttpClientConfig<*>.installLogging() {
     install(Logging) {
@@ -13,5 +14,6 @@ fun HttpClientConfig<*>.installLogging() {
             }
         }
         level = LogLevel.ALL
+        sanitizeHeader { header -> header == HttpHeaders.Authorization }
     }
 }
