@@ -1,8 +1,11 @@
 package com.chesire.nekomp.library.datasource.library.remote
 
+import com.chesire.nekomp.library.datasource.library.remote.model.AddEntryResponseDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
+import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
+import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 
@@ -46,4 +49,26 @@ interface LibraryApi {
         @Query("page[offset]") offset: Int,
         @Query("page[limit]") limit: Int
     ): Result<RetrieveResponseDto>
+
+    @Headers(
+        "Accept: application/vnd.api+json",
+        "Content-Type: application/vnd.api+json"
+    )
+    @POST(
+        "api/edge/library-entries" +
+            "?include=anime" +
+            "&fields[anime]=$FIELDS,episodeCount"
+    )
+    suspend fun addAnime(@Body data: String): Result<AddEntryResponseDto>
+
+    @Headers(
+        "Accept: application/vnd.api+json",
+        "Content-Type: application/vnd.api+json"
+    )
+    @POST(
+        "api/edge/library-entries" +
+            "?include=manga" +
+            "&fields[manga]=$FIELDS,chapterCount"
+    )
+    suspend fun addManga(@Body data: String): Result<AddEntryResponseDto>
 }
