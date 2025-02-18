@@ -8,6 +8,7 @@ import com.chesire.nekomp.feature.login.featureLoginModule
 import com.chesire.nekomp.library.datasource.auth.libraryAuthModule
 import com.chesire.nekomp.library.datasource.library.libraryLibraryModule
 import com.chesire.nekomp.library.datasource.search.librarySearchModule
+import com.chesire.nekomp.library.datasource.trending.libraryTrendingModule
 import com.chesire.nekomp.library.datasource.user.libraryUserModule
 import kotlin.experimental.ExperimentalObjCRefinement
 import kotlin.native.HiddenFromObjC
@@ -26,6 +27,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration) {
                 libraryAuthModule,
                 libraryLibraryModule,
                 librarySearchModule,
+                libraryTrendingModule,
                 libraryUserModule
             )
         )
