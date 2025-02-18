@@ -5,6 +5,7 @@ import com.chesire.nekomp.core.network.ResultConverterFactory
 import com.chesire.nekomp.core.network.plugin.installContentNegotiation
 import com.chesire.nekomp.core.network.plugin.installLogging
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
+import com.chesire.nekomp.library.datasource.trending.local.TrendingStorage
 import com.chesire.nekomp.library.datasource.trending.remote.TrendingApi
 import com.chesire.nekomp.library.datasource.trending.remote.createTrendingApi
 import de.jensklingenberg.ktorfit.ktorfitBuilder
@@ -52,5 +53,6 @@ val libraryTrendingModule = module {
             converterFactories(ResultConverterFactory())
         }.build().createTrendingApi()
     }
-    singleOf(::TrendingService)
+    singleOf(::TrendingRepository)
+    singleOf(::TrendingStorage)
 }
