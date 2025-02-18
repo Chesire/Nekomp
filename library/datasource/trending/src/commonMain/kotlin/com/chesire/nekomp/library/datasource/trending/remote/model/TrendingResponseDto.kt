@@ -6,21 +6,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TrendingResponseDto(
     @SerialName("data")
-    val data: List<SearchData>
+    val data: List<TrendingData>
 ) {
 
     @Serializable
-    data class SearchData(
+    data class TrendingData(
         @SerialName("id")
         val id: Int,
         @SerialName("type")
         val type: String,
         @SerialName("attributes")
-        val attributes: SearchAttributes
+        val attributes: TrendingAttributes
     ) {
 
         @Serializable
-        data class SearchAttributes(
+        data class TrendingAttributes(
             @SerialName("synopsis")
             val synopsis: String,
             @SerialName("titles")
