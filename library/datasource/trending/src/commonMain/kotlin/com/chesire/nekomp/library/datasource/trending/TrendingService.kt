@@ -23,9 +23,7 @@ class TrendingService(private val trendingApi: TrendingApi) {
     suspend fun getTrendingManga(): Result<List<TrendingItem>, Unit> {
         Logger.d("TrendingService") { "Getting trending manga" }
         return trendingApi.trendingManga()
-            .map {
-                it.toTrendingItems()
-            }
+            .map { it.toTrendingItems() }
             .fold(
                 onSuccess = { Ok(it) },
                 onFailure = { Err(Unit) } // TODO: Add custom error
