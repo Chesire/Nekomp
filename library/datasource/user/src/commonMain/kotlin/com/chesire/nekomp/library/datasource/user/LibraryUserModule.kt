@@ -2,6 +2,8 @@ package com.chesire.nekomp.library.datasource.user
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.network.ResultConverterFactory
+import com.chesire.nekomp.core.network.plugin.installContentNegotiation
+import com.chesire.nekomp.core.network.plugin.installLogging
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import com.chesire.nekomp.library.datasource.user.local.UserStorage
 import com.chesire.nekomp.library.datasource.user.remote.UserApi
@@ -11,10 +13,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -24,15 +23,8 @@ val libraryUserModule = module {
             baseUrl("https://kitsu.io/")
             httpClient(
                 client = HttpClient {
-                    install(ContentNegotiation) {
-                        json(
-                            Json {
-                                isLenient = true
-                                ignoreUnknownKeys = true
-                                explicitNulls = false
-                            }
-                        )
-                    }
+                    installContentNegotiation()
+                    installLogging()
                     install(Auth) {
                         reAuthorizeOnResponse { it.status == HttpStatusCode.Forbidden }
                         bearer {
