@@ -132,7 +132,7 @@ private fun Render(
                     detailPane = {
                         AnimatedPane {
                             DetailContent(
-                                entry = navigator.currentDestination?.content,
+                                item = navigator.currentDestination?.content,
                                 showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
                                 goBack = { navigator.navigateBack() }
                             )
@@ -231,16 +231,16 @@ private fun TrendingDisplay(
 
 @Composable
 private fun DetailContent(
-    entry: Any?,
+    item: DiscoverItem?,
     showBack: Boolean,
     goBack: () -> Unit
 ) {
-    if (entry != null) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (item != null) {
             if (showBack) {
                 IconButton(
                     onClick = goBack,
@@ -252,6 +252,8 @@ private fun DetailContent(
                     )
                 }
             }
+        } else {
+            Text("No entry selected")
         }
     }
 }
