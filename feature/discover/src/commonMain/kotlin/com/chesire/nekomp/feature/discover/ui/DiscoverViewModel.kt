@@ -49,7 +49,7 @@ class DiscoverViewModel(
 
             val (trendingAnime, trendingManga) = awaitAll(trendingAnimeJob, trendingMangaJob)
             retrieveLibrary().collect {
-                val ids = it.map { libraryEntry -> libraryEntry.id }
+                val ids = it.map { it.id }
                 val filteredAnime = trendingAnime
                     .map {
                         it.copy(
