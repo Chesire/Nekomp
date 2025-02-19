@@ -25,6 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -214,9 +215,14 @@ private fun TrendingDisplay(
             if (!discoverItem.isTracked) {
                 ElevatedButton(
                     onClick = { onTrackClick(discoverItem) },
-                    modifier = Modifier.align(Alignment.End)
+                    modifier = Modifier.align(Alignment.End),
+                    enabled = !discoverItem.isPendingTrack
                 ) {
-                    Text("Track")
+                    if (discoverItem.isPendingTrack) {
+                        CircularProgressIndicator()
+                    } else {
+                        Text("Track")
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingUseCase
+import com.github.michaelbull.result.onFailure
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -50,10 +51,20 @@ class DiscoverViewModel(
             retrieveLibrary().collect {
                 val ids = it.map { libraryEntry -> libraryEntry.id }
                 val filteredAnime = trendingAnime
-                    .map { it.copy(isTracked = ids.contains(it.id)) }
+                    .map {
+                        it.copy(
+                            isTracked = ids.contains(it.id),
+                            isPendingTrack = false
+                        )
+                    }
                     .toPersistentList()
                 val filteredManga = trendingManga
-                    .map { it.copy(isTracked = ids.contains(it.id)) }
+                    .map {
+                        it.copy(
+                            isTracked = ids.contains(it.id),
+                            isPendingTrack = false
+                        )
+                    }
                     .toPersistentList()
                 _uiState.update {
                     it.copy(
@@ -79,9 +90,48 @@ class DiscoverViewModel(
     }
 
     private fun onTrackTrendingItemClick(discoverItem: DiscoverItem) {
-        // TODO: Ui stuff
+        val list = if (discoverItem.type == "Anime") {
+            _uiState.value.trendingAnime
+        } else {
+            _uiState.value.trendingManga
+        }.map {
+            it.copy(isPendingTrack = it.id == discoverItem.id)
+        }.toPersistentList()
+
+        _uiState.update {
+            it.copy(
+                trendingAnime = if (discoverItem.type == "Anime") {
+                    list
+                } else {
+                    it.trendingAnime
+                },
+                trendingManga = if (discoverItem.type == "Manga") {
+                    list
+                } else {
+                    it.trendingManga
+                }
+            )
+        }
+
         viewModelScope.launch {
             addItemToTracking(discoverItem.type, discoverItem.id)
+                .onFailure {
+                    // TODO: Show snackbar error
+                    _uiState.update {
+                        it.copy(
+                            trendingAnime = if (discoverItem.type == "Anime") {
+                                list
+                            } else {
+                                it.trendingAnime
+                            },
+                            trendingManga = if (discoverItem.type == "Manga") {
+                                list
+                            } else {
+                                it.trendingManga
+                            }
+                        )
+                    }
+                }
         }
     }
 
