@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -203,14 +204,16 @@ private fun TrendingDisplay(
         onClick = { onItemClick(discoverItem) },
         modifier = modifier.width(256.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
             // image
             Text(discoverItem.title) // title
             // current rating
             // Synopsis
             // track button
+            Spacer(Modifier.weight(1f))
             ElevatedButton(
-                onClick = { onTrackClick(discoverItem) }
+                onClick = { onTrackClick(discoverItem) },
+                modifier = Modifier.align(Alignment.End)
             ) {
                 Text("Track")
             }
