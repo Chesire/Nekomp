@@ -38,7 +38,7 @@ class TrendingRepository(
             Ok(trendingStorage.trendingManga)
         } else {
             trendingApi
-                .trendingAnime()
+                .trendingManga()
                 .map { it.toTrendingItems() }
                 .onSuccess { trendingStorage.setTrendingManga(it) }
                 .fold(

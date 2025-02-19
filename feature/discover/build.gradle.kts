@@ -42,6 +42,7 @@ kotlin {
             implementation(projects.core.resources)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
+            implementation(projects.library.datasource.trending)
             implementation(projects.library.datasource.user)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)

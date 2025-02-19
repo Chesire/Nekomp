@@ -75,6 +75,7 @@ fun App() {
                         when (currentDestination) {
                             AppDestinations.Library -> LibraryScreen()
                             AppDestinations.Discover -> DiscoverScreen()
+                            AppDestinations.Airing -> LibraryScreen()
                             AppDestinations.Profile -> LibraryScreen()
                             AppDestinations.Activity -> LibraryScreen()
                             AppDestinations.Settings -> LibraryScreen()
