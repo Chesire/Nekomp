@@ -20,10 +20,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
@@ -151,17 +153,31 @@ private fun ListContent(
     onItemClick: (DiscoverItem) -> Unit,
     onTrackClick: (DiscoverItem) -> Unit
 ) {
-    Column {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         OutlinedTextField(
             value = "",
             onValueChange = {},
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             label = {
                 Text("Search")
+            },
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Search, contentDescription = null)
             }
         )
-        Column {
-            TrendingSection("Anime", trendingAnime, onItemClick, onTrackClick)
-            TrendingSection("Manga", trendingManga, onItemClick, onTrackClick)
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            TrendingSection(
+                title = "Trending anime",
+                items = trendingAnime,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Trending manga",
+                items = trendingManga,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
         }
     }
 }
@@ -173,14 +189,18 @@ private fun TrendingSection(
     onItemClick: (DiscoverItem) -> Unit,
     onTrackClick: (DiscoverItem) -> Unit
 ) {
-    Column {
-        Text(title)
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = title,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                .horizontalScroll(rememberScrollState())
+                .safeContentPadding(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items.forEach {
                 TrendingDisplay(
