@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.library.local
 
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
 import com.chesire.nekomp.core.database.entity.LibraryEntryEntity
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import kotlinx.coroutines.flow.map
 
@@ -14,7 +15,8 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                 LibraryEntry(
                     id = entry.id,
                     userId = entry.userId,
-                    type = entry.type,
+                    type = Type.fromString(entry.type),
+                    primaryType = entry.primaryType,
                     subtype = entry.subtype,
                     slug = entry.slug,
                     title = entry.title,
@@ -35,7 +37,8 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             LibraryEntryEntity(
                 id = entry.id,
                 userId = entry.userId,
-                type = entry.type,
+                type = entry.type.name,
+                primaryType = entry.primaryType,
                 subtype = entry.subtype,
                 slug = entry.slug,
                 title = entry.title,
@@ -53,10 +56,11 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
     }
 
     suspend fun updateEntry(entry: LibraryEntry) {
-        val newEntries = LibraryEntryEntity(
+        val newEntry = LibraryEntryEntity(
             id = entry.id,
             userId = entry.userId,
-            type = entry.type,
+            type = entry.type.name,
+            primaryType = entry.primaryType,
             subtype = entry.subtype,
             slug = entry.slug,
             title = entry.title,
@@ -69,6 +73,6 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             startDate = entry.startDate,
             endDate = entry.endDate
         )
-        libraryEntryDao.upsert(newEntries)
+        libraryEntryDao.upsert(newEntry)
     }
 }

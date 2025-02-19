@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.trending
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.trending.local.TrendingStorage
 import com.chesire.nekomp.library.datasource.trending.remote.TrendingApi
 import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto
@@ -52,7 +53,7 @@ class TrendingRepository(
         return data.map {
             TrendingItem(
                 id = it.id,
-                type = it.type,
+                type = Type.fromString(it.type),
                 synopsis = it.attributes.synopsis,
                 canonicalTitle = it.attributes.canonicalTitle,
                 // otherTitles = it.attributes.titles,

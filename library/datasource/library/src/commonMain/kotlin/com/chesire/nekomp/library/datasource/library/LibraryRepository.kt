@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.library
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
 import com.chesire.nekomp.library.datasource.library.remote.model.DataDto
@@ -102,24 +103,37 @@ class LibraryRepository(
         }
     }
 
-    private fun buildEntry(included: IncludedDto, data: DataDto): LibraryEntry {
-        return LibraryEntry(
-            id = included.id,
-            userId = data.id,
-            type = included.type,
-            subtype = included.attributes.subtype,
-            slug = included.attributes.slug,
-            title = included.attributes.canonicalTitle,
-            // otherTitles = included.attributes.titles,
-            seriesStatus = included.attributes.status,
-            userSeriesStatus = data.attributes.status,
-            progress = data.attributes.progress,
-            totalLength = included.attributes.episodeCount ?: included.attributes.chapterCount ?: 0,
-            rating = data.attributes.rating ?: 0,
-            posterImage = included.attributes.posterImage?.medium ?: "",
-            startDate = included.attributes.startDate ?: "",
-            endDate = included.attributes.endDate ?: ""
-        )
+    private fun buildEntry(included: IncludedDto, data: DataDto): LibraryEntry? {
+        val type = when {
+            data.relationships.anime != null -> Type.Anime
+            data.relationships.manga != null -> Type.Manga
+            else -> null
+        }
+        return if (type == null) {
+            Logger.e("LibraryRepository") { "Invalid type found for $data" }
+            null
+        } else {
+            LibraryEntry(
+                id = included.id,
+                userId = data.id,
+                type = if (data.relationships.manga != null) Type.Manga else Type.Anime,
+                primaryType = included.type,
+                subtype = included.attributes.subtype,
+                slug = included.attributes.slug,
+                title = included.attributes.canonicalTitle,
+                // otherTitles = included.attributes.titles,
+                seriesStatus = included.attributes.status,
+                userSeriesStatus = data.attributes.status,
+                progress = data.attributes.progress,
+                totalLength = included.attributes.episodeCount
+                    ?: included.attributes.chapterCount
+                    ?: 0,
+                rating = data.attributes.rating ?: 0,
+                posterImage = included.attributes.posterImage?.medium ?: "",
+                startDate = included.attributes.startDate ?: "",
+                endDate = included.attributes.endDate ?: ""
+            )
+        }
     }
 
     suspend fun addAnime(entryId: Int): Result<LibraryEntry, Unit> {
@@ -130,7 +144,7 @@ class LibraryRepository(
             return Err(Unit) // TODO: Add custom error type
         }
 
-        return addEntry(user.id, entryId, EntryType.ANIME)
+        return addEntry(user.id, entryId, Type.Anime)
     }
 
     suspend fun addManga(entryId: Int): Result<LibraryEntry, Unit> {
@@ -141,23 +155,23 @@ class LibraryRepository(
             return Err(Unit) // TODO: Add custom error type
         }
 
-        return addEntry(user.id, entryId, EntryType.MANGA)
+        return addEntry(user.id, entryId, Type.Manga)
     }
 
     private suspend fun addEntry(
         userId: Int,
         entryId: Int,
-        type: EntryType
+        type: Type
     ): Result<LibraryEntry, Unit> {
         val addJson = createAddDto(
             userId,
             entryId,
-            type.value
+            type.name.lowercase()
         )
 
         return when (type) {
-            EntryType.ANIME -> libraryApi.addAnime(addJson)
-            EntryType.MANGA -> libraryApi.addManga(addJson)
+            Type.Anime -> libraryApi.addAnime(addJson)
+            Type.Manga -> libraryApi.addManga(addJson)
         }
             .map {
                 val id = it.data.relationships.anime?.data?.id
@@ -210,8 +224,3 @@ private fun createAddDto(
   }
 }
         """.trimIndent()
-
-private enum class EntryType(val value: String) {
-    ANIME("anime"),
-    MANGA("manga")
-}

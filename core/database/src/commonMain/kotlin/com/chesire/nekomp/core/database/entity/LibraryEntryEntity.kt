@@ -9,6 +9,7 @@ data class LibraryEntryEntity(
     val id: Int,
     val userId: Int,
     val type: String, // Enum
+    val primaryType: String, // Enum
     val subtype: String, // Enum
     val slug: String,
     val title: String,

@@ -2,6 +2,7 @@ package com.chesire.nekomp.feature.discover.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingUseCase
@@ -32,7 +33,7 @@ class DiscoverViewModel(
                         DiscoverItem(
                             id = it.id,
                             title = it.canonicalTitle,
-                            type = "Anime"
+                            type = it.type
                         )
                     }
             }
@@ -42,7 +43,7 @@ class DiscoverViewModel(
                         DiscoverItem(
                             id = it.id,
                             title = it.canonicalTitle,
-                            type = "Manga"
+                            type = it.type
                         )
                     }
             }
@@ -90,7 +91,7 @@ class DiscoverViewModel(
     }
 
     private fun onTrackTrendingItemClick(discoverItem: DiscoverItem) {
-        val list = if (discoverItem.type == "Anime") {
+        val list = if (discoverItem.type == Type.Anime) {
             _uiState.value.trendingAnime
         } else {
             _uiState.value.trendingManga
@@ -100,12 +101,12 @@ class DiscoverViewModel(
 
         _uiState.update {
             it.copy(
-                trendingAnime = if (discoverItem.type == "Anime") {
+                trendingAnime = if (discoverItem.type == Type.Anime) {
                     list
                 } else {
                     it.trendingAnime
                 },
-                trendingManga = if (discoverItem.type == "Manga") {
+                trendingManga = if (discoverItem.type == Type.Manga) {
                     list
                 } else {
                     it.trendingManga
@@ -119,12 +120,12 @@ class DiscoverViewModel(
                     // TODO: Show snackbar error
                     _uiState.update {
                         it.copy(
-                            trendingAnime = if (discoverItem.type == "Anime") {
+                            trendingAnime = if (discoverItem.type == Type.Anime) {
                                 list
                             } else {
                                 it.trendingAnime
                             },
-                            trendingManga = if (discoverItem.type == "Manga") {
+                            trendingManga = if (discoverItem.type == Type.Manga) {
                                 list
                             } else {
                                 it.trendingManga

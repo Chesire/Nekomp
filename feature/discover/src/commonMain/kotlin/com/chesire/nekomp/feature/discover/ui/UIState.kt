@@ -1,5 +1,6 @@
 package com.chesire.nekomp.feature.discover.ui
 
+import com.chesire.nekomp.core.model.Type
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -13,7 +14,7 @@ data class UIState(
 data class DiscoverItem(
     val id: Int,
     val title: String,
-    val type: String,
+    val type: Type,
     val isTracked: Boolean = false,
     val isPendingTrack: Boolean = false
 )
