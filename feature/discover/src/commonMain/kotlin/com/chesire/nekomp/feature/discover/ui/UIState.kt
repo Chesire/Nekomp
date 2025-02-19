@@ -13,5 +13,6 @@ data class UIState(
 data class DiscoverItem(
     val id: Int,
     val title: String,
-    val type: String
+    val type: String,
+    val isTracked: Boolean = false
 )

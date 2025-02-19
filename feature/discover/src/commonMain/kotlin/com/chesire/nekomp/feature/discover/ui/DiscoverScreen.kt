@@ -211,11 +211,13 @@ private fun TrendingDisplay(
             // Synopsis
             // track button
             Spacer(Modifier.weight(1f))
-            ElevatedButton(
-                onClick = { onTrackClick(discoverItem) },
-                modifier = Modifier.align(Alignment.End)
-            ) {
-                Text("Track")
+            if (!discoverItem.isTracked) {
+                ElevatedButton(
+                    onClick = { onTrackClick(discoverItem) },
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text("Track")
+                }
             }
         }
     }

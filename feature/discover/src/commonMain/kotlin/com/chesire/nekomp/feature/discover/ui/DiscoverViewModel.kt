@@ -3,6 +3,7 @@ package com.chesire.nekomp.feature.discover.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
+import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingUseCase
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.async
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DiscoverViewModel(
+    private val retrieveLibrary: RetrieveLibraryUseCase,
     private val retrieveTrending: RetrieveTrendingUseCase,
     private val addItemToTracking: AddItemToTrackingUseCase
 ) : ViewModel() {
@@ -23,8 +25,8 @@ class DiscoverViewModel(
 
     init {
         viewModelScope.launch {
-            val animeJob = async {
-                val models = retrieveTrending.anime()
+            val trendingAnimeJob = async {
+                retrieveTrending.anime()
                     .map {
                         DiscoverItem(
                             id = it.id,
@@ -32,13 +34,9 @@ class DiscoverViewModel(
                             type = "Anime"
                         )
                     }
-
-                _uiState.update {
-                    it.copy(trendingAnime = models.toPersistentList())
-                }
             }
-            val mangaJob = async {
-                val models = retrieveTrending.manga()
+            val trendingMangaJob = async {
+                retrieveTrending.manga()
                     .map {
                         DiscoverItem(
                             id = it.id,
@@ -46,15 +44,24 @@ class DiscoverViewModel(
                             type = "Manga"
                         )
                     }
-
-                _uiState.update {
-                    it.copy(trendingManga = models.toPersistentList())
-                }
             }
 
-            awaitAll(animeJob, mangaJob)
-
-            // now collect flow for library entries?
+            val (trendingAnime, trendingManga) = awaitAll(trendingAnimeJob, trendingMangaJob)
+            retrieveLibrary().collect {
+                val ids = it.map { libraryEntry -> libraryEntry.id }
+                val filteredAnime = trendingAnime
+                    .map { it.copy(isTracked = ids.contains(it.id)) }
+                    .toPersistentList()
+                val filteredManga = trendingManga
+                    .map { it.copy(isTracked = ids.contains(it.id)) }
+                    .toPersistentList()
+                _uiState.update {
+                    it.copy(
+                        trendingAnime = filteredAnime,
+                        trendingManga = filteredManga
+                    )
+                }
+            }
         }
     }
 
