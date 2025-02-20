@@ -30,7 +30,13 @@ data class TrendingResponseDto(
             @SerialName("subtype")
             val subtype: String,
             @SerialName("posterImage")
-            val posterImage: ImageModel?
+            val posterImage: ImageModel?,
+            @SerialName("averageRating")
+            val averageRating: String,
+            @SerialName("ratingRank")
+            val ratingRank: Int,
+            @SerialName("popularityRank")
+            val popularityRank: Int
         ) {
 
             @Serializable

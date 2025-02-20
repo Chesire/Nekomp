@@ -9,5 +9,8 @@ data class TrendingItem(
     val canonicalTitle: String,
     // val otherTitles: Map<String, String?>,
     val subtype: String,
-    val posterImage: String
+    val posterImage: String,
+    val averageRating: String,
+    val ratingRank: Int,
+    val popularityRank: Int
 )
