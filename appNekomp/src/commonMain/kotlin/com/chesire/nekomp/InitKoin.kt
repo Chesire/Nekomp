@@ -14,14 +14,18 @@ import com.chesire.nekomp.library.datasource.user.libraryUserModule
 import kotlin.experimental.ExperimentalObjCRefinement
 import kotlin.native.HiddenFromObjC
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
 @HiddenFromObjC
-fun initKoin(appDeclaration: KoinAppDeclaration) {
+fun initKoin(
+    platformModules: List<Module> = emptyList(),
+    appDeclaration: KoinAppDeclaration
+) {
     startKoin {
         appDeclaration()
         modules(
-            listOf(
+            platformModules + listOf(
                 databaseModule,
                 featureDiscoverModule,
                 featureLibraryModule,

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 
 // TODO: Add a remote data source that converts the dtos appropriately?
-// TODO: Need to periodically update these
+// TODO: Need to periodically update these on desktop/ios somehow
 class TrendingRepository(
     private val trendingStorage: TrendingStorage,
     private val trendingApi: TrendingApi
