@@ -29,7 +29,9 @@ class NekompApp : Application() {
     }
 
     private fun startWorkers() {
-        val workerQueue = get<WorkerQueue>()
-        workerQueue.enqueueTrendingRefresh()
+        get<WorkerQueue>().apply {
+            enqueueTrendingRefresh()
+            enqueueUserRefresh()
+        }
     }
 }
