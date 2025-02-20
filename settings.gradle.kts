@@ -17,9 +17,11 @@ dependencyResolutionManagement {
 rootProject.name = "Nekomp"
 include(":appNekomp")
 include(":core:database")
+include(":core:model")
 include(":core:network")
 include(":core:preferences")
 include(":core:resources")
+include(":feature:discover")
 include(":feature:library")
 include(":feature:login")
 include(":library:datasource:auth")

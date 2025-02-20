@@ -1,9 +1,12 @@
 package com.chesire.nekomp.library.datasource.library
 
+import com.chesire.nekomp.core.model.Type
+
 data class LibraryEntry(
     val id: Int,
     val userId: Int,
-    val type: String, // Enum
+    val type: Type,
+    val primaryType: String, // Enum
     val subtype: String, // Enum
     val slug: String,
     val title: String,

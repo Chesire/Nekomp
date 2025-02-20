@@ -3,6 +3,7 @@
 package com.chesire.nekomp
 
 import com.chesire.nekomp.core.database.databaseModule
+import com.chesire.nekomp.feature.discover.featureDiscoverModule
 import com.chesire.nekomp.feature.library.featureLibraryModule
 import com.chesire.nekomp.feature.login.featureLoginModule
 import com.chesire.nekomp.library.datasource.auth.libraryAuthModule
@@ -22,6 +23,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration) {
         modules(
             listOf(
                 databaseModule,
+                featureDiscoverModule,
                 featureLibraryModule,
                 featureLoginModule,
                 libraryAuthModule,

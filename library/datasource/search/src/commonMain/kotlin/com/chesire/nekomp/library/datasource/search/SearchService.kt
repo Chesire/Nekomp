@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.search
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.search.remote.SearchApi
 import com.chesire.nekomp.library.datasource.search.remote.model.SearchResponseDto
 import com.github.michaelbull.result.Err
@@ -35,7 +36,7 @@ private fun SearchResponseDto.toSearchItems(): List<SearchItem> {
     return data.map {
         SearchItem(
             id = it.id,
-            type = it.type,
+            type = Type.fromString(it.type),
             synopsis = it.attributes.synopsis,
             canonicalTitle = it.attributes.canonicalTitle,
             // otherTitles = it.attributes.titles,

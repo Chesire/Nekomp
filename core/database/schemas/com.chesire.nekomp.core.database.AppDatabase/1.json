@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "60562a5a5f432e1e85161110fe5e4bf1",
+    "identityHash": "96253a4d7c3c50466904ed7650545352",
     "entities": [
       {
         "tableName": "LibraryEntryEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `type` TEXT NOT NULL, `subtype` TEXT NOT NULL, `slug` TEXT NOT NULL, `title` TEXT NOT NULL, `seriesStatus` TEXT NOT NULL, `userSeriesStatus` TEXT NOT NULL, `progress` INTEGER NOT NULL, `totalLength` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `posterImage` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `type` TEXT NOT NULL, `primaryType` TEXT NOT NULL, `subtype` TEXT NOT NULL, `slug` TEXT NOT NULL, `title` TEXT NOT NULL, `seriesStatus` TEXT NOT NULL, `userSeriesStatus` TEXT NOT NULL, `progress` INTEGER NOT NULL, `totalLength` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `posterImage` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -23,6 +23,12 @@
           {
             "fieldPath": "type",
             "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "primaryType",
+            "columnName": "primaryType",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -127,7 +133,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '60562a5a5f432e1e85161110fe5e4bf1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '96253a4d7c3c50466904ed7650545352')"
     ]
   }
 }
