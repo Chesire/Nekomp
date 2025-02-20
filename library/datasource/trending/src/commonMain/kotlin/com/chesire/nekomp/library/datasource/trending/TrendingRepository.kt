@@ -99,7 +99,7 @@ class TrendingRepository(
     suspend fun getMostPopularManga(): List<TrendingItem> {
         Logger.d("TrendingService") { "Getting most popular manga" }
         return trendingStorage
-            .trendingAnime
+            .trendingManga
             .firstOrNull()
             ?.sortedBy { it.popularityRank }
             ?.take(10)
