@@ -37,7 +37,6 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.work.runtime.ktx)
-            implementation(libs.androidx.work.runtime.ktx)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.workmanager)
             implementation(libs.kotlinx.coroutines.android)
