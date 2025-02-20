@@ -2,12 +2,8 @@ package com.chesire.nekomp.feature.discover.core
 
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.chesire.nekomp.library.datasource.trending.TrendingRepository
-import com.github.michaelbull.result.getOr
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 
 class RetrieveTrendingDataUseCase(private val trendingRepository: TrendingRepository) {
 
@@ -21,23 +17,13 @@ class RetrieveTrendingDataUseCase(private val trendingRepository: TrendingReposi
     )
 
     suspend operator fun invoke(): TrendingData {
-        return coroutineScope {
-            val jobs = awaitAll(
-                async { trendingRepository.getTrendingAnime().getOr(emptyList()) },
-                async { trendingRepository.getTrendingManga().getOr(emptyList()) },
-                async { trendingRepository.getMostPopularAnime().getOr(emptyList()) },
-                async { trendingRepository.getMostPopularManga().getOr(emptyList()) },
-                async { trendingRepository.getTopRatedAnime().getOr(emptyList()) },
-                async { trendingRepository.getTopRatedManga().getOr(emptyList()) }
-            )
-            TrendingData(
-                trendingAnime = jobs[0].toPersistentList(),
-                trendingManga = jobs[1].toPersistentList(),
-                mostPopularAnime = jobs[2].toPersistentList(),
-                mostPopularManga = jobs[3].toPersistentList(),
-                topRatedAnime = jobs[4].toPersistentList(),
-                topRatedManga = jobs[5].toPersistentList()
-            )
-        }
+        return TrendingData(
+            trendingAnime = trendingRepository.getTrendingAnime().toPersistentList(),
+            trendingManga = trendingRepository.getTrendingManga().toPersistentList(),
+            mostPopularAnime = trendingRepository.getMostPopularAnime().toPersistentList(),
+            mostPopularManga = trendingRepository.getMostPopularManga().toPersistentList(),
+            topRatedAnime = trendingRepository.getTopRatedAnime().toPersistentList(),
+            topRatedManga = trendingRepository.getTopRatedManga().toPersistentList()
+        )
     }
 }

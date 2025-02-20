@@ -5,8 +5,6 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
-import com.chesire.nekomp.core.database.dao.MostPopularDao
-import com.chesire.nekomp.core.database.dao.TopRatedDao
 import com.chesire.nekomp.core.database.dao.TrendingDao
 import com.chesire.nekomp.core.database.dao.UserDao
 import com.chesire.nekomp.core.database.entity.LibraryEntryEntity
@@ -24,8 +22,6 @@ import com.chesire.nekomp.core.database.entity.UserEntity
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getLibraryEntryDao(): LibraryEntryDao
-    abstract fun getMostPopularDao(): MostPopularDao
-    abstract fun getTopRatedDao(): TopRatedDao
     abstract fun getTrendingDao(): TrendingDao
     abstract fun getUserDao(): UserDao
 }

@@ -44,6 +44,7 @@ kotlin {
             implementation(projects.library.datasource.user)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.koin.core)
+            implementation(libs.kotlin.result)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.auth)

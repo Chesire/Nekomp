@@ -8,7 +8,11 @@ import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingRespo
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import kotlinx.coroutines.flow.first
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.onSuccess
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 
 // TODO: Add a remote data source that converts the dtos appropriately?
@@ -18,106 +22,88 @@ class TrendingRepository(
     private val trendingApi: TrendingApi
 ) {
 
-    suspend fun getTrendingAnime(): Result<List<TrendingItem>, Unit> {
-        Logger.d("TrendingService") { "Getting trending anime" }
-
-        return if (trendingStorage.trendingAnime.firstOrNull().isNullOrEmpty()) {
-            trendingApi
-                .trendingAnime()
-                .map { it.toTrendingItems() }
-                .onSuccess { trendingStorage.updateTrending(it) }
-                .fold(
-                    onSuccess = { Ok(it) },
-                    onFailure = { Err(Unit) } // TODO: Add custom error
-                )
-        } else {
-            Ok(trendingStorage.trendingAnime.first())
+    suspend fun performFullSync(): List<Result<Any, Any>> {
+        Logger.d("TrendingService") { "Syncing all data" }
+        return coroutineScope {
+            awaitAll(
+                async { trendingApi.trendingAnime() }, // maybe need to set a trending rank manually?
+                async { trendingApi.trendingManga() },
+                async { trendingApi.topRatedAnime() },
+                async { trendingApi.topRatedManga() },
+                async { trendingApi.mostPopularAnime() },
+                async { trendingApi.mostPopularManga() }
+            )
+                .map { jobs ->
+                    jobs.fold(
+                        onSuccess = { Ok(it) },
+                        onFailure = { Err(Unit) }
+                    )
+                }
+                .map { results ->
+                    results
+                        .map { it.toTrendingItems() }
+                        .onSuccess { trendingStorage.updateTrending(it) }
+                }
         }
     }
 
-    suspend fun getTrendingManga(): Result<List<TrendingItem>, Unit> {
+    suspend fun getTrendingAnime(): List<TrendingItem> {
+        return trendingStorage
+            .trendingAnime
+            .firstOrNull()
+            ?.sortedBy { it.averageRating }
+            ?.take(10)
+            ?: emptyList()
+    }
+
+    suspend fun getTrendingManga(): List<TrendingItem> {
         Logger.d("TrendingService") { "Getting trending manga" }
-
-        return if (trendingStorage.trendingManga.firstOrNull().isNullOrEmpty()) {
-            trendingApi
-                .trendingManga()
-                .map { it.toTrendingItems() }
-                .onSuccess { trendingStorage.updateTrending(it) }
-                .fold(
-                    onSuccess = { Ok(it) },
-                    onFailure = { Err(Unit) } // TODO: Add custom error
-                )
-        } else {
-            Ok(trendingStorage.trendingManga.first())
-        }
+        return trendingStorage
+            .trendingManga
+            .firstOrNull()
+            ?.sortedBy { it.averageRating }
+            ?.take(10)
+            ?: emptyList()
     }
 
-    suspend fun getTopRatedAnime(): Result<List<TrendingItem>, Unit> {
+    suspend fun getTopRatedAnime(): List<TrendingItem> {
         Logger.d("TrendingService") { "Getting top rated anime" }
-
-        return if (trendingStorage.topRatedAnime.firstOrNull().isNullOrEmpty()) {
-            trendingApi
-                .topRatedAnime()
-                .map { it.toTrendingItems() }
-                .onSuccess { trendingStorage.updateTopRated(it) }
-                .fold(
-                    onSuccess = { Ok(it) },
-                    onFailure = { Err(Unit) } // TODO: Add custom error
-                )
-        } else {
-            Ok(trendingStorage.topRatedAnime.first())
-        }
+        return trendingStorage
+            .trendingAnime
+            .firstOrNull()
+            ?.sortedBy { it.ratingRank }
+            ?.take(10)
+            ?: emptyList()
     }
 
-    suspend fun getTopRatedManga(): Result<List<TrendingItem>, Unit> {
+    suspend fun getTopRatedManga(): List<TrendingItem> {
         Logger.d("TrendingService") { "Getting top rated manga" }
-
-        return if (trendingStorage.topRatedManga.firstOrNull().isNullOrEmpty()) {
-            trendingApi
-                .topRatedManga()
-                .map { it.toTrendingItems() }
-                .onSuccess { trendingStorage.updateTopRated(it) }
-                .fold(
-                    onSuccess = { Ok(it) },
-                    onFailure = { Err(Unit) } // TODO: Add custom error
-                )
-        } else {
-            Ok(trendingStorage.topRatedManga.first())
-        }
+        return trendingStorage
+            .trendingManga
+            .firstOrNull()
+            ?.sortedBy { it.ratingRank }
+            ?.take(10)
+            ?: emptyList()
     }
 
-    suspend fun getMostPopularAnime(): Result<List<TrendingItem>, Unit> {
+    suspend fun getMostPopularAnime(): List<TrendingItem> {
         Logger.d("TrendingService") { "Getting most popular anime" }
-
-        return if (trendingStorage.mostPopularAnime.firstOrNull().isNullOrEmpty()) {
-            trendingApi
-                .mostPopularAnime()
-                .map { it.toTrendingItems() }
-                .onSuccess { trendingStorage.updateMostPopular(it) }
-                .fold(
-                    onSuccess = { Ok(it) },
-                    onFailure = { Err(Unit) } // TODO: Add custom error
-                )
-        } else {
-            Ok(trendingStorage.mostPopularAnime.first())
-        }
+        return trendingStorage
+            .trendingAnime
+            .firstOrNull()
+            ?.sortedBy { it.popularityRank }
+            ?.take(10)
+            ?: emptyList()
     }
 
-    suspend fun getMostPopularManga(): Result<List<TrendingItem>, Unit> {
+    suspend fun getMostPopularManga(): List<TrendingItem> {
         Logger.d("TrendingService") { "Getting most popular manga" }
-
-        return if (trendingStorage.mostPopularManga.firstOrNull().isNullOrEmpty()) {
-            trendingApi
-                .mostPopularManga()
-                .map { it.toTrendingItems() }
-                .onSuccess { trendingStorage.updateMostPopular(it) }
-                .fold(
-                    onSuccess = { Ok(it) },
-                    onFailure = { Err(Unit) } // TODO: Add custom error
-                )
-        } else {
-            Ok(trendingStorage.mostPopularManga.first())
-        }
+        return trendingStorage
+            .trendingAnime
+            .firstOrNull()
+            ?.sortedBy { it.popularityRank }
+            ?.take(10)
+            ?: emptyList()
     }
 
     private fun TrendingResponseDto.toTrendingItems(): List<TrendingItem> {
