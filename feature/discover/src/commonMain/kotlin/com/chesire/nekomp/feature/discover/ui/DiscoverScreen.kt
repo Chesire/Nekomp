@@ -119,6 +119,10 @@ private fun Render(
                             ListContent(
                                 trendingAnime = state.trendingAnime,
                                 trendingManga = state.trendingManga,
+                                topRatedAnime = state.topRatedAnime,
+                                topRatedManga = state.topRatedManga,
+                                mostPopularAnime = state.mostPopularAnime,
+                                mostPopularManga = state.mostPopularManga,
                                 onItemClick = { item ->
                                     navigator.navigateTo(
                                         ListDetailPaneScaffoldRole.Detail,
@@ -150,6 +154,10 @@ private fun Render(
 private fun ListContent(
     trendingAnime: ImmutableList<DiscoverItem>,
     trendingManga: ImmutableList<DiscoverItem>,
+    topRatedAnime: ImmutableList<DiscoverItem>,
+    topRatedManga: ImmutableList<DiscoverItem>,
+    mostPopularAnime: ImmutableList<DiscoverItem>,
+    mostPopularManga: ImmutableList<DiscoverItem>,
     onItemClick: (DiscoverItem) -> Unit,
     onTrackClick: (DiscoverItem) -> Unit
 ) {
@@ -175,6 +183,30 @@ private fun ListContent(
             TrendingSection(
                 title = "Trending manga",
                 items = trendingManga,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Top rated anime",
+                items = topRatedAnime,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Top rated manga",
+                items = topRatedManga,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Most popular anime",
+                items = mostPopularAnime,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Most popular manga",
+                items = mostPopularManga,
                 onItemClick = onItemClick,
                 onTrackClick = onTrackClick
             )

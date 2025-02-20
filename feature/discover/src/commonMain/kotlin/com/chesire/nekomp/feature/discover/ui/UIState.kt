@@ -8,6 +8,10 @@ data class UIState(
     val searchTerm: String = "",
     val trendingAnime: ImmutableList<DiscoverItem> = persistentListOf(),
     val trendingManga: ImmutableList<DiscoverItem> = persistentListOf(),
+    val topRatedAnime: ImmutableList<DiscoverItem> = persistentListOf(),
+    val topRatedManga: ImmutableList<DiscoverItem> = persistentListOf(),
+    val mostPopularAnime: ImmutableList<DiscoverItem> = persistentListOf(),
+    val mostPopularManga: ImmutableList<DiscoverItem> = persistentListOf(),
     val viewEvent: ViewEvent? = null
 )
 
