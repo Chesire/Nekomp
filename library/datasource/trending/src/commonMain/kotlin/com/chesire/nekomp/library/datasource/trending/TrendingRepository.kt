@@ -15,6 +15,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 
+private const val TRENDING_LIMIT = 10
+
 // TODO: Add a remote data source that converts the dtos appropriately?
 // TODO: Need to periodically update these on desktop/ios somehow
 class TrendingRepository(
@@ -52,7 +54,7 @@ class TrendingRepository(
             .trendingAnime
             .firstOrNull()
             ?.sortedBy { it.averageRating }
-            ?.take(10)
+            ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
 
@@ -62,7 +64,7 @@ class TrendingRepository(
             .trendingManga
             .firstOrNull()
             ?.sortedBy { it.averageRating }
-            ?.take(10)
+            ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
 
@@ -72,7 +74,7 @@ class TrendingRepository(
             .trendingAnime
             .firstOrNull()
             ?.sortedBy { it.ratingRank }
-            ?.take(10)
+            ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
 
@@ -82,7 +84,7 @@ class TrendingRepository(
             .trendingManga
             .firstOrNull()
             ?.sortedBy { it.ratingRank }
-            ?.take(10)
+            ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
 
@@ -92,7 +94,7 @@ class TrendingRepository(
             .trendingAnime
             .firstOrNull()
             ?.sortedBy { it.popularityRank }
-            ?.take(10)
+            ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
 
@@ -102,7 +104,7 @@ class TrendingRepository(
             .trendingManga
             .firstOrNull()
             ?.sortedBy { it.popularityRank }
-            ?.take(10)
+            ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
 

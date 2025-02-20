@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.chesire.nekomp.workers
 
 import androidx.work.Constraints
