@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.Flow
 interface LibraryEntryDao {
 
     @Upsert
-    suspend fun upsert(series: LibraryEntryEntity)
+    suspend fun upsert(entries: LibraryEntryEntity)
 
     @Upsert
-    suspend fun upsert(series: List<LibraryEntryEntity>)
+    suspend fun upsert(entries: List<LibraryEntryEntity>)
 
     @Query("SELECT * FROM LibraryEntryEntity")
-    fun series(): Flow<List<LibraryEntryEntity>>
+    fun entries(): Flow<List<LibraryEntryEntity>>
 
     @Query("SELECT * FROM LibraryEntryEntity WHERE userId = :userSeriesId LIMIT 1")
-    suspend fun series(userSeriesId: Int): LibraryEntryEntity
+    suspend fun entries(userSeriesId: Int): LibraryEntryEntity
 }

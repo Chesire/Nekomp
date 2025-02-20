@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
 
     val libraryEntries = libraryEntryDao
-        .series()
+        .entries()
         .map { entries ->
             entries.map { entry ->
                 LibraryEntry(

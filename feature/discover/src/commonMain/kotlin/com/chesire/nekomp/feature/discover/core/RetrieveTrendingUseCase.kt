@@ -8,7 +8,7 @@ class RetrieveTrendingUseCase(private val trendingRepository: TrendingRepository
 
     suspend fun anime(): List<TrendingItem> {
         return trendingRepository
-            .getTrendingAnime()
+            .getMostPopularAnime()
             .mapBoth(
                 success = { it },
                 failure = { emptyList<TrendingItem>() }

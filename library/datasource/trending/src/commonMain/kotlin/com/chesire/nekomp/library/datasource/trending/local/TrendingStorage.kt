@@ -1,44 +1,117 @@
 package com.chesire.nekomp.library.datasource.trending.local
 
+import com.chesire.nekomp.core.database.dao.MostPopularDao
+import com.chesire.nekomp.core.database.dao.TopRatedDao
+import com.chesire.nekomp.core.database.dao.TrendingDao
+import com.chesire.nekomp.core.database.entity.TrendingEntity
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-// TODO: Change this to a database
-class TrendingStorage {
+class TrendingStorage(
+    private val mostPopularDao: MostPopularDao,
+    private val topRatedDao: TopRatedDao,
+    private val trendingDao: TrendingDao
+) {
 
-    var trendingAnime: List<TrendingItem> = emptyList()
-        private set
-    var trendingManga: List<TrendingItem> = emptyList()
-        private set
-    var topRatedAnime: List<TrendingItem> = emptyList()
-        private set
-    var topRatedManga: List<TrendingItem> = emptyList()
-        private set
-    var mostPopularAnime: List<TrendingItem> = emptyList()
-        private set
-    var mostPopularManga: List<TrendingItem> = emptyList()
-        private set
+    val mostPopularAnime: Flow<List<TrendingItem>> = mostPopularDao
+        .mostPopular()
+        .map { items ->
+            items
+                .filter { Type.fromString(it.type) == Type.Anime }
+                .map { it.toTrendingItem() }
+        }
 
-    fun setTrendingAnime(newTrending: List<TrendingItem>) {
-        trendingAnime = newTrending
+    val mostPopularManga: Flow<List<TrendingItem>> = mostPopularDao
+        .mostPopular()
+        .map { items ->
+            items
+                .filter { Type.fromString(it.type) == Type.Manga }
+                .map { it.toTrendingItem() }
+        }
+
+    val topRatedAnime: Flow<List<TrendingItem>> = topRatedDao
+        .topRated()
+        .map { items ->
+            items
+                .filter { Type.fromString(it.type) == Type.Anime }
+                .map { it.toTrendingItem() }
+        }
+
+    val topRatedManga: Flow<List<TrendingItem>> = topRatedDao
+        .topRated()
+        .map { items ->
+            items
+                .filter { Type.fromString(it.type) == Type.Manga }
+                .map { it.toTrendingItem() }
+        }
+
+    val trendingAnime: Flow<List<TrendingItem>> = trendingDao
+        .trending()
+        .map { items ->
+            items
+                .filter { Type.fromString(it.type) == Type.Anime }
+                .map { it.toTrendingItem() }
+        }
+
+    val trendingManga: Flow<List<TrendingItem>> = trendingDao
+        .trending()
+        .map { items ->
+            items
+                .filter { Type.fromString(it.type) == Type.Manga }
+                .map { it.toTrendingItem() }
+        }
+
+    suspend fun updateMostPopular(newMostPopular: List<TrendingItem>) {
+        mostPopularDao.apply {
+            val models = newMostPopular.map { it.toTrendingEntity() }
+            clearType(models.first().type)
+            upsert(models)
+        }
     }
 
-    fun setTrendingManga(newTrending: List<TrendingItem>) {
-        trendingManga = newTrending
+    suspend fun updateTopRated(newTopRated: List<TrendingItem>) {
+        topRatedDao.apply {
+            val models = newTopRated.map { it.toTrendingEntity() }
+            clearType(models.first().type)
+            upsert(models)
+        }
     }
 
-    fun setTopRatedAnime(newTopRated: List<TrendingItem>) {
-        topRatedAnime = newTopRated
+    suspend fun updateTrending(newTrending: List<TrendingItem>) {
+        trendingDao.apply {
+            val models = newTrending.map { it.toTrendingEntity() }
+            clearType(models.first().type)
+            upsert(models)
+        }
     }
 
-    fun setTopRatedManga(newTopRated: List<TrendingItem>) {
-        topRatedManga = newTopRated
+    private fun TrendingEntity.toTrendingItem(): TrendingItem {
+        return TrendingItem(
+            id = id,
+            type = Type.fromString(type),
+            synopsis = synopsis,
+            canonicalTitle = canonicalTitle,
+            subtype = subtype,
+            posterImage = posterImage,
+            averageRating = averageRating,
+            ratingRank = ratingRank,
+            popularityRank = popularityRank
+        )
     }
 
-    fun setMostPopularAnime(newMostPopular: List<TrendingItem>) {
-        mostPopularAnime = newMostPopular
-    }
-
-    fun setMostPopularManga(newMostPopular: List<TrendingItem>) {
-        mostPopularManga = newMostPopular
+    private fun TrendingItem.toTrendingEntity(): TrendingEntity {
+        return TrendingEntity(
+            id = id,
+            type = type.name,
+            synopsis = synopsis,
+            canonicalTitle = canonicalTitle,
+            subtype = subtype,
+            posterImage = posterImage,
+            averageRating = averageRating,
+            ratingRank = ratingRank,
+            popularityRank = popularityRank
+        )
     }
 }
