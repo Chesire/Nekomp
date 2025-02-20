@@ -34,7 +34,7 @@ interface TrendingApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/anime?fields[manga]=$FIELDS&sort=ratingRank")
+    @GET("api/edge/manga?fields[manga]=$FIELDS&sort=ratingRank")
     suspend fun topRatedManga(): Result<TrendingResponseDto>
 
     @Headers(
@@ -48,6 +48,6 @@ interface TrendingApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/anime?fields[manga]=$FIELDS&sort=popularityRank")
+    @GET("api/edge/manga?fields[manga]=$FIELDS&sort=popularityRank")
     suspend fun mostPopularManga(): Result<TrendingResponseDto>
 }

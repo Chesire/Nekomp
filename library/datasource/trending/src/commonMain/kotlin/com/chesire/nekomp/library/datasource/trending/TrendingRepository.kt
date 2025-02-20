@@ -26,7 +26,7 @@ class TrendingRepository(
         Logger.d("TrendingService") { "Syncing all data" }
         return coroutineScope {
             awaitAll(
-                async { trendingApi.trendingAnime() }, // maybe need to set a trending rank manually?
+                async { trendingApi.trendingAnime() }, // TODO: maybe need to set a trending rank manually?
                 async { trendingApi.trendingManga() },
                 async { trendingApi.topRatedAnime() },
                 async { trendingApi.topRatedManga() },
