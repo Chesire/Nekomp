@@ -31,6 +31,8 @@ data class TrendingResponseDto(
             val subtype: String,
             @SerialName("posterImage")
             val posterImage: ImageModel?,
+            @SerialName("coverImage")
+            val coverImage: ImageModel?,
             @SerialName("averageRating")
             val averageRating: String,
             @SerialName("ratingRank")
@@ -48,7 +50,9 @@ data class TrendingResponseDto(
                 @SerialName("medium")
                 val medium: String = "",
                 @SerialName("large")
-                val large: String = ""
+                val large: String = "",
+                @SerialName("original")
+                val original: String = "",
             )
         }
     }

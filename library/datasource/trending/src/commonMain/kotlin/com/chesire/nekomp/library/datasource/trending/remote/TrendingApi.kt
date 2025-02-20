@@ -5,7 +5,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 
 private const val FIELDS =
-    "synopsis,titles,canonicalTitle,subtype,posterImage,averageRating,ratingRank,popularityRank"
+    "synopsis,titles,canonicalTitle,subtype,posterImage,coverImage,averageRating,ratingRank,popularityRank"
 
 interface TrendingApi {
 

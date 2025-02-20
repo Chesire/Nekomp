@@ -137,6 +137,7 @@ class DiscoverViewModel(
             id = id,
             title = canonicalTitle,
             type = type,
+            coverImage = coverImage,
             isTracked = isTracked
         )
     }

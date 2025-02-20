@@ -19,6 +19,7 @@ data class DiscoverItem(
     val id: Int,
     val title: String,
     val type: Type,
+    val coverImage: String,
     val isTracked: Boolean = false,
     val isPendingTrack: Boolean = false
 )

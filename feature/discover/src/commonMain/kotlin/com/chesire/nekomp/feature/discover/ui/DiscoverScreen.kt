@@ -11,6 +11,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -53,7 +54,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -261,23 +264,32 @@ private fun TrendingDisplay(
         onClick = { onItemClick(discoverItem) },
         modifier = modifier.width(256.dp)
     ) {
-        Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-            // image
-            Text(discoverItem.title) // title
-            // current rating
-            // Synopsis
-            // track button
-            Spacer(Modifier.weight(1f))
-            if (!discoverItem.isTracked) {
-                ElevatedButton(
-                    onClick = { onTrackClick(discoverItem) },
-                    modifier = Modifier.align(Alignment.End),
-                    enabled = !discoverItem.isPendingTrack
-                ) {
-                    if (discoverItem.isPendingTrack) {
-                        CircularProgressIndicator()
-                    } else {
-                        Text("Track")
+        Box {
+            AsyncImage(
+                model = discoverItem.coverImage,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillHeight,
+                alpha = 0.3f
+            )
+            Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+                // image
+                Text(discoverItem.title) // title
+                // current rating
+                // Synopsis
+                // track button
+                Spacer(Modifier.weight(1f))
+                if (!discoverItem.isTracked) {
+                    ElevatedButton(
+                        onClick = { onTrackClick(discoverItem) },
+                        modifier = Modifier.align(Alignment.End),
+                        enabled = !discoverItem.isPendingTrack
+                    ) {
+                        if (discoverItem.isPendingTrack) {
+                            CircularProgressIndicator()
+                        } else {
+                            Text("Track")
+                        }
                     }
                 }
             }
