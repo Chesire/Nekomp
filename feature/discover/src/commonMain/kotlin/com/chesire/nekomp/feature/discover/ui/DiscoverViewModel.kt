@@ -4,10 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
+import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingDataUseCase
+import com.chesire.nekomp.feature.discover.core.SearchForUseCase
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,11 +22,14 @@ import kotlinx.coroutines.launch
 class DiscoverViewModel(
     private val retrieveLibrary: RetrieveLibraryUseCase,
     private val retrieveTrendingData: RetrieveTrendingDataUseCase,
-    private val addItemToTracking: AddItemToTrackingUseCase
+    private val addItemToTracking: AddItemToTrackingUseCase,
+    private val recentSearches: RecentSearchesUseCase,
+    private val searchFor: SearchForUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
+    private var _lastSearch = ""
 
     init {
         viewModelScope.launch {
@@ -65,19 +72,79 @@ class DiscoverViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            recentSearches.recents.collect { recents ->
+                _uiState.update {
+                    it.copy(recentSearches = recents.reversed().toPersistentList())
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
         when (action) {
-            ViewAction.SearchFocused -> onSearchFocused()
+            is ViewAction.SearchTextUpdated -> onSearchTextUpdated(action.newSearchText)
+            ViewAction.SearchExecute -> onSearchExecuted()
+            is ViewAction.RecentSearchClick -> onRecentSearchClick(action.recentSearchTerm)
             is ViewAction.TrackTrendingItemClick -> onTrackTrendingItemClick(action.discoverItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
 
-    private fun onSearchFocused() {
-        // Tell UI to update?
-        // Or could do this within the view itself?
+    private fun onSearchTextUpdated(newSearchText: String) {
+        _uiState.update {
+            it.copy(searchTerm = newSearchText)
+        }
+    }
+
+    private fun onSearchExecuted() {
+        val searchTerm = _uiState.value.searchTerm
+        if (searchTerm == _lastSearch && _uiState.value.searchResults.isNotEmpty()) {
+            // Just exit, we have data
+            return
+        } else if (searchTerm.isBlank()) {
+            _uiState.update { state ->
+                state.copy(searchResults = persistentListOf())
+            }
+            return
+        }
+
+        // TODO: Handle UI updating for search execution
+        viewModelScope.launch {
+            _lastSearch = searchTerm
+            recentSearches.addRecentSearch(searchTerm)
+            searchFor(searchTerm)
+                .onSuccess { searchItems ->
+                    _uiState.update { state ->
+                        state.copy(
+                            searchResults = searchItems.map { item ->
+                                DiscoverItem(
+                                    id = item.id,
+                                    title = item.canonicalTitle,
+                                    type = item.type,
+                                    coverImage = item.coverImage,
+                                    posterImage = item.posterImage,
+                                    isTracked = false // TODO
+                                )
+                            }.toPersistentList()
+                        )
+                    }
+                }
+                .onFailure {
+                    _uiState.update { state ->
+                        state.copy(
+                            searchResults = persistentListOf(),
+                            viewEvent = ViewEvent.ShowFailure("Search was unsuccessful")
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun onRecentSearchClick(recentSearchTerm: String) {
+        _uiState.update {
+            it.copy(searchTerm = recentSearchTerm)
+        }
     }
 
     private fun onTrackTrendingItemClick(discoverItem: DiscoverItem) {
@@ -138,6 +205,7 @@ class DiscoverViewModel(
             title = canonicalTitle,
             type = type,
             coverImage = coverImage,
+            posterImage = posterImage,
             isTracked = isTracked
         )
     }

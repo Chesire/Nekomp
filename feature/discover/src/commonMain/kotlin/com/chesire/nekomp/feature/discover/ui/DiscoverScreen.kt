@@ -7,30 +7,22 @@
 package com.chesire.nekomp.feature.discover.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -48,15 +40,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -69,18 +63,6 @@ fun DiscoverScreen(viewModel: DiscoverViewModel = koinViewModel()) {
         execute = { viewModel.execute(it) }
     )
 }
-
-// List/Detail/Support(?)
-// List shows a search bar at the top, with the trending series below it
-// Clicking the search bar shows a drop down of search options
-// Executing search goes to the detail screen
-// Detail screen shows the list of searched series
-// Support screen shows the details about a series (?) depending on implementation
-
-// Default list screen should show the current trending series
-// Search bar at top of list, clicking it should change to a search screen
-// Add a top rated section?
-// Clicking on a trending item shows the details for it?
 
 @Composable
 private fun Render(
@@ -95,6 +77,7 @@ private fun Render(
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
+            is ViewEvent.ShowFailure -> snackbarHostState.showSnackbar(state.viewEvent.errorString)
             null -> Unit
         }
 
@@ -119,29 +102,35 @@ private fun Render(
                     directive = navigator.scaffoldDirective,
                     value = navigator.scaffoldValue,
                     listPane = {
+                        var displayedPaneType by remember { mutableStateOf(ListPaneType.Trending) }
                         AnimatedPane {
                             ListContent(
+                                listPaneType = displayedPaneType,
+                                searchText = state.searchTerm,
+                                recentSearches = state.recentSearches,
                                 trendingAnime = state.trendingAnime,
                                 trendingManga = state.trendingManga,
                                 topRatedAnime = state.topRatedAnime,
                                 topRatedManga = state.topRatedManga,
                                 mostPopularAnime = state.mostPopularAnime,
                                 mostPopularManga = state.mostPopularManga,
+                                searchResults = state.searchResults,
+                                execute = execute,
                                 onItemClick = { item ->
                                     navigator.navigateTo(
                                         ListDetailPaneScaffoldRole.Detail,
                                         item
                                     )
                                 },
-                                onTrackClick = { item ->
-                                    execute(ViewAction.TrackTrendingItemClick(item))
+                                updateListPaneType = {
+                                    displayedPaneType = it
                                 }
                             )
                         }
                     },
                     detailPane = {
                         AnimatedPane {
-                            DetailContent(
+                            DetailPane(
                                 item = navigator.currentDestination?.content,
                                 showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
                                 goBack = { navigator.navigateBack() }
@@ -154,174 +143,134 @@ private fun Render(
     }
 }
 
+private enum class ListPaneType {
+    Trending,
+    Search,
+    Results
+}
+
+@Suppress("LongMethod", "LongParameterList")
 @Composable
 private fun ListContent(
+    listPaneType: ListPaneType,
+    searchText: String,
+    recentSearches: ImmutableList<String>,
     trendingAnime: ImmutableList<DiscoverItem>,
     trendingManga: ImmutableList<DiscoverItem>,
     topRatedAnime: ImmutableList<DiscoverItem>,
     topRatedManga: ImmutableList<DiscoverItem>,
     mostPopularAnime: ImmutableList<DiscoverItem>,
     mostPopularManga: ImmutableList<DiscoverItem>,
+    searchResults: ImmutableList<DiscoverItem>,
+    execute: (ViewAction) -> Unit,
     onItemClick: (DiscoverItem) -> Unit,
-    onTrackClick: (DiscoverItem) -> Unit
+    updateListPaneType: (ListPaneType) -> Unit
 ) {
+    val focus = LocalFocusManager.current
+    BackHandler(enabled = listPaneType != ListPaneType.Trending) {
+        when (listPaneType) {
+            ListPaneType.Trending -> Unit
+            ListPaneType.Search -> {
+                updateListPaneType(ListPaneType.Trending)
+                focus.clearFocus(true)
+            }
+
+            ListPaneType.Results -> {
+                updateListPaneType(ListPaneType.Search)
+            }
+        }
+    }
+
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            label = {
-                Text("Search")
-            },
-            leadingIcon = {
-                Icon(imageVector = Icons.Default.Search, contentDescription = null)
-            }
-        )
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.verticalScroll(rememberScrollState())
-        ) {
-            TrendingSection(
-                title = "Trending anime",
-                items = trendingAnime,
-                onItemClick = onItemClick,
-                onTrackClick = onTrackClick
-            )
-            TrendingSection(
-                title = "Trending manga",
-                items = trendingManga,
-                onItemClick = onItemClick,
-                onTrackClick = onTrackClick
-            )
-            TrendingSection(
-                title = "Top rated anime",
-                items = topRatedAnime,
-                onItemClick = onItemClick,
-                onTrackClick = onTrackClick
-            )
-            TrendingSection(
-                title = "Top rated manga",
-                items = topRatedManga,
-                onItemClick = onItemClick,
-                onTrackClick = onTrackClick
-            )
-            TrendingSection(
-                title = "Most popular anime",
-                items = mostPopularAnime,
-                onItemClick = onItemClick,
-                onTrackClick = onTrackClick
-            )
-            TrendingSection(
-                title = "Most popular manga",
-                items = mostPopularManga,
-                onItemClick = onItemClick,
-                onTrackClick = onTrackClick
-            )
-        }
-    }
-}
-
-@Composable
-private fun TrendingSection(
-    title: String,
-    items: ImmutableList<DiscoverItem>,
-    onItemClick: (DiscoverItem) -> Unit,
-    onTrackClick: (DiscoverItem) -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(
-            text = title,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Max)
-                .horizontalScroll(rememberScrollState())
-                .safeContentPadding(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items.forEach {
-                TrendingDisplay(
-                    discoverItem = it,
-                    modifier = Modifier.fillMaxHeight(),
-                    onItemClick = onItemClick,
-                    onTrackClick = onTrackClick
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun TrendingDisplay(
-    discoverItem: DiscoverItem,
-    modifier: Modifier = Modifier,
-    onItemClick: (DiscoverItem) -> Unit,
-    onTrackClick: (DiscoverItem) -> Unit
-) {
-    Card(
-        onClick = { onItemClick(discoverItem) },
-        modifier = modifier.width(256.dp)
-    ) {
-        Box {
-            AsyncImage(
-                model = discoverItem.coverImage,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
-                alpha = 0.3f
-            )
-            Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-                // image
-                Text(discoverItem.title) // title
-                // current rating
-                // Synopsis
-                // track button
-                Spacer(Modifier.weight(1f))
-                if (!discoverItem.isTracked) {
-                    ElevatedButton(
-                        onClick = { onTrackClick(discoverItem) },
-                        modifier = Modifier.align(Alignment.End),
-                        enabled = !discoverItem.isPendingTrack
-                    ) {
-                        if (discoverItem.isPendingTrack) {
-                            CircularProgressIndicator()
-                        } else {
-                            Text("Track")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun DetailContent(
-    item: DiscoverItem?,
-    showBack: Boolean,
-    goBack: () -> Unit
-) {
-    Column(
-        modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        if (item != null) {
-            if (showBack) {
+        Row {
+            AnimatedVisibility(
+                visible = listPaneType != ListPaneType.Trending,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
                 IconButton(
-                    onClick = goBack,
-                    modifier = Modifier.align(Alignment.Start)
+                    onClick = {
+                        when (listPaneType) {
+                            ListPaneType.Trending -> Unit
+                            ListPaneType.Search -> {
+                                updateListPaneType(ListPaneType.Trending)
+                                focus.clearFocus(true)
+                            }
+
+                            ListPaneType.Results -> {
+                                updateListPaneType(ListPaneType.Search)
+                            }
+                        }
+                        focus.clearFocus(true)
+                    }
                 ) {
                     Icon(
-                        painter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack),
-                        contentDescription = "Go back"
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null
                     )
                 }
             }
-        } else {
-            Text("No entry selected")
+            OutlinedTextField(
+                value = searchText,
+                onValueChange = { execute(ViewAction.SearchTextUpdated(it)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .animateContentSize()
+                    .onFocusEvent {
+                        if (it.hasFocus) {
+                            updateListPaneType(ListPaneType.Search)
+                        }
+                    },
+                label = {
+                    Text("Search")
+                },
+                leadingIcon = if (listPaneType == ListPaneType.Trending) {
+                    { Icon(imageVector = Icons.Default.Search, contentDescription = null) }
+                } else {
+                    null
+                },
+                trailingIcon = {
+                    AnimatedVisibility(searchText.isNotEmpty()) {
+                        IconButton(
+                            onClick = { execute(ViewAction.SearchTextUpdated("")) }
+                        ) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+                        }
+                    }
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        focus.clearFocus(true)
+                        execute(ViewAction.SearchExecute)
+                        // TODO: Find better way to show this once the search is done. Probably VE?
+                        updateListPaneType(ListPaneType.Results)
+                    }
+                ),
+                singleLine = true
+            )
+        }
+        when (listPaneType) {
+            ListPaneType.Trending -> TrendingPane(
+                trendingAnime = trendingAnime,
+                trendingManga = trendingManga,
+                topRatedAnime = topRatedAnime,
+                topRatedManga = topRatedManga,
+                mostPopularAnime = mostPopularAnime,
+                mostPopularManga = mostPopularManga,
+                onItemClick = onItemClick,
+                onTrackClick = { execute(ViewAction.TrackTrendingItemClick(it)) }
+            )
+
+            ListPaneType.Search -> SearchPane(
+                recentSearches = recentSearches,
+                onRecentClicked = { execute(ViewAction.RecentSearchClick(it)) }
+            )
+
+            ListPaneType.Results -> ResultsPane(
+                searchResults = searchResults,
+                onItemClick = onItemClick
+            )
         }
     }
 }

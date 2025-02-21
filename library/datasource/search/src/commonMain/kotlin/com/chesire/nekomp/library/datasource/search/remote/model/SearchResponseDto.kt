@@ -30,7 +30,9 @@ data class SearchResponseDto(
             @SerialName("subtype")
             val subtype: String,
             @SerialName("posterImage")
-            val posterImage: ImageModel?
+            val posterImage: ImageModel?,
+            @SerialName("coverImage")
+            val coverImage: ImageModel?
         ) {
 
             @Serializable
