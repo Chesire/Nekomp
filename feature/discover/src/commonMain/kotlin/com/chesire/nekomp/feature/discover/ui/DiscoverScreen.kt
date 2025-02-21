@@ -102,8 +102,10 @@ private fun Render(
                     directive = navigator.scaffoldDirective,
                     value = navigator.scaffoldValue,
                     listPane = {
+                        var displayedPaneType by remember { mutableStateOf(ListPaneType.Trending) }
                         AnimatedPane {
                             ListContent(
+                                listPaneType = displayedPaneType,
                                 searchText = state.searchTerm,
                                 recentSearches = state.recentSearches,
                                 trendingAnime = state.trendingAnime,
@@ -119,6 +121,9 @@ private fun Render(
                                         ListDetailPaneScaffoldRole.Detail,
                                         item
                                     )
+                                },
+                                updateListPaneType = {
+                                    displayedPaneType = it
                                 }
                             )
                         }
@@ -146,6 +151,7 @@ private enum class ListPaneType {
 
 @Composable
 private fun ListContent(
+    listPaneType: ListPaneType,
     searchText: String,
     recentSearches: ImmutableList<String>,
     trendingAnime: ImmutableList<DiscoverItem>,
@@ -156,21 +162,20 @@ private fun ListContent(
     mostPopularManga: ImmutableList<DiscoverItem>,
     searchResults: ImmutableList<DiscoverItem>,
     execute: (ViewAction) -> Unit,
-    onItemClick: (DiscoverItem) -> Unit
+    onItemClick: (DiscoverItem) -> Unit,
+    updateListPaneType: (ListPaneType) -> Unit
 ) {
-    // TODO: Maybe put nav location into uistate?
     val focus = LocalFocusManager.current
-    var displayedPaneType by remember { mutableStateOf(ListPaneType.Trending) }
-    BackHandler(enabled = displayedPaneType != ListPaneType.Trending) {
-        when (displayedPaneType) {
+    BackHandler(enabled = listPaneType != ListPaneType.Trending) {
+        when (listPaneType) {
             ListPaneType.Trending -> Unit
             ListPaneType.Search -> {
-                displayedPaneType = ListPaneType.Trending
+                updateListPaneType(ListPaneType.Trending)
                 focus.clearFocus(true)
             }
 
             ListPaneType.Results -> {
-                displayedPaneType = ListPaneType.Search
+                updateListPaneType(ListPaneType.Search)
             }
         }
     }
@@ -178,20 +183,20 @@ private fun ListContent(
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row {
             AnimatedVisibility(
-                visible = displayedPaneType != ListPaneType.Trending,
+                visible = listPaneType != ListPaneType.Trending,
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 IconButton(
                     onClick = {
-                        when (displayedPaneType) {
+                        when (listPaneType) {
                             ListPaneType.Trending -> Unit
                             ListPaneType.Search -> {
-                                displayedPaneType = ListPaneType.Trending
+                                updateListPaneType(ListPaneType.Trending)
                                 focus.clearFocus(true)
                             }
 
                             ListPaneType.Results -> {
-                                displayedPaneType = ListPaneType.Search
+                                updateListPaneType(ListPaneType.Search)
                             }
                         }
                         focus.clearFocus(true)
@@ -212,13 +217,13 @@ private fun ListContent(
                     .animateContentSize()
                     .onFocusEvent {
                         if (it.hasFocus) {
-                            displayedPaneType = ListPaneType.Search
+                            updateListPaneType(ListPaneType.Search)
                         }
                     },
                 label = {
                     Text("Search")
                 },
-                leadingIcon = if (displayedPaneType == ListPaneType.Trending) {
+                leadingIcon = if (listPaneType == ListPaneType.Trending) {
                     { Icon(imageVector = Icons.Default.Search, contentDescription = null) }
                 } else {
                     null
@@ -238,13 +243,13 @@ private fun ListContent(
                         focus.clearFocus(true)
                         execute(ViewAction.SearchExecute)
                         // TODO: Find better way to show this once the search is done. Probably VE?
-                        displayedPaneType = ListPaneType.Results
+                        updateListPaneType(ListPaneType.Results)
                     }
                 ),
                 singleLine = true
             )
         }
-        when (displayedPaneType) {
+        when (listPaneType) {
             ListPaneType.Trending -> TrendingPane(
                 trendingAnime = trendingAnime,
                 trendingManga = trendingManga,
