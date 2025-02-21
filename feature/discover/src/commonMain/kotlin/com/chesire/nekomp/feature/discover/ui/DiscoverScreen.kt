@@ -154,10 +154,11 @@ private fun ListContent(
     topRatedManga: ImmutableList<DiscoverItem>,
     mostPopularAnime: ImmutableList<DiscoverItem>,
     mostPopularManga: ImmutableList<DiscoverItem>,
-    searchResults: ImmutableList<SearchItem>,
+    searchResults: ImmutableList<DiscoverItem>,
     execute: (ViewAction) -> Unit,
     onItemClick: (DiscoverItem) -> Unit
 ) {
+    // TODO: Maybe put nav location into uistate?
     val focus = LocalFocusManager.current
     var displayedPaneType by remember { mutableStateOf(ListPaneType.Trending) }
     BackHandler(enabled = displayedPaneType != ListPaneType.Trending) {

@@ -5,7 +5,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.Query
 
-private const val FIELDS = "synopsis,titles,canonicalTitle,subtype,posterImage"
+private const val FIELDS = "synopsis,titles,canonicalTitle,subtype,posterImage,coverImage"
 
 // TODO: These calls should support pagination, might be good to add at some point
 interface SearchApi {

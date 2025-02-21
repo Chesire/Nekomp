@@ -119,10 +119,11 @@ class DiscoverViewModel(
                     _uiState.update { state ->
                         state.copy(
                             searchResults = searchItems.map { item ->
-                                SearchItem(
+                                DiscoverItem(
                                     id = item.id,
                                     title = item.canonicalTitle,
                                     type = item.type,
+                                    coverImage = item.coverImage,
                                     posterImage = item.posterImage,
                                     isTracked = false // TODO
                                 )
@@ -205,6 +206,7 @@ class DiscoverViewModel(
             title = canonicalTitle,
             type = type,
             coverImage = coverImage,
+            posterImage = posterImage,
             isTracked = isTracked
         )
     }

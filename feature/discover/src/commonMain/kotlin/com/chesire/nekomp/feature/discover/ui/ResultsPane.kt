@@ -21,7 +21,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun ResultsPane(
-    searchResults: ImmutableList<SearchItem>,
+    searchResults: ImmutableList<DiscoverItem>,
     onItemClick: (DiscoverItem) -> Unit
 ) {
     LazyVerticalGrid(
@@ -36,7 +36,7 @@ internal fun ResultsPane(
             key = { it.id }
         ) { item ->
             Card(
-                onClick = { /* onItemClick(it) */ },
+                onClick = { onItemClick(item) },
                 modifier = Modifier
                     .animateItem()
                     .height(280.dp)

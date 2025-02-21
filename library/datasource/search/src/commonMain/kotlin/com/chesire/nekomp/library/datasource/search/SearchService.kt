@@ -41,7 +41,8 @@ private fun SearchResponseDto.toSearchItems(): List<SearchItem> {
             canonicalTitle = it.attributes.canonicalTitle,
             // otherTitles = it.attributes.titles,
             subtype = it.attributes.subtype,
-            posterImage = it.attributes.posterImage?.medium ?: ""
+            posterImage = it.attributes.posterImage?.medium ?: "",
+            coverImage = it.attributes.coverImage?.small ?: ""
         )
     }
 }
