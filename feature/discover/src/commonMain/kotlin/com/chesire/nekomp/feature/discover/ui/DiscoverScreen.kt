@@ -77,6 +77,7 @@ private fun Render(
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
+            is ViewEvent.ShowFailure -> snackbarHostState.showSnackbar(state.viewEvent.errorString)
             null -> Unit
         }
 

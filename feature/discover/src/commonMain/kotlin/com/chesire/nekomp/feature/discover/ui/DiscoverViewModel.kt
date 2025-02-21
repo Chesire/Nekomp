@@ -11,6 +11,7 @@ import com.chesire.nekomp.feature.discover.core.SearchForUseCase
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +29,7 @@ class DiscoverViewModel(
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
+    private var _lastSearch = ""
 
     init {
         viewModelScope.launch {
@@ -97,13 +99,21 @@ class DiscoverViewModel(
 
     private fun onSearchExecuted() {
         val searchTerm = _uiState.value.searchTerm
-        if (searchTerm.isBlank()) {
+        if (searchTerm == _lastSearch && _uiState.value.searchResults.isNotEmpty()) {
+            // Just exit, we have data
+            return
+        } else if (searchTerm.isBlank()) {
+            _uiState.update { state ->
+                state.copy(searchResults = persistentListOf())
+            }
             return
         }
 
         recentSearches.addRecentSearch(searchTerm)
+
         // TODO: Handle UI updating for search execution
         viewModelScope.launch {
+            _lastSearch = searchTerm
             searchFor(searchTerm)
                 .onSuccess { searchItems ->
                     _uiState.update { state ->
@@ -119,12 +129,14 @@ class DiscoverViewModel(
                             }.toPersistentList()
                         )
                     }
-
-                    // TODO: view event to say search completed?
-                    // TODO: populate the found items
                 }
                 .onFailure {
-                    // TODO: show snackbar error
+                    _uiState.update { state ->
+                        state.copy(
+                            searchResults = persistentListOf(),
+                            viewEvent = ViewEvent.ShowFailure("Search was unsuccessful")
+                        )
+                    }
                 }
         }
     }
