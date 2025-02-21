@@ -99,20 +99,19 @@ private fun Render(
                     listPane = {
                         AnimatedPane {
                             ListContent(
+                                searchText = state.searchTerm,
                                 trendingAnime = state.trendingAnime,
                                 trendingManga = state.trendingManga,
                                 topRatedAnime = state.topRatedAnime,
                                 topRatedManga = state.topRatedManga,
                                 mostPopularAnime = state.mostPopularAnime,
                                 mostPopularManga = state.mostPopularManga,
+                                execute = execute,
                                 onItemClick = { item ->
                                     navigator.navigateTo(
                                         ListDetailPaneScaffoldRole.Detail,
                                         item
                                     )
-                                },
-                                onTrackClick = { item ->
-                                    execute(ViewAction.TrackTrendingItemClick(item))
                                 }
                             )
                         }
@@ -140,14 +139,15 @@ private enum class ListPaneType {
 
 @Composable
 private fun ListContent(
+    searchText: String,
     trendingAnime: ImmutableList<DiscoverItem>,
     trendingManga: ImmutableList<DiscoverItem>,
     topRatedAnime: ImmutableList<DiscoverItem>,
     topRatedManga: ImmutableList<DiscoverItem>,
     mostPopularAnime: ImmutableList<DiscoverItem>,
     mostPopularManga: ImmutableList<DiscoverItem>,
-    onItemClick: (DiscoverItem) -> Unit,
-    onTrackClick: (DiscoverItem) -> Unit
+    execute: (ViewAction) -> Unit,
+    onItemClick: (DiscoverItem) -> Unit
 ) {
     val focus = LocalFocusManager.current
     var displayedPaneType by remember { mutableStateOf(ListPaneType.Trending) }
@@ -184,8 +184,8 @@ private fun ListContent(
                 }
             }
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = searchText,
+                onValueChange = { execute(ViewAction.SearchTextUpdated(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -198,8 +198,10 @@ private fun ListContent(
                 label = {
                     Text("Search")
                 },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                leadingIcon = if (displayedPaneType == ListPaneType.Trending) {
+                    { Icon(imageVector = Icons.Default.Search, contentDescription = null) }
+                } else {
+                    null
                 }
             )
         }
@@ -212,7 +214,7 @@ private fun ListContent(
                 mostPopularAnime = mostPopularAnime,
                 mostPopularManga = mostPopularManga,
                 onItemClick = onItemClick,
-                onTrackClick = onTrackClick
+                onTrackClick = { execute(ViewAction.TrackTrendingItemClick(it)) }
             )
 
             ListPaneType.Search -> SearchPane()

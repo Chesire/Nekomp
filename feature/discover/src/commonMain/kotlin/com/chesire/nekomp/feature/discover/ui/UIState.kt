@@ -4,6 +4,8 @@ import com.chesire.nekomp.core.model.Type
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+// TODO: Maybe split this into LIST and DETAIL classes?
+// TODO: Or Trending, Search, and Results classes?
 data class UIState(
     val searchTerm: String = "",
     val trendingAnime: ImmutableList<DiscoverItem> = persistentListOf(),

@@ -69,15 +69,16 @@ class DiscoverViewModel(
 
     fun execute(action: ViewAction) {
         when (action) {
-            ViewAction.SearchFocused -> onSearchFocused()
+            is ViewAction.SearchTextUpdated -> onSearchTextUpdated(action.newSearchText)
             is ViewAction.TrackTrendingItemClick -> onTrackTrendingItemClick(action.discoverItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
 
-    private fun onSearchFocused() {
-        // Tell UI to update?
-        // Or could do this within the view itself?
+    private fun onSearchTextUpdated(newSearchText: String) {
+        _uiState.update {
+            it.copy(searchTerm = newSearchText)
+        }
     }
 
     private fun onTrackTrendingItemClick(discoverItem: DiscoverItem) {
