@@ -40,6 +40,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.network)
             implementation(projects.core.model)
+            implementation(projects.core.preferences)
             implementation(projects.core.resources)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
@@ -54,6 +55,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.ui)
+            implementation(libs.androidx.datastore.preferences)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
             implementation(libs.compose.material3.adaptive)

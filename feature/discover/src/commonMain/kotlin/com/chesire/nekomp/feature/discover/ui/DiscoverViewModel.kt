@@ -75,7 +75,7 @@ class DiscoverViewModel(
         viewModelScope.launch {
             recentSearches.recents.collect { recents ->
                 _uiState.update {
-                    it.copy(recentSearches = recents.toPersistentList())
+                    it.copy(recentSearches = recents.reversed().toPersistentList())
                 }
             }
         }
@@ -109,11 +109,10 @@ class DiscoverViewModel(
             return
         }
 
-        recentSearches.addRecentSearch(searchTerm)
-
         // TODO: Handle UI updating for search execution
         viewModelScope.launch {
             _lastSearch = searchTerm
+            recentSearches.addRecentSearch(searchTerm)
             searchFor(searchTerm)
                 .onSuccess { searchItems ->
                     _uiState.update { state ->

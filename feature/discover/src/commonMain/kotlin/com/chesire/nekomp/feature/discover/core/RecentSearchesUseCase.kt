@@ -1,24 +1,21 @@
 package com.chesire.nekomp.feature.discover.core
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.chesire.nekomp.feature.discover.data.RecentSearchesStorage
+import kotlinx.coroutines.flow.first
 
-// TODO: Store this in the preferences instead
-class RecentSearchesUseCase {
+class RecentSearchesUseCase(private val storage: RecentSearchesStorage) {
 
-    private val _recents = MutableStateFlow<List<String>>(emptyList())
-    val recents = _recents.asStateFlow()
+    val recents = storage.recentSearches
 
-    fun addRecentSearch(text: String) {
-        _recents.update {
-            it.toMutableList().apply {
-                remove(text)
-                add(text)
-                if (size > 10) {
-                    removeAt(0)
-                }
+    suspend fun addRecentSearch(text: String) {
+        recents.first().toMutableList().apply {
+            remove(text)
+            add(text)
+            if (size > 10) {
+                removeAt(0)
             }
+        }.let {
+            storage.updateRecentSearches(it.toSet())
         }
     }
 }
