@@ -260,7 +260,10 @@ private fun ListContent(
                 onRecentClicked = { execute(ViewAction.RecentSearchClick(it)) }
             )
 
-            ListPaneType.Results -> ResultsPane(searchResults)
+            ListPaneType.Results -> ResultsPane(
+                searchResults = searchResults,
+                onItemClick = onItemClick
+            )
         }
     }
 }

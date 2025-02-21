@@ -19,6 +19,7 @@ data class UIState(
     val viewEvent: ViewEvent? = null
 )
 
+// TODO: Slim these down to a single item
 data class DiscoverItem(
     val id: Int,
     val title: String,
