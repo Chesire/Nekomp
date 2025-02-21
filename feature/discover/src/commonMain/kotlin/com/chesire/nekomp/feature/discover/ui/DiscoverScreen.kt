@@ -11,6 +11,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -52,7 +54,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -119,6 +123,10 @@ private fun Render(
                             ListContent(
                                 trendingAnime = state.trendingAnime,
                                 trendingManga = state.trendingManga,
+                                topRatedAnime = state.topRatedAnime,
+                                topRatedManga = state.topRatedManga,
+                                mostPopularAnime = state.mostPopularAnime,
+                                mostPopularManga = state.mostPopularManga,
                                 onItemClick = { item ->
                                     navigator.navigateTo(
                                         ListDetailPaneScaffoldRole.Detail,
@@ -150,6 +158,10 @@ private fun Render(
 private fun ListContent(
     trendingAnime: ImmutableList<DiscoverItem>,
     trendingManga: ImmutableList<DiscoverItem>,
+    topRatedAnime: ImmutableList<DiscoverItem>,
+    topRatedManga: ImmutableList<DiscoverItem>,
+    mostPopularAnime: ImmutableList<DiscoverItem>,
+    mostPopularManga: ImmutableList<DiscoverItem>,
     onItemClick: (DiscoverItem) -> Unit,
     onTrackClick: (DiscoverItem) -> Unit
 ) {
@@ -165,7 +177,10 @@ private fun ListContent(
                 Icon(imageVector = Icons.Default.Search, contentDescription = null)
             }
         )
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
             TrendingSection(
                 title = "Trending anime",
                 items = trendingAnime,
@@ -175,6 +190,30 @@ private fun ListContent(
             TrendingSection(
                 title = "Trending manga",
                 items = trendingManga,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Top rated anime",
+                items = topRatedAnime,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Top rated manga",
+                items = topRatedManga,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Most popular anime",
+                items = mostPopularAnime,
+                onItemClick = onItemClick,
+                onTrackClick = onTrackClick
+            )
+            TrendingSection(
+                title = "Most popular manga",
+                items = mostPopularManga,
                 onItemClick = onItemClick,
                 onTrackClick = onTrackClick
             )
@@ -225,23 +264,32 @@ private fun TrendingDisplay(
         onClick = { onItemClick(discoverItem) },
         modifier = modifier.width(256.dp)
     ) {
-        Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-            // image
-            Text(discoverItem.title) // title
-            // current rating
-            // Synopsis
-            // track button
-            Spacer(Modifier.weight(1f))
-            if (!discoverItem.isTracked) {
-                ElevatedButton(
-                    onClick = { onTrackClick(discoverItem) },
-                    modifier = Modifier.align(Alignment.End),
-                    enabled = !discoverItem.isPendingTrack
-                ) {
-                    if (discoverItem.isPendingTrack) {
-                        CircularProgressIndicator()
-                    } else {
-                        Text("Track")
+        Box {
+            AsyncImage(
+                model = discoverItem.coverImage,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillHeight,
+                alpha = 0.3f
+            )
+            Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+                // image
+                Text(discoverItem.title) // title
+                // current rating
+                // Synopsis
+                // track button
+                Spacer(Modifier.weight(1f))
+                if (!discoverItem.isTracked) {
+                    ElevatedButton(
+                        onClick = { onTrackClick(discoverItem) },
+                        modifier = Modifier.align(Alignment.End),
+                        enabled = !discoverItem.isPendingTrack
+                    ) {
+                        if (discoverItem.isPendingTrack) {
+                            CircularProgressIndicator()
+                        } else {
+                            Text("Track")
+                        }
                     }
                 }
             }

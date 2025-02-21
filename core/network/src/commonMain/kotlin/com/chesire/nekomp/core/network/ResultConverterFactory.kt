@@ -1,4 +1,4 @@
-@file:Suppress("TooGenericExceptionCaught")
+@file:Suppress("TooGenericExceptionCaught", "MagicNumber")
 
 package com.chesire.nekomp.core.network
 

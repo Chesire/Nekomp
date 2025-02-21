@@ -5,11 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
-import com.chesire.nekomp.feature.discover.core.RetrieveTrendingUseCase
+import com.chesire.nekomp.feature.discover.core.RetrieveTrendingDataUseCase
+import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.github.michaelbull.result.onFailure
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class DiscoverViewModel(
     private val retrieveLibrary: RetrieveLibraryUseCase,
-    private val retrieveTrending: RetrieveTrendingUseCase,
+    private val retrieveTrendingData: RetrieveTrendingDataUseCase,
     private val addItemToTracking: AddItemToTrackingUseCase
 ) : ViewModel() {
 
@@ -27,50 +26,41 @@ class DiscoverViewModel(
 
     init {
         viewModelScope.launch {
-            val trendingAnimeJob = async {
-                retrieveTrending.anime()
-                    .map {
-                        DiscoverItem(
-                            id = it.id,
-                            title = it.canonicalTitle,
-                            type = it.type
-                        )
-                    }
-            }
-            val trendingMangaJob = async {
-                retrieveTrending.manga()
-                    .map {
-                        DiscoverItem(
-                            id = it.id,
-                            title = it.canonicalTitle,
-                            type = it.type
-                        )
-                    }
-            }
-
-            val (trendingAnime, trendingManga) = awaitAll(trendingAnimeJob, trendingMangaJob)
+            val trendingData = retrieveTrendingData()
             retrieveLibrary().collect {
                 val ids = it.map { it.id }
-                val filteredAnime = trendingAnime
-                    .map {
-                        it.copy(
-                            isTracked = ids.contains(it.id),
-                            isPendingTrack = false
-                        )
-                    }
+                val trendingAnime = trendingData
+                    .trendingAnime
+                    .map { it.toDiscoverItem(ids.contains(it.id)) }
                     .toPersistentList()
-                val filteredManga = trendingManga
-                    .map {
-                        it.copy(
-                            isTracked = ids.contains(it.id),
-                            isPendingTrack = false
-                        )
-                    }
+                val trendingManga = trendingData
+                    .trendingManga
+                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .toPersistentList()
+                val topRatedAnime = trendingData
+                    .topRatedAnime
+                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .toPersistentList()
+                val topRatedManga = trendingData
+                    .topRatedManga
+                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .toPersistentList()
+                val mostPopularAnime = trendingData
+                    .mostPopularAnime
+                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .toPersistentList()
+                val mostPopularManga = trendingData
+                    .mostPopularManga
+                    .map { it.toDiscoverItem(ids.contains(it.id)) }
                     .toPersistentList()
                 _uiState.update {
                     it.copy(
-                        trendingAnime = filteredAnime,
-                        trendingManga = filteredManga
+                        trendingAnime = trendingAnime,
+                        trendingManga = trendingManga,
+                        topRatedAnime = topRatedAnime,
+                        topRatedManga = topRatedManga,
+                        mostPopularAnime = mostPopularAnime,
+                        mostPopularManga = mostPopularManga
                     )
                 }
             }
@@ -140,5 +130,15 @@ class DiscoverViewModel(
         _uiState.update {
             it.copy(viewEvent = null)
         }
+    }
+
+    private fun TrendingItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
+        return DiscoverItem(
+            id = id,
+            title = canonicalTitle,
+            type = type,
+            coverImage = coverImage,
+            isTracked = isTracked
+        )
     }
 }

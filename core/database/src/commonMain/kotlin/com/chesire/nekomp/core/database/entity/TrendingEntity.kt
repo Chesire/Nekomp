@@ -1,10 +1,13 @@
-package com.chesire.nekomp.library.datasource.trending
+package com.chesire.nekomp.core.database.entity
 
-import com.chesire.nekomp.core.model.Type
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-data class TrendingItem(
+@Entity
+data class TrendingEntity(
+    @PrimaryKey
     val id: Int,
-    val type: Type,
+    val type: String, // Enum
     val synopsis: String,
     val canonicalTitle: String,
     // val otherTitles: Map<String, String?>,
