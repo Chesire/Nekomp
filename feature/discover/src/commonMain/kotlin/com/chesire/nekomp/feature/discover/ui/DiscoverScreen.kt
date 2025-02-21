@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -207,6 +208,15 @@ private fun ListContent(
                     { Icon(imageVector = Icons.Default.Search, contentDescription = null) }
                 } else {
                     null
+                },
+                trailingIcon = {
+                    AnimatedVisibility(searchText.isNotEmpty()) {
+                        IconButton(
+                            onClick = { execute(ViewAction.SearchTextUpdated("")) }
+                        ) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+                        }
+                    }
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
