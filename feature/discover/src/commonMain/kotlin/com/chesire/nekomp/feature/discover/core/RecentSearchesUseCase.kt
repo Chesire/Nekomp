@@ -3,6 +3,8 @@ package com.chesire.nekomp.feature.discover.core
 import com.chesire.nekomp.feature.discover.data.RecentSearchesStorage
 import kotlinx.coroutines.flow.first
 
+private const val MAX_RECENT_SEARCHES = 10
+
 class RecentSearchesUseCase(private val storage: RecentSearchesStorage) {
 
     val recents = storage.recentSearches
@@ -11,7 +13,7 @@ class RecentSearchesUseCase(private val storage: RecentSearchesStorage) {
         recents.first().toMutableList().apply {
             remove(text)
             add(text)
-            if (size > 10) {
+            if (size > MAX_RECENT_SEARCHES) {
                 removeAt(0)
             }
         }.let {

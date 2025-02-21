@@ -149,6 +149,7 @@ private enum class ListPaneType {
     Results
 }
 
+@Suppress("LongMethod", "LongParameterList")
 @Composable
 private fun ListContent(
     listPaneType: ListPaneType,
