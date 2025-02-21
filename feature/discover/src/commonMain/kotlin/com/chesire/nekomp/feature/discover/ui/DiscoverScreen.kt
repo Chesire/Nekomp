@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -46,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.koin.compose.viewmodel.koinViewModel
@@ -100,6 +103,7 @@ private fun Render(
                         AnimatedPane {
                             ListContent(
                                 searchText = state.searchTerm,
+                                recentSearches = state.recentSearches,
                                 trendingAnime = state.trendingAnime,
                                 trendingManga = state.trendingManga,
                                 topRatedAnime = state.topRatedAnime,
@@ -140,6 +144,7 @@ private enum class ListPaneType {
 @Composable
 private fun ListContent(
     searchText: String,
+    recentSearches: ImmutableList<String>,
     trendingAnime: ImmutableList<DiscoverItem>,
     trendingManga: ImmutableList<DiscoverItem>,
     topRatedAnime: ImmutableList<DiscoverItem>,
@@ -202,7 +207,12 @@ private fun ListContent(
                     { Icon(imageVector = Icons.Default.Search, contentDescription = null) }
                 } else {
                     null
-                }
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = { execute(ViewAction.SearchExecute) }
+                ),
+                singleLine = true
             )
         }
         when (displayedPaneType) {
@@ -217,7 +227,11 @@ private fun ListContent(
                 onTrackClick = { execute(ViewAction.TrackTrendingItemClick(it)) }
             )
 
-            ListPaneType.Search -> SearchPane()
+            ListPaneType.Search -> SearchPane(
+                recentSearches = recentSearches,
+                onRecentClicked = { execute(ViewAction.RecentSearchClick(it)) }
+            )
+
             ListPaneType.Results -> ResultsPane()
         }
     }

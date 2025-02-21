@@ -8,6 +8,7 @@ import kotlinx.collections.immutable.persistentListOf
 // TODO: Or Trending, Search, and Results classes?
 data class UIState(
     val searchTerm: String = "",
+    val recentSearches: ImmutableList<String> = persistentListOf(),
     val trendingAnime: ImmutableList<DiscoverItem> = persistentListOf(),
     val trendingManga: ImmutableList<DiscoverItem> = persistentListOf(),
     val topRatedAnime: ImmutableList<DiscoverItem> = persistentListOf(),

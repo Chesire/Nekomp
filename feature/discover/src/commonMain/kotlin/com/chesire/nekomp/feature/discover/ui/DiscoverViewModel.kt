@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
+import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingDataUseCase
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 class DiscoverViewModel(
     private val retrieveLibrary: RetrieveLibraryUseCase,
     private val retrieveTrendingData: RetrieveTrendingDataUseCase,
-    private val addItemToTracking: AddItemToTrackingUseCase
+    private val addItemToTracking: AddItemToTrackingUseCase,
+    private val recentSearches: RecentSearchesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
@@ -65,11 +67,20 @@ class DiscoverViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            recentSearches.recents.collect { recents ->
+                _uiState.update {
+                    it.copy(recentSearches = recents.toPersistentList())
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
         when (action) {
             is ViewAction.SearchTextUpdated -> onSearchTextUpdated(action.newSearchText)
+            ViewAction.SearchExecute -> onSearchExecuted()
+            is ViewAction.RecentSearchClick -> onRecentSearchClick(action.recentSearchTerm)
             is ViewAction.TrackTrendingItemClick -> onTrackTrendingItemClick(action.discoverItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -78,6 +89,22 @@ class DiscoverViewModel(
     private fun onSearchTextUpdated(newSearchText: String) {
         _uiState.update {
             it.copy(searchTerm = newSearchText)
+        }
+    }
+
+    private fun onSearchExecuted() {
+        val searchTerm = _uiState.value.searchTerm
+        if (searchTerm.isBlank()) {
+            return
+        }
+
+        recentSearches.addRecentSearch(searchTerm)
+        // Hit API
+    }
+
+    private fun onRecentSearchClick(recentSearchTerm: String) {
+        _uiState.update {
+            it.copy(searchTerm = recentSearchTerm)
         }
     }
 
