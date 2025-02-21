@@ -7,8 +7,10 @@ import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingDataUseCase
+import com.chesire.nekomp.feature.discover.core.SearchForUseCase
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +22,8 @@ class DiscoverViewModel(
     private val retrieveLibrary: RetrieveLibraryUseCase,
     private val retrieveTrendingData: RetrieveTrendingDataUseCase,
     private val addItemToTracking: AddItemToTrackingUseCase,
-    private val recentSearches: RecentSearchesUseCase
+    private val recentSearches: RecentSearchesUseCase,
+    private val searchFor: SearchForUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
@@ -99,7 +102,31 @@ class DiscoverViewModel(
         }
 
         recentSearches.addRecentSearch(searchTerm)
-        // Hit API
+        // TODO: Handle UI updating for search execution
+        viewModelScope.launch {
+            searchFor(searchTerm)
+                .onSuccess { searchItems ->
+                    _uiState.update { state ->
+                        state.copy(
+                            searchResults = searchItems.map { item ->
+                                SearchItem(
+                                    id = item.id,
+                                    title = item.canonicalTitle,
+                                    type = item.type,
+                                    posterImage = item.posterImage,
+                                    isTracked = false // TODO
+                                )
+                            }.toPersistentList()
+                        )
+                    }
+
+                    // TODO: view event to say search completed?
+                    // TODO: populate the found items
+                }
+                .onFailure {
+                    // TODO: show snackbar error
+                }
+        }
     }
 
     private fun onRecentSearchClick(recentSearchTerm: String) {

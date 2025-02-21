@@ -15,6 +15,7 @@ data class UIState(
     val topRatedManga: ImmutableList<DiscoverItem> = persistentListOf(),
     val mostPopularAnime: ImmutableList<DiscoverItem> = persistentListOf(),
     val mostPopularManga: ImmutableList<DiscoverItem> = persistentListOf(),
+    val searchResults: ImmutableList<SearchItem> = persistentListOf(),
     val viewEvent: ViewEvent? = null
 )
 
@@ -25,4 +26,12 @@ data class DiscoverItem(
     val coverImage: String,
     val isTracked: Boolean = false,
     val isPendingTrack: Boolean = false
+)
+
+data class SearchItem(
+    val id: Int,
+    val title: String,
+    val type: Type,
+    val posterImage: String,
+    val isTracked: Boolean = false
 )

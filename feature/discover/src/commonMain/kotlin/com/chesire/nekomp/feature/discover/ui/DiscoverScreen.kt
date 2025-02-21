@@ -111,6 +111,7 @@ private fun Render(
                                 topRatedManga = state.topRatedManga,
                                 mostPopularAnime = state.mostPopularAnime,
                                 mostPopularManga = state.mostPopularManga,
+                                searchResults = state.searchResults,
                                 execute = execute,
                                 onItemClick = { item ->
                                     navigator.navigateTo(
@@ -152,6 +153,7 @@ private fun ListContent(
     topRatedManga: ImmutableList<DiscoverItem>,
     mostPopularAnime: ImmutableList<DiscoverItem>,
     mostPopularManga: ImmutableList<DiscoverItem>,
+    searchResults: ImmutableList<SearchItem>,
     execute: (ViewAction) -> Unit,
     onItemClick: (DiscoverItem) -> Unit
 ) {
@@ -179,7 +181,17 @@ private fun ListContent(
             ) {
                 IconButton(
                     onClick = {
-                        displayedPaneType = ListPaneType.Trending
+                        when (displayedPaneType) {
+                            ListPaneType.Trending -> Unit
+                            ListPaneType.Search -> {
+                                displayedPaneType = ListPaneType.Trending
+                                focus.clearFocus(true)
+                            }
+
+                            ListPaneType.Results -> {
+                                displayedPaneType = ListPaneType.Search
+                            }
+                        }
                         focus.clearFocus(true)
                     }
                 ) {
@@ -220,7 +232,12 @@ private fun ListContent(
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
-                    onSearch = { execute(ViewAction.SearchExecute) }
+                    onSearch = {
+                        focus.clearFocus(true)
+                        execute(ViewAction.SearchExecute)
+                        // TODO: Find better way to show this once the search is done. Probably VE?
+                        displayedPaneType = ListPaneType.Results
+                    }
                 ),
                 singleLine = true
             )
@@ -242,7 +259,7 @@ private fun ListContent(
                 onRecentClicked = { execute(ViewAction.RecentSearchClick(it)) }
             )
 
-            ListPaneType.Results -> ResultsPane()
+            ListPaneType.Results -> ResultsPane(searchResults)
         }
     }
 }

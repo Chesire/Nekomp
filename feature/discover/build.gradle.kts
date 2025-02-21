@@ -43,6 +43,7 @@ kotlin {
             implementation(projects.core.resources)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
+            implementation(projects.library.datasource.search)
             implementation(projects.library.datasource.trending)
             implementation(projects.library.datasource.user)
             implementation(compose.components.resources)
