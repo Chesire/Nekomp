@@ -1,10 +1,13 @@
-package com.chesire.nekomp.feature.discover.ui
+package com.chesire.nekomp.feature.discover.ui.pane
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -13,11 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import com.chesire.nekomp.feature.discover.ui.DetailState
+import com.chesire.nekomp.feature.discover.ui.DiscoverItem
 
 @Composable
 internal fun DetailPane(
-    item: DiscoverItem?,
+    detailState: DetailState,
     showBack: Boolean,
+    trackItem: (DiscoverItem) -> Unit,
     goBack: () -> Unit
 ) {
     Column(
@@ -25,7 +31,7 @@ internal fun DetailPane(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (item != null) {
+        if (detailState.currentItem != null) {
             if (showBack) {
                 IconButton(
                     onClick = goBack,
@@ -35,6 +41,23 @@ internal fun DetailPane(
                         painter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack),
                         contentDescription = "Go back"
                     )
+                }
+            }
+            Column {
+                Text(text = detailState.currentItem.title)
+                Text(text = detailState.currentItem.type.name)
+            }
+            Spacer(Modifier.weight(1f))
+            if (!detailState.currentItem.isTracked) {
+                ElevatedButton(
+                    onClick = { trackItem(detailState.currentItem) },
+                    enabled = !detailState.currentItem.isPendingTrack
+                ) {
+                    if (detailState.currentItem.isPendingTrack) {
+                        CircularProgressIndicator()
+                    } else {
+                        Text("Track")
+                    }
                 }
             }
         } else {

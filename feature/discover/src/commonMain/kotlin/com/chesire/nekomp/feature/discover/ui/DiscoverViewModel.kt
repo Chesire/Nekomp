@@ -2,7 +2,6 @@ package com.chesire.nekomp.feature.discover.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
@@ -30,52 +29,56 @@ class DiscoverViewModel(
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
     private var _lastSearch = ""
+    private var _libraryIds: Set<Int> = emptySet() // TODO: Find better way to handle this
 
     init {
         viewModelScope.launch {
             val trendingData = retrieveTrendingData()
-            retrieveLibrary().collect {
-                val ids = it.map { it.id }
+            retrieveLibrary().collect { libraryItems ->
+                _libraryIds = libraryItems.map { it.id }.toSet()
                 val trendingAnime = trendingData
                     .trendingAnime
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val trendingManga = trendingData
                     .trendingManga
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val topRatedAnime = trendingData
                     .topRatedAnime
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val topRatedManga = trendingData
                     .topRatedManga
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val mostPopularAnime = trendingData
                     .mostPopularAnime
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val mostPopularManga = trendingData
                     .mostPopularManga
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
-                _uiState.update {
-                    it.copy(
-                        trendingAnime = trendingAnime,
-                        trendingManga = trendingManga,
-                        topRatedAnime = topRatedAnime,
-                        topRatedManga = topRatedManga,
-                        mostPopularAnime = mostPopularAnime,
-                        mostPopularManga = mostPopularManga
+
+                _uiState.update { state ->
+                    state.copy(
+                        trendingState = state.trendingState.copy(
+                            trendingAnime = trendingAnime,
+                            trendingManga = trendingManga,
+                            topRatedAnime = topRatedAnime,
+                            topRatedManga = topRatedManga,
+                            mostPopularAnime = mostPopularAnime,
+                            mostPopularManga = mostPopularManga
+                        )
                     )
                 }
             }
         }
         viewModelScope.launch {
             recentSearches.recents.collect { recents ->
-                _uiState.update {
-                    it.copy(recentSearches = recents.reversed().toPersistentList())
+                _uiState.update { state ->
+                    state.copy(recentSearches = recents.reversed().toPersistentList())
                 }
             }
         }
@@ -86,25 +89,28 @@ class DiscoverViewModel(
             is ViewAction.SearchTextUpdated -> onSearchTextUpdated(action.newSearchText)
             ViewAction.SearchExecute -> onSearchExecuted()
             is ViewAction.RecentSearchClick -> onRecentSearchClick(action.recentSearchTerm)
-            is ViewAction.TrackTrendingItemClick -> onTrackTrendingItemClick(action.discoverItem)
+            is ViewAction.ItemSelect -> onItemSelect(action.discoverItem)
+            is ViewAction.TrackItemClick -> onTrackItemClick(action.discoverItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
 
     private fun onSearchTextUpdated(newSearchText: String) {
-        _uiState.update {
-            it.copy(searchTerm = newSearchText)
+        _uiState.update { state ->
+            state.copy(searchTerm = newSearchText)
         }
     }
 
     private fun onSearchExecuted() {
         val searchTerm = _uiState.value.searchTerm
-        if (searchTerm == _lastSearch && _uiState.value.searchResults.isNotEmpty()) {
+        if (searchTerm == _lastSearch && _uiState.value.resultsState.searchResults.isNotEmpty()) {
             // Just exit, we have data
             return
         } else if (searchTerm.isBlank()) {
             _uiState.update { state ->
-                state.copy(searchResults = persistentListOf())
+                state.copy(
+                    resultsState = state.resultsState.copy(searchResults = persistentListOf())
+                )
             }
             return
         }
@@ -117,23 +123,25 @@ class DiscoverViewModel(
                 .onSuccess { searchItems ->
                     _uiState.update { state ->
                         state.copy(
-                            searchResults = searchItems.map { item ->
-                                DiscoverItem(
-                                    id = item.id,
-                                    title = item.canonicalTitle,
-                                    type = item.type,
-                                    coverImage = item.coverImage,
-                                    posterImage = item.posterImage,
-                                    isTracked = false // TODO
-                                )
-                            }.toPersistentList()
+                            resultsState = state.resultsState.copy(
+                                searchResults = searchItems.map { item ->
+                                    DiscoverItem(
+                                        id = item.id,
+                                        title = item.canonicalTitle,
+                                        type = item.type,
+                                        coverImage = item.coverImage,
+                                        posterImage = item.posterImage,
+                                        isTracked = _libraryIds.contains(item.id)
+                                    )
+                                }.toPersistentList()
+                            )
                         )
                     }
                 }
                 .onFailure {
                     _uiState.update { state ->
                         state.copy(
-                            searchResults = persistentListOf(),
+                            resultsState = state.resultsState.copy(searchResults = persistentListOf()),
                             viewEvent = ViewEvent.ShowFailure("Search was unsuccessful")
                         )
                     }
@@ -142,60 +150,56 @@ class DiscoverViewModel(
     }
 
     private fun onRecentSearchClick(recentSearchTerm: String) {
-        _uiState.update {
-            it.copy(searchTerm = recentSearchTerm)
+        _uiState.update { state ->
+            state.copy(searchTerm = recentSearchTerm)
         }
     }
 
-    private fun onTrackTrendingItemClick(discoverItem: DiscoverItem) {
-        val list = if (discoverItem.type == Type.Anime) {
-            _uiState.value.trendingAnime
-        } else {
-            _uiState.value.trendingManga
-        }.map {
-            it.copy(isPendingTrack = it.id == discoverItem.id)
-        }.toPersistentList()
+    private fun onItemSelect(discoverItem: DiscoverItem) {
+        _uiState.update { state ->
+            state.copy(detailState = state.detailState.copy(currentItem = discoverItem))
+        }
+    }
 
-        _uiState.update {
-            it.copy(
-                trendingAnime = if (discoverItem.type == Type.Anime) {
-                    list
-                } else {
-                    it.trendingAnime
-                },
-                trendingManga = if (discoverItem.type == Type.Manga) {
-                    list
-                } else {
-                    it.trendingManga
-                }
+    private fun onTrackItemClick(discoverItem: DiscoverItem) {
+        _uiState.update { state ->
+            if (state.detailState.currentItem?.id != discoverItem.id) {
+                return
+            }
+            state.copy(
+                detailState = state.detailState.copy(
+                    currentItem = state.detailState.currentItem.copy(isPendingTrack = true)
+                )
             )
         }
 
         viewModelScope.launch {
-            addItemToTracking(discoverItem.type, discoverItem.id)
-                .onFailure {
-                    // TODO: Show snackbar error
-                    _uiState.update {
-                        it.copy(
-                            trendingAnime = if (discoverItem.type == Type.Anime) {
-                                list
-                            } else {
-                                it.trendingAnime
-                            },
-                            trendingManga = if (discoverItem.type == Type.Manga) {
-                                list
-                            } else {
-                                it.trendingManga
-                            }
-                        )
-                    }
+            val result = addItemToTracking(discoverItem.type, discoverItem.id)
+
+            // TODO: Snow snackbar error
+            _uiState.update { state ->
+                if (state.detailState.currentItem?.id != discoverItem.id) {
+                    // Ignore it, the ui has changed
+                    return@launch
                 }
+                state.copy(
+                    detailState = state.detailState.copy(
+                        currentItem = state
+                            .detailState
+                            .currentItem
+                            .copy(
+                                isPendingTrack = false,
+                                isTracked = result.isOk
+                            )
+                    )
+                )
+            }
         }
     }
 
     private fun onObservedViewEvent() {
-        _uiState.update {
-            it.copy(viewEvent = null)
+        _uiState.update { state ->
+            state.copy(viewEvent = null)
         }
     }
 

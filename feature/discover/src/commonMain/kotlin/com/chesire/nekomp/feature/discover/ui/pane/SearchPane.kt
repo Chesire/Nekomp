@@ -1,4 +1,4 @@
-package com.chesire.nekomp.feature.discover.ui
+package com.chesire.nekomp.feature.discover.ui.pane
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable

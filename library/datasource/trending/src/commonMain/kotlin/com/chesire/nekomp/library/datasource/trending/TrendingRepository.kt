@@ -5,6 +5,7 @@ import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.trending.local.TrendingStorage
 import com.chesire.nekomp.library.datasource.trending.remote.TrendingApi
 import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto
+import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto.TrendingData.TrendingAttributes.ImageModel
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
@@ -117,12 +118,24 @@ class TrendingRepository(
                 canonicalTitle = it.attributes.canonicalTitle,
                 // otherTitles = it.attributes.titles,
                 subtype = it.attributes.subtype,
-                posterImage = it.attributes.posterImage?.medium ?: "",
-                coverImage = it.attributes.coverImage?.small ?: "",
+                posterImage = it.attributes.posterImage.bestImage(),
+                coverImage = it.attributes.coverImage.bestImage(),
                 averageRating = it.attributes.averageRating,
                 ratingRank = it.attributes.ratingRank,
                 popularityRank = it.attributes.popularityRank
             )
+        }
+    }
+
+    private fun ImageModel?.bestImage(): String {
+        return when {
+            this == null -> ""
+            large.isNotBlank() -> large
+            medium.isNotBlank() -> medium
+            small.isNotBlank() -> small
+            original.isNotBlank() -> original
+            tiny.isNotBlank() -> tiny
+            else -> ""
         }
     }
 }

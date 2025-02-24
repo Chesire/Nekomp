@@ -39,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -66,6 +68,7 @@ private fun Render(
     state: UIState,
     execute: (ViewAction) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val navigator = rememberListDetailPaneScaffoldNavigator<Entry>()
     val isListAndDetailVisible =
@@ -82,7 +85,9 @@ private fun Render(
 
     // TODO: Switch to predictive
     BackHandler(enabled = navigator.canNavigateBack()) {
-        navigator.navigateBack()
+        scope.launch {
+            navigator.navigateBack()
+        }
     }
 
     Scaffold(
@@ -102,10 +107,12 @@ private fun Render(
                             ListContent(
                                 entries = state.entries,
                                 onEntryClick = { entry ->
-                                    navigator.navigateTo(
-                                        ListDetailPaneScaffoldRole.Detail,
-                                        entry
-                                    )
+                                    scope.launch {
+                                        navigator.navigateTo(
+                                            ListDetailPaneScaffoldRole.Detail,
+                                            entry
+                                        )
+                                    }
                                 }
                             )
                         }
@@ -113,9 +120,13 @@ private fun Render(
                     detailPane = {
                         AnimatedPane {
                             DetailContent(
-                                entry = navigator.currentDestination?.content,
+                                entry = navigator.currentDestination?.contentKey,
                                 showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
-                                goBack = { navigator.navigateBack() }
+                                goBack = {
+                                    scope.launch {
+                                        navigator.navigateBack()
+                                    }
+                                }
                             )
                         }
                     }
