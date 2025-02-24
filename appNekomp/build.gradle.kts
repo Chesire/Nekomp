@@ -48,6 +48,7 @@ kotlin {
             implementation(projects.feature.discover)
             implementation(projects.feature.library)
             implementation(projects.feature.login)
+            implementation(projects.feature.settings)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.search)
