@@ -9,5 +9,6 @@ data class SearchItem(
     val canonicalTitle: String,
     // val otherTitles: Map<String, String?>,
     val subtype: String,
-    val posterImage: String
+    val posterImage: String,
+    val coverImage: String
 )
