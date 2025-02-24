@@ -62,12 +62,14 @@ class DiscoverViewModel(
                     .toPersistentList()
                 _uiState.update {
                     it.copy(
-                        trendingAnime = trendingAnime,
-                        trendingManga = trendingManga,
-                        topRatedAnime = topRatedAnime,
-                        topRatedManga = topRatedManga,
-                        mostPopularAnime = mostPopularAnime,
-                        mostPopularManga = mostPopularManga
+                        trendingState = it.trendingState.copy(
+                            trendingAnime = trendingAnime,
+                            trendingManga = trendingManga,
+                            topRatedAnime = topRatedAnime,
+                            topRatedManga = topRatedManga,
+                            mostPopularAnime = mostPopularAnime,
+                            mostPopularManga = mostPopularManga
+                        )
                     )
                 }
             }
@@ -86,6 +88,7 @@ class DiscoverViewModel(
             is ViewAction.SearchTextUpdated -> onSearchTextUpdated(action.newSearchText)
             ViewAction.SearchExecute -> onSearchExecuted()
             is ViewAction.RecentSearchClick -> onRecentSearchClick(action.recentSearchTerm)
+            is ViewAction.ShowDetail -> onShowDetail(action.discoverItem)
             is ViewAction.TrackItemClick -> onTrackItemClick(action.discoverItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -99,12 +102,14 @@ class DiscoverViewModel(
 
     private fun onSearchExecuted() {
         val searchTerm = _uiState.value.searchTerm
-        if (searchTerm == _lastSearch && _uiState.value.searchResults.isNotEmpty()) {
+        if (searchTerm == _lastSearch && _uiState.value.resultsState.searchResults.isNotEmpty()) {
             // Just exit, we have data
             return
         } else if (searchTerm.isBlank()) {
             _uiState.update { state ->
-                state.copy(searchResults = persistentListOf())
+                state.copy(
+                    resultsState = state.resultsState.copy(searchResults = persistentListOf())
+                )
             }
             return
         }
@@ -117,23 +122,25 @@ class DiscoverViewModel(
                 .onSuccess { searchItems ->
                     _uiState.update { state ->
                         state.copy(
-                            searchResults = searchItems.map { item ->
-                                DiscoverItem(
-                                    id = item.id,
-                                    title = item.canonicalTitle,
-                                    type = item.type,
-                                    coverImage = item.coverImage,
-                                    posterImage = item.posterImage,
-                                    isTracked = false // TODO
-                                )
-                            }.toPersistentList()
+                            resultsState = state.resultsState.copy(
+                                searchResults = searchItems.map { item ->
+                                    DiscoverItem(
+                                        id = item.id,
+                                        title = item.canonicalTitle,
+                                        type = item.type,
+                                        coverImage = item.coverImage,
+                                        posterImage = item.posterImage,
+                                        isTracked = false // TODO
+                                    )
+                                }.toPersistentList()
+                            ),
                         )
                     }
                 }
                 .onFailure {
                     _uiState.update { state ->
                         state.copy(
-                            searchResults = persistentListOf(),
+                            resultsState = state.resultsState.copy(searchResults = persistentListOf()),
                             viewEvent = ViewEvent.ShowFailure("Search was unsuccessful")
                         )
                     }
@@ -147,27 +154,35 @@ class DiscoverViewModel(
         }
     }
 
+    private fun onShowDetail(discoverItem: DiscoverItem) {
+        _uiState.update {
+            it.copy(detailState = it.detailState.copy(detailItem = discoverItem))
+        }
+    }
+
     private fun onTrackItemClick(discoverItem: DiscoverItem) {
         val list = if (discoverItem.type == Type.Anime) {
-            _uiState.value.trendingAnime
+            _uiState.value.trendingState.trendingAnime
         } else {
-            _uiState.value.trendingManga
+            _uiState.value.trendingState.trendingManga
         }.map {
             it.copy(isPendingTrack = it.id == discoverItem.id)
         }.toPersistentList()
 
         _uiState.update {
             it.copy(
-                trendingAnime = if (discoverItem.type == Type.Anime) {
-                    list
-                } else {
-                    it.trendingAnime
-                },
-                trendingManga = if (discoverItem.type == Type.Manga) {
-                    list
-                } else {
-                    it.trendingManga
-                }
+                trendingState = it.trendingState.copy(
+                    trendingAnime = if (discoverItem.type == Type.Anime) {
+                        list
+                    } else {
+                        it.trendingState.trendingAnime
+                    },
+                    trendingManga = if (discoverItem.type == Type.Manga) {
+                        list
+                    } else {
+                        it.trendingState.trendingManga
+                    }
+                )
             )
         }
 
@@ -177,16 +192,18 @@ class DiscoverViewModel(
                     // TODO: Show snackbar error
                     _uiState.update {
                         it.copy(
-                            trendingAnime = if (discoverItem.type == Type.Anime) {
-                                list
-                            } else {
-                                it.trendingAnime
-                            },
-                            trendingManga = if (discoverItem.type == Type.Manga) {
-                                list
-                            } else {
-                                it.trendingManga
-                            }
+                            trendingState = it.trendingState.copy(
+                                trendingAnime = if (discoverItem.type == Type.Anime) {
+                                    list
+                                } else {
+                                    it.trendingState.trendingAnime
+                                },
+                                trendingManga = if (discoverItem.type == Type.Manga) {
+                                    list
+                                } else {
+                                    it.trendingState.trendingManga
+                                }
+                            )
                         )
                     }
                 }

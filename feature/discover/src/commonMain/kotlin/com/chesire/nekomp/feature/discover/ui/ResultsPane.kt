@@ -22,11 +22,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun ResultsPane(
-    searchResults: ImmutableList<DiscoverItem>,
+    resultsState: ResultsState,
     onItemClick: (DiscoverItem) -> Unit
 ) {
     LazyVerticalGrid(
@@ -37,7 +36,7 @@ internal fun ResultsPane(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(
-            items = searchResults,
+            items = resultsState.searchResults,
             key = { it.id }
         ) { item ->
             Card(

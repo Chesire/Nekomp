@@ -30,12 +30,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun TrendingPane(
-    trendingAnime: ImmutableList<DiscoverItem>,
-    trendingManga: ImmutableList<DiscoverItem>,
-    topRatedAnime: ImmutableList<DiscoverItem>,
-    topRatedManga: ImmutableList<DiscoverItem>,
-    mostPopularAnime: ImmutableList<DiscoverItem>,
-    mostPopularManga: ImmutableList<DiscoverItem>,
+    trendingState: TrendingState,
     onItemClick: (DiscoverItem) -> Unit,
     onTrackClick: (DiscoverItem) -> Unit
 ) {
@@ -45,37 +40,37 @@ internal fun TrendingPane(
     ) {
         TrendingSection(
             title = "Trending anime",
-            items = trendingAnime,
+            items = trendingState.trendingAnime,
             onItemClick = onItemClick,
             onTrackClick = onTrackClick
         )
         TrendingSection(
             title = "Trending manga",
-            items = trendingManga,
+            items = trendingState.trendingManga,
             onItemClick = onItemClick,
             onTrackClick = onTrackClick
         )
         TrendingSection(
             title = "Top rated anime",
-            items = topRatedAnime,
+            items = trendingState.topRatedAnime,
             onItemClick = onItemClick,
             onTrackClick = onTrackClick
         )
         TrendingSection(
             title = "Top rated manga",
-            items = topRatedManga,
+            items = trendingState.topRatedManga,
             onItemClick = onItemClick,
             onTrackClick = onTrackClick
         )
         TrendingSection(
             title = "Most popular anime",
-            items = mostPopularAnime,
+            items = trendingState.mostPopularAnime,
             onItemClick = onItemClick,
             onTrackClick = onTrackClick
         )
         TrendingSection(
             title = "Most popular manga",
-            items = mostPopularManga,
+            items = trendingState.mostPopularManga,
             onItemClick = onItemClick,
             onTrackClick = onTrackClick
         )

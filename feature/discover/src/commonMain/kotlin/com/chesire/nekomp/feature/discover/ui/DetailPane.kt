@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun DetailPane(
-    item: DiscoverItem?,
+    detailState: DetailState,
     showBack: Boolean,
     trackItem: (DiscoverItem) -> Unit,
     goBack: () -> Unit
@@ -29,7 +29,7 @@ internal fun DetailPane(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (item != null) {
+        if (detailState.detailItem != null) {
             if (showBack) {
                 IconButton(
                     onClick = goBack,
@@ -42,16 +42,16 @@ internal fun DetailPane(
                 }
             }
             Column {
-                Text(text = item.title)
-                Text(text = item.type.name)
+                Text(text = detailState.detailItem.title)
+                Text(text = detailState.detailItem.type.name)
             }
             Spacer(Modifier.weight(1f))
-            if (!item.isTracked) {
+            if (!detailState.detailItem.isTracked) {
                 ElevatedButton(
-                    onClick = { trackItem(item) },
-                    enabled = !item.isPendingTrack
+                    onClick = { trackItem(detailState.detailItem) },
+                    enabled = !detailState.detailItem.isPendingTrack
                 ) {
-                    if (item.isPendingTrack) {
+                    if (detailState.detailItem.isPendingTrack) {
                         CircularProgressIndicator()
                     } else {
                         Text("Track")
