@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocalLibrary
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -126,7 +126,7 @@ private fun TrendingDisplay(
                     Text(discoverItem.title, modifier = Modifier.weight(1f))
                     if (discoverItem.isTracked) {
                         Icon(
-                            imageVector = Icons.Default.LocalLibrary,
+                            imageVector = Icons.Default.Bookmark,
                             contentDescription = null,
                             modifier = Modifier.alpha(0.7f)
                         )

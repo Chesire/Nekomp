@@ -29,35 +29,36 @@ class DiscoverViewModel(
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
     private var _lastSearch = ""
+    private var _libraryIds: Set<Int> = emptySet() // TODO: Find better way to handle this
 
     init {
         viewModelScope.launch {
             val trendingData = retrieveTrendingData()
             retrieveLibrary().collect { libraryItems ->
-                val ids = libraryItems.map { it.id }
+                _libraryIds = libraryItems.map { it.id }.toSet()
                 val trendingAnime = trendingData
                     .trendingAnime
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val trendingManga = trendingData
                     .trendingManga
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val topRatedAnime = trendingData
                     .topRatedAnime
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val topRatedManga = trendingData
                     .topRatedManga
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val mostPopularAnime = trendingData
                     .mostPopularAnime
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
                 val mostPopularManga = trendingData
                     .mostPopularManga
-                    .map { it.toDiscoverItem(ids.contains(it.id)) }
+                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
                     .toPersistentList()
 
                 _uiState.update { state ->
@@ -130,7 +131,7 @@ class DiscoverViewModel(
                                         type = item.type,
                                         coverImage = item.coverImage,
                                         posterImage = item.posterImage,
-                                        isTracked = false // TODO
+                                        isTracked = _libraryIds.contains(item.id)
                                     )
                                 }.toPersistentList()
                             )
