@@ -34,12 +34,6 @@ import com.chesire.nekomp.feature.discover.ui.TrendingState
 import com.chesire.nekomp.feature.discover.ui.ViewAction
 import kotlinx.collections.immutable.ImmutableList
 
-internal enum class ListPaneType {
-    Trending,
-    Search,
-    Results
-}
-
 @Suppress("LongMethod", "LongParameterList")
 @Composable
 internal fun ListPane(
@@ -155,4 +149,10 @@ internal fun ListPane(
             )
         }
     }
+}
+
+internal enum class ListPaneType {
+    Trending,
+    Search,
+    Results
 }

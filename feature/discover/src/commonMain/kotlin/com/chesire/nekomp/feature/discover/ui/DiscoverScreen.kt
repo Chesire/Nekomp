@@ -93,7 +93,7 @@ private fun Render(
                                 resultsState = state.resultsState,
                                 execute = execute,
                                 onItemClick = { item ->
-                                    execute(ViewAction.ShowDetail(item))
+                                    execute(ViewAction.ItemSelect(item))
                                     navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                 },
                                 updateListPaneType = {

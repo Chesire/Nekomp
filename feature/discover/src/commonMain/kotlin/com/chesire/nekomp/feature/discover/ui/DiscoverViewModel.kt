@@ -89,7 +89,7 @@ class DiscoverViewModel(
             is ViewAction.SearchTextUpdated -> onSearchTextUpdated(action.newSearchText)
             ViewAction.SearchExecute -> onSearchExecuted()
             is ViewAction.RecentSearchClick -> onRecentSearchClick(action.recentSearchTerm)
-            is ViewAction.ShowDetail -> onShowDetail(action.discoverItem)
+            is ViewAction.ItemSelect -> onItemSelect(action.discoverItem)
             is ViewAction.TrackItemClick -> onTrackItemClick(action.discoverItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -155,43 +155,39 @@ class DiscoverViewModel(
         }
     }
 
-    private fun onShowDetail(discoverItem: DiscoverItem) {
+    private fun onItemSelect(discoverItem: DiscoverItem) {
         _uiState.update { state ->
             state.copy(detailState = state.detailState.copy(currentItem = discoverItem))
         }
     }
 
     private fun onTrackItemClick(discoverItem: DiscoverItem) {
-        if (_uiState.value.detailState.currentItem?.id != discoverItem.id) {
-            return
-        }
         _uiState.update { state ->
+            if (state.detailState.currentItem?.id != discoverItem.id) {
+                return
+            }
             state.copy(
                 detailState = state.detailState.copy(
-                    currentItem = state
-                        .detailState
-                        .currentItem
-                        .takeIf { it?.id == discoverItem.id }
-                        ?.copy(isPendingTrack = true)
+                    currentItem = state.detailState.currentItem.copy(isPendingTrack = true)
                 )
             )
         }
 
         viewModelScope.launch {
             val result = addItemToTracking(discoverItem.type, discoverItem.id)
-            if (_uiState.value.detailState.currentItem?.id != discoverItem.id) {
-                // Ignore it, the ui has changed
-                return@launch
-            }
 
             // TODO: Snow snackbar error
             _uiState.update { state ->
+                if (state.detailState.currentItem?.id != discoverItem.id) {
+                    // Ignore it, the ui has changed
+                    return@launch
+                }
                 state.copy(
                     detailState = state.detailState.copy(
                         currentItem = state
                             .detailState
                             .currentItem
-                            ?.copy(
+                            .copy(
                                 isPendingTrack = false,
                                 isTracked = result.isOk
                             )
