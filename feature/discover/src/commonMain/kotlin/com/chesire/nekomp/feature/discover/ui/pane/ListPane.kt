@@ -62,7 +62,8 @@ internal fun ListPane(
             }
 
             ListPaneType.Results -> {
-                updateListPaneType(ListPaneType.Search)
+                updateListPaneType(ListPaneType.Trending)
+                focus.clearFocus(true)
             }
         }
     }
@@ -83,7 +84,8 @@ internal fun ListPane(
                             }
 
                             ListPaneType.Results -> {
-                                updateListPaneType(ListPaneType.Search)
+                                updateListPaneType(ListPaneType.Trending)
+                                focus.clearFocus(true)
                             }
                         }
                         focus.clearFocus(true)
