@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
@@ -57,11 +57,14 @@ internal fun ResultsPane(
                         modifier = Modifier
                             .padding(8.dp)
                             .width(IntrinsicSize.Min)
-                            .fillMaxHeight()
+                            .matchParentSize()
                             .align(Alignment.BottomStart),
                         verticalArrangement = Arrangement.Bottom
                     ) {
-                        Text(text = item.title)
+                        Text(
+                            text = item.title,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
             }

@@ -86,7 +86,7 @@ class DiscoverViewModel(
             is ViewAction.SearchTextUpdated -> onSearchTextUpdated(action.newSearchText)
             ViewAction.SearchExecute -> onSearchExecuted()
             is ViewAction.RecentSearchClick -> onRecentSearchClick(action.recentSearchTerm)
-            is ViewAction.TrackTrendingItemClick -> onTrackTrendingItemClick(action.discoverItem)
+            is ViewAction.TrackItemClick -> onTrackItemClick(action.discoverItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
@@ -147,7 +147,7 @@ class DiscoverViewModel(
         }
     }
 
-    private fun onTrackTrendingItemClick(discoverItem: DiscoverItem) {
+    private fun onTrackItemClick(discoverItem: DiscoverItem) {
         val list = if (discoverItem.type == Type.Anime) {
             _uiState.value.trendingAnime
         } else {

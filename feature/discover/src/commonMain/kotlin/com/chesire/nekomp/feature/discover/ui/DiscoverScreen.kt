@@ -117,6 +117,7 @@ private fun Render(
                                 searchResults = state.searchResults,
                                 execute = execute,
                                 onItemClick = { item ->
+                                    // TODO: Might need to do something with this in the viewmodel?
                                     navigator.navigateTo(
                                         ListDetailPaneScaffoldRole.Detail,
                                         item
@@ -133,6 +134,7 @@ private fun Render(
                             DetailPane(
                                 item = navigator.currentDestination?.content,
                                 showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
+                                trackItem = { execute(ViewAction.TrackItemClick(it)) },
                                 goBack = { navigator.navigateBack() }
                             )
                         }
@@ -259,7 +261,7 @@ private fun ListContent(
                 mostPopularAnime = mostPopularAnime,
                 mostPopularManga = mostPopularManga,
                 onItemClick = onItemClick,
-                onTrackClick = { execute(ViewAction.TrackTrendingItemClick(it)) }
+                onTrackClick = { execute(ViewAction.TrackItemClick(it)) }
             )
 
             ListPaneType.Search -> SearchPane(
