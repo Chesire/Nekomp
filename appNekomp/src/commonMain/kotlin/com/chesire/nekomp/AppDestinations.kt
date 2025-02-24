@@ -3,8 +3,8 @@ package com.chesire.nekomp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Air
+import androidx.compose.material.icons.filled.CollectionsBookmark
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -31,7 +31,7 @@ enum class AppDestinations(
     Library(
         label = NekoRes.string.nav_library,
         contentDescription = NekoRes.string.nav_content_description_library,
-        icon = Icons.Default.Info
+        icon = Icons.Default.CollectionsBookmark
     ),
     Discover(
         label = NekoRes.string.nav_discover,
