@@ -132,8 +132,9 @@ private fun Render(
                     detailPane = {
                         AnimatedPane {
                             DetailPane(
-                                item = navigator.currentDestination?.content,
-                                showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
+                                item = state.detailItem,
+                                showBack = !isListAndDetailVisible &&
+                                    navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
                                 trackItem = { execute(ViewAction.TrackItemClick(it)) },
                                 goBack = { navigator.navigateBack() }
                             )
