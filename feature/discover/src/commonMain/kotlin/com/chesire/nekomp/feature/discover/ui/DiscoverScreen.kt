@@ -19,6 +19,7 @@ import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,6 +35,7 @@ import androidx.compose.ui.backhandler.BackHandler
 import com.chesire.nekomp.feature.discover.ui.pane.DetailPane
 import com.chesire.nekomp.feature.discover.ui.pane.ListPane
 import com.chesire.nekomp.feature.discover.ui.pane.ListPaneType
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -50,8 +53,12 @@ private fun Render(
     state: UIState,
     execute: (ViewAction) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val navigator = rememberListDetailPaneScaffoldNavigator<DiscoverItem>()
+    val paneState = rememberPaneExpansionState().apply {
+        setFirstPaneProportion(0.65f)
+    }
     val isListAndDetailVisible =
         navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded &&
             navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
@@ -67,7 +74,9 @@ private fun Render(
 
     // TODO: Switch to predictive
     BackHandler(enabled = navigator.canNavigateBack()) {
-        navigator.navigateBack()
+        scope.launch {
+            navigator.navigateBack()
+        }
     }
 
     Scaffold(
@@ -94,7 +103,9 @@ private fun Render(
                                 execute = execute,
                                 onItemClick = { item ->
                                     execute(ViewAction.ItemSelect(item))
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                    scope.launch {
+                                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                    }
                                 },
                                 updateListPaneType = {
                                     displayedPaneType = it
@@ -109,10 +120,15 @@ private fun Render(
                                 showBack = !isListAndDetailVisible &&
                                     navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
                                 trackItem = { execute(ViewAction.TrackItemClick(it)) },
-                                goBack = { navigator.navigateBack() }
+                                goBack = {
+                                    scope.launch {
+                                        navigator.navigateBack()
+                                    }
+                                }
                             )
                         }
-                    }
+                    },
+                    paneExpansionState = paneState
                 )
             }
         }
