@@ -2,7 +2,6 @@ package com.chesire.nekomp.feature.discover.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
@@ -60,6 +59,7 @@ class DiscoverViewModel(
                     .mostPopularManga
                     .map { it.toDiscoverItem(ids.contains(it.id)) }
                     .toPersistentList()
+
                 _uiState.update { state ->
                     state.copy(
                         trendingState = state.trendingState.copy(
@@ -161,52 +161,42 @@ class DiscoverViewModel(
     }
 
     private fun onTrackItemClick(discoverItem: DiscoverItem) {
-        val list = if (discoverItem.type == Type.Anime) {
-            _uiState.value.trendingState.trendingAnime
-        } else {
-            _uiState.value.trendingState.trendingManga
-        }.map {
-            it.copy(isPendingTrack = it.id == discoverItem.id)
-        }.toPersistentList()
-
+        if (_uiState.value.detailState.currentItem?.id != discoverItem.id) {
+            return
+        }
         _uiState.update { state ->
             state.copy(
-                trendingState = state.trendingState.copy(
-                    trendingAnime = if (discoverItem.type == Type.Anime) {
-                        list
-                    } else {
-                        state.trendingState.trendingAnime
-                    },
-                    trendingManga = if (discoverItem.type == Type.Manga) {
-                        list
-                    } else {
-                        state.trendingState.trendingManga
-                    }
+                detailState = state.detailState.copy(
+                    currentItem = state
+                        .detailState
+                        .currentItem
+                        .takeIf { it?.id == discoverItem.id }
+                        ?.copy(isPendingTrack = true)
                 )
             )
         }
 
         viewModelScope.launch {
-            addItemToTracking(discoverItem.type, discoverItem.id)
-                .onFailure {
-                    // TODO: Show snackbar error
-                    _uiState.update { state ->
-                        state.copy(
-                            trendingState = state.trendingState.copy(
-                                trendingAnime = if (discoverItem.type == Type.Anime) {
-                                    list
-                                } else {
-                                    state.trendingState.trendingAnime
-                                },
-                                trendingManga = if (discoverItem.type == Type.Manga) {
-                                    list
-                                } else {
-                                    state.trendingState.trendingManga
-                                }
+            val result = addItemToTracking(discoverItem.type, discoverItem.id)
+            if (_uiState.value.detailState.currentItem?.id != discoverItem.id) {
+                // Ignore it, the ui has changed
+                return@launch
+            }
+
+            // TODO: Snow snackbar error
+            _uiState.update { state ->
+                state.copy(
+                    detailState = state.detailState.copy(
+                        currentItem = state
+                            .detailState
+                            .currentItem
+                            ?.copy(
+                                isPendingTrack = false,
+                                isTracked = result.isOk
                             )
-                        )
-                    }
-                }
+                    )
+                )
+            }
         }
     }
 

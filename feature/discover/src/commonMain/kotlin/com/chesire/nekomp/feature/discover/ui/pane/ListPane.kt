@@ -139,8 +139,7 @@ internal fun ListPane(
         when (listPaneType) {
             ListPaneType.Trending -> TrendingPane(
                 trendingState = trendingState,
-                onItemClick = onItemClick,
-                onTrackClick = { execute(ViewAction.TrackItemClick(it)) }
+                onItemClick = onItemClick
             )
 
             ListPaneType.Search -> SearchPane(
