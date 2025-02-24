@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalComposeUiApi::class)
 
-package com.chesire.nekomp.feature.discover.ui
+package com.chesire.nekomp.feature.discover.ui.pane
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -28,6 +28,10 @@ import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.chesire.nekomp.feature.discover.ui.DiscoverItem
+import com.chesire.nekomp.feature.discover.ui.ResultsState
+import com.chesire.nekomp.feature.discover.ui.TrendingState
+import com.chesire.nekomp.feature.discover.ui.ViewAction
 import kotlinx.collections.immutable.ImmutableList
 
 internal enum class ListPaneType {

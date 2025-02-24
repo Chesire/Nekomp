@@ -1,4 +1,4 @@
-package com.chesire.nekomp.feature.discover.ui
+package com.chesire.nekomp.feature.discover.ui.pane
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.chesire.nekomp.feature.discover.ui.DiscoverItem
+import com.chesire.nekomp.feature.discover.ui.TrendingState
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable

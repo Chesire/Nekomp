@@ -1,4 +1,4 @@
-package com.chesire.nekomp.feature.discover.ui
+package com.chesire.nekomp.feature.discover.ui.pane
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +22,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.chesire.nekomp.feature.discover.ui.DiscoverItem
+import com.chesire.nekomp.feature.discover.ui.ResultsState
 
 @Composable
 internal fun ResultsPane(

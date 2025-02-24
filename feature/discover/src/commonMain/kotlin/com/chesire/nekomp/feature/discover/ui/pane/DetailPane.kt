@@ -1,4 +1,4 @@
-package com.chesire.nekomp.feature.discover.ui
+package com.chesire.nekomp.feature.discover.ui.pane
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import com.chesire.nekomp.feature.discover.ui.DetailState
+import com.chesire.nekomp.feature.discover.ui.DiscoverItem
 
 @Composable
 internal fun DetailPane(

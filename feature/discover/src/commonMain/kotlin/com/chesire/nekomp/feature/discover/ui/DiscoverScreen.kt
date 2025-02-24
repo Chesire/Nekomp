@@ -30,6 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import com.chesire.nekomp.feature.discover.ui.pane.DetailPane
+import com.chesire.nekomp.feature.discover.ui.pane.ListPane
+import com.chesire.nekomp.feature.discover.ui.pane.ListPaneType
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
