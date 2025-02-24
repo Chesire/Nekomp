@@ -35,7 +35,7 @@ data class ResultsState(
 
 @Stable
 data class DetailState(
-    val detailItem: DiscoverItem? = null
+    val currentItem: DiscoverItem? = null
 )
 
 data class DiscoverItem(

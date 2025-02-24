@@ -34,8 +34,8 @@ class DiscoverViewModel(
     init {
         viewModelScope.launch {
             val trendingData = retrieveTrendingData()
-            retrieveLibrary().collect {
-                val ids = it.map { it.id }
+            retrieveLibrary().collect { libraryItems ->
+                val ids = libraryItems.map { it.id }
                 val trendingAnime = trendingData
                     .trendingAnime
                     .map { it.toDiscoverItem(ids.contains(it.id)) }
@@ -60,9 +60,9 @@ class DiscoverViewModel(
                     .mostPopularManga
                     .map { it.toDiscoverItem(ids.contains(it.id)) }
                     .toPersistentList()
-                _uiState.update {
-                    it.copy(
-                        trendingState = it.trendingState.copy(
+                _uiState.update { state ->
+                    state.copy(
+                        trendingState = state.trendingState.copy(
                             trendingAnime = trendingAnime,
                             trendingManga = trendingManga,
                             topRatedAnime = topRatedAnime,
@@ -76,8 +76,8 @@ class DiscoverViewModel(
         }
         viewModelScope.launch {
             recentSearches.recents.collect { recents ->
-                _uiState.update {
-                    it.copy(recentSearches = recents.reversed().toPersistentList())
+                _uiState.update { state ->
+                    state.copy(recentSearches = recents.reversed().toPersistentList())
                 }
             }
         }
@@ -95,8 +95,8 @@ class DiscoverViewModel(
     }
 
     private fun onSearchTextUpdated(newSearchText: String) {
-        _uiState.update {
-            it.copy(searchTerm = newSearchText)
+        _uiState.update { state ->
+            state.copy(searchTerm = newSearchText)
         }
     }
 
@@ -133,7 +133,7 @@ class DiscoverViewModel(
                                         isTracked = false // TODO
                                     )
                                 }.toPersistentList()
-                            ),
+                            )
                         )
                     }
                 }
@@ -149,14 +149,14 @@ class DiscoverViewModel(
     }
 
     private fun onRecentSearchClick(recentSearchTerm: String) {
-        _uiState.update {
-            it.copy(searchTerm = recentSearchTerm)
+        _uiState.update { state ->
+            state.copy(searchTerm = recentSearchTerm)
         }
     }
 
     private fun onShowDetail(discoverItem: DiscoverItem) {
-        _uiState.update {
-            it.copy(detailState = it.detailState.copy(detailItem = discoverItem))
+        _uiState.update { state ->
+            state.copy(detailState = state.detailState.copy(currentItem = discoverItem))
         }
     }
 
@@ -169,18 +169,18 @@ class DiscoverViewModel(
             it.copy(isPendingTrack = it.id == discoverItem.id)
         }.toPersistentList()
 
-        _uiState.update {
-            it.copy(
-                trendingState = it.trendingState.copy(
+        _uiState.update { state ->
+            state.copy(
+                trendingState = state.trendingState.copy(
                     trendingAnime = if (discoverItem.type == Type.Anime) {
                         list
                     } else {
-                        it.trendingState.trendingAnime
+                        state.trendingState.trendingAnime
                     },
                     trendingManga = if (discoverItem.type == Type.Manga) {
                         list
                     } else {
-                        it.trendingState.trendingManga
+                        state.trendingState.trendingManga
                     }
                 )
             )
@@ -190,18 +190,18 @@ class DiscoverViewModel(
             addItemToTracking(discoverItem.type, discoverItem.id)
                 .onFailure {
                     // TODO: Show snackbar error
-                    _uiState.update {
-                        it.copy(
-                            trendingState = it.trendingState.copy(
+                    _uiState.update { state ->
+                        state.copy(
+                            trendingState = state.trendingState.copy(
                                 trendingAnime = if (discoverItem.type == Type.Anime) {
                                     list
                                 } else {
-                                    it.trendingState.trendingAnime
+                                    state.trendingState.trendingAnime
                                 },
                                 trendingManga = if (discoverItem.type == Type.Manga) {
                                     list
                                 } else {
-                                    it.trendingState.trendingManga
+                                    state.trendingState.trendingManga
                                 }
                             )
                         )
@@ -211,8 +211,8 @@ class DiscoverViewModel(
     }
 
     private fun onObservedViewEvent() {
-        _uiState.update {
-            it.copy(viewEvent = null)
+        _uiState.update { state ->
+            state.copy(viewEvent = null)
         }
     }
 

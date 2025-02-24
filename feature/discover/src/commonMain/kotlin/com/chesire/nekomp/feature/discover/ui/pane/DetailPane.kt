@@ -31,7 +31,7 @@ internal fun DetailPane(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (detailState.detailItem != null) {
+        if (detailState.currentItem != null) {
             if (showBack) {
                 IconButton(
                     onClick = goBack,
@@ -44,16 +44,16 @@ internal fun DetailPane(
                 }
             }
             Column {
-                Text(text = detailState.detailItem.title)
-                Text(text = detailState.detailItem.type.name)
+                Text(text = detailState.currentItem.title)
+                Text(text = detailState.currentItem.type.name)
             }
             Spacer(Modifier.weight(1f))
-            if (!detailState.detailItem.isTracked) {
+            if (!detailState.currentItem.isTracked) {
                 ElevatedButton(
-                    onClick = { trackItem(detailState.detailItem) },
-                    enabled = !detailState.detailItem.isPendingTrack
+                    onClick = { trackItem(detailState.currentItem) },
+                    enabled = !detailState.currentItem.isPendingTrack
                 ) {
-                    if (detailState.detailItem.isPendingTrack) {
+                    if (detailState.currentItem.isPendingTrack) {
                         CircularProgressIndicator()
                     } else {
                         Text("Track")
