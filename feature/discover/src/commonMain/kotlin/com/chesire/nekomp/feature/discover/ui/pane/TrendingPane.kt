@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
@@ -106,7 +107,7 @@ private fun TrendingDisplay(
 ) {
     Card(
         onClick = { onItemClick(discoverItem) },
-        modifier = modifier.width(256.dp)
+        modifier = modifier.width(256.dp).heightIn(min = 140.dp)
     ) {
         Box {
             AsyncImage(
