@@ -57,7 +57,6 @@ enum class AppDestinations(
         icon = Icons.Default.DateRange
     ),
     Settings(
-        // TODO: Application settings, links to github etc
         label = NekoRes.string.nav_settings,
         contentDescription = NekoRes.string.nav_content_description_settings,
         icon = Icons.Default.Settings
