@@ -16,10 +16,14 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocalLibrary
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -118,8 +122,16 @@ private fun TrendingDisplay(
                 alpha = 0.3f
             )
             Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-                // image
-                Text(discoverItem.title) // title
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(discoverItem.title, modifier = Modifier.weight(1f))
+                    if (discoverItem.isTracked) {
+                        Icon(
+                            imageVector = Icons.Default.LocalLibrary,
+                            contentDescription = null,
+                            modifier = Modifier.alpha(0.7f)
+                        )
+                    }
+                }
                 // current rating
                 // Synopsis
             }
