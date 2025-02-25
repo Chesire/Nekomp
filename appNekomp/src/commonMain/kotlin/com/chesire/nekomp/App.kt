@@ -30,7 +30,9 @@ import org.koin.compose.koinInject
 fun App() {
     Logger.setTag("Nekomp")
 
-    MyApplicationTheme {
+    // Inject here, push setings into theme
+
+    NekompTheme {
         val navController = rememberNavController()
         var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Library) }
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
