@@ -16,6 +16,11 @@ class SettingsViewModel() : ViewModel() {
 
     fun execute(action: ViewAction) {
         when (action) {
+            ViewAction.ImageQualityClick -> TODO()
+            ViewAction.LogoutClick -> TODO()
+            ViewAction.RateChanged -> TODO()
+            ViewAction.ThemeClick -> TODO()
+            ViewAction.TitleLanguageClick -> TODO()
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }

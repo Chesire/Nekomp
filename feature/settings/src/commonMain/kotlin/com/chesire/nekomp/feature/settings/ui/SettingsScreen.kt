@@ -1,35 +1,35 @@
-@file:OptIn(
-    ExperimentalComposeUiApi::class,
-    ExperimentalMaterial3AdaptiveApi::class,
-    ExperimentalSharedTransitionApi::class
-)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.chesire.nekomp.feature.settings.ui
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.FormatPaint
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.RateReview
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
-import kotlinx.coroutines.launch
+import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -48,12 +48,7 @@ private fun Render(
     state: UIState,
     execute: (ViewAction) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
-    val isListAndDetailVisible =
-        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded &&
-            navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
@@ -63,51 +58,104 @@ private fun Render(
         execute(ViewAction.ObservedViewEvent)
     }
 
-    // TODO: Switch to predictive
-    BackHandler(enabled = navigator.canNavigateBack()) {
-        scope.launch {
-            navigator.navigateBack()
-        }
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        SharedTransitionLayout(modifier = Modifier.padding(paddingValues)) {
-            AnimatedContent(
-                targetState = isListAndDetailVisible,
-                label = "listDetailAnimatedContent"
-            ) {
-                ListDetailPaneScaffold(
-                    directive = navigator.scaffoldDirective,
-                    value = navigator.scaffoldValue,
-                    listPane = {
-                        AnimatedPane {
-                            ListContent(
-                            )
-                        }
-                    },
-                    detailPane = {
-                        AnimatedPane {
-                            DetailContent(
-                            )
-                        }
-                    }
-                )
-            }
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Setting(
+                title = "Theme",
+                subtitle = "Which theme the application uses",
+                startComposable = {
+                    Icon(imageVector = Icons.Default.FormatPaint, contentDescription = null)
+                },
+                onClick = { execute(ViewAction.ThemeClick) }
+            )
+            Setting(
+                title = "Title Language",
+                subtitle = "Language to use for displaying Anime & Manga titles",
+                startComposable = {
+                    Icon(imageVector = Icons.Default.Language, contentDescription = null)
+                },
+                onClick = { execute(ViewAction.TitleLanguageClick) }
+            )
+            Setting(
+                title = "Image Quality",
+                subtitle = "Quality of the displayed images within the application",
+                startComposable = {
+                    Icon(imageVector = Icons.Default.Image, contentDescription = null)
+                },
+                onClick = { execute(ViewAction.ImageQualityClick) }
+            )
+            Setting(
+                title = "Rate Series",
+                subtitle = "Prompt to rate series when finishing it",
+                startComposable = {
+                    Icon(imageVector = Icons.Default.RateReview, contentDescription = null)
+                },
+                endComposable = {
+                    Checkbox(checked = state.rateCheckbox, onCheckedChange = null)
+                },
+                onClick = { execute(ViewAction.RateChanged) }
+            )
+            Setting(
+                title = "Logout",
+                subtitle = "Logout of the application",
+                startComposable = {
+                    Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = null)
+                },
+                onClick = { execute(ViewAction.LogoutClick) }
+            )
+            Setting(
+                title = "Version",
+                subtitle = state.version,
+                onClick = { }
+            )
         }
     }
 }
 
 @Composable
-private fun ListContent(
+private fun Setting(
+    title: String,
+    subtitle: String,
+    startComposable: (@Composable () -> Unit)? = null,
+    endComposable: (@Composable () -> Unit)? = null,
+    onClick: () -> Unit
 ) {
-}
+    Row(
+        modifier = Modifier
+            .clickable(enabled = true, onClick = onClick)
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (startComposable != null) {
+            startComposable()
+        }
 
-@Composable
-private fun DetailContent(
-) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            if (subtitle.isNotBlank()) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+
+        if (endComposable != null) {
+            endComposable()
+        }
+    }
 }
 
 @Composable
