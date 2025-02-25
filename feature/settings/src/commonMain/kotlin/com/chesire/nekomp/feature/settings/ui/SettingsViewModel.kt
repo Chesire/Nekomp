@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.Theme
+import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.settings.ui.SettingsBottomSheet.ImageQualityBottomSheet
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,13 @@ class SettingsViewModel(private val applicationSettings: ApplicationSettings) : 
                 }
             }
         }
+        viewModelScope.launch {
+            applicationSettings.titleLanguage.collect { titleLanguage ->
+                _uiState.update { state ->
+                    state.copy(titleLanguage = titleLanguage.name)
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
@@ -41,7 +49,8 @@ class SettingsViewModel(private val applicationSettings: ApplicationSettings) : 
             ViewAction.ThemeClick -> onThemeClick()
             is ViewAction.ThemeChosen -> onThemeChosen(action.theme)
 
-            ViewAction.TitleLanguageClick -> TODO()
+            ViewAction.TitleLanguageClick -> onTitleLanguageClick()
+            is ViewAction.TitleLanguageChosen -> onTitleLanguageChosen(action.titleLanguage)
 
             ViewAction.ImageQualityClick -> onImageQualityClick()
             is ViewAction.ImageQualityChosen -> onImageQualityChosen(action.imageQuality)
@@ -67,6 +76,27 @@ class SettingsViewModel(private val applicationSettings: ApplicationSettings) : 
     private fun onThemeChosen(newTheme: Theme?) = viewModelScope.launch {
         if (newTheme != null) {
             applicationSettings.updateTheme(newTheme)
+        }
+
+        _uiState.update { state ->
+            state.copy(bottomSheet = null)
+        }
+    }
+
+    private fun onTitleLanguageClick() = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = SettingsBottomSheet.TitleLanguageBottomSheet(
+                    languages = TitleLanguage.entries.toPersistentList(),
+                    selectedLanguage = applicationSettings.titleLanguage.first()
+                )
+            )
+        }
+    }
+
+    private fun onTitleLanguageChosen(newTitleLanguage: TitleLanguage?) = viewModelScope.launch {
+        if (newTitleLanguage != null) {
+            applicationSettings.updateTitleLanguage(newTitleLanguage)
         }
 
         _uiState.update { state ->

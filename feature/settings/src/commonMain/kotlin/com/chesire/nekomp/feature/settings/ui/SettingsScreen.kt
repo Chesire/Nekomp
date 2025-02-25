@@ -146,7 +146,7 @@ private fun Setting(
         modifier = Modifier
             .clickable(enabled = true, onClick = onClick)
             .padding(vertical = 8.dp, horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (startComposable != null) {
@@ -204,6 +204,14 @@ private fun BottomSheetEventHandler(
             entries = sheet.themes,
             selectedEntry = sheet.selectedTheme,
             execute = { execute(ViewAction.ThemeChosen(it)) }
+        )
+
+        is SettingsBottomSheet.TitleLanguageBottomSheet -> SettingsSheet(
+            sheetState = sheetState,
+            title = "Title Language",
+            entries = sheet.languages,
+            selectedEntry = sheet.selectedLanguage,
+            execute = { execute(ViewAction.TitleLanguageChosen(it)) }
         )
 
         is SettingsBottomSheet.ImageQualityBottomSheet -> SettingsSheet(

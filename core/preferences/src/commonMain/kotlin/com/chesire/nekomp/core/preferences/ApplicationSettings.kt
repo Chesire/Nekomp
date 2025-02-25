@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 
 private const val THEME = "THEME_KEY"
 private const val IMAGE_QUALITY = "IMAGE_QUALITY_KEY"
+private const val TITLE_LANGUAGE = "TITLE_LANGUAGE_KEY"
 
 class ApplicationSettings(private val preferences: DataStore<Preferences>) {
 
@@ -24,6 +25,12 @@ class ApplicationSettings(private val preferences: DataStore<Preferences>) {
         }
     }
 
+    val titleLanguage: Flow<TitleLanguage> = preferences.data.map {
+        (it[stringPreferencesKey(TITLE_LANGUAGE)] ?: TitleLanguage.default.name).let {
+            TitleLanguage.fromString(it)
+        }
+    }
+
     suspend fun updateTheme(newTheme: Theme) {
         preferences.edit {
             it[stringPreferencesKey(THEME)] = newTheme.name
@@ -33,6 +40,12 @@ class ApplicationSettings(private val preferences: DataStore<Preferences>) {
     suspend fun updateImageQuality(newImageQuality: ImageQuality) {
         preferences.edit {
             it[stringPreferencesKey(IMAGE_QUALITY)] = newImageQuality.name
+        }
+    }
+
+    suspend fun updateTitleLanguage(newTitleLanguage: TitleLanguage) {
+        preferences.edit {
+            it[stringPreferencesKey(TITLE_LANGUAGE)] = newTitleLanguage.name
         }
     }
 }
@@ -65,6 +78,25 @@ enum class ImageQuality {
 
         fun fromString(input: String): ImageQuality {
             return ImageQuality.entries.find { it.name.lowercase() == input.lowercase() } ?: default
+        }
+    }
+}
+
+enum class TitleLanguage {
+    Canonical,
+    English,
+    Romaji,
+    Japanese;
+
+    companion object {
+
+        internal val default: TitleLanguage = Canonical
+
+        fun fromString(input: String): TitleLanguage {
+            return TitleLanguage
+                .entries
+                .find { it.name.lowercase() == input.lowercase() }
+                ?: default
         }
     }
 }
