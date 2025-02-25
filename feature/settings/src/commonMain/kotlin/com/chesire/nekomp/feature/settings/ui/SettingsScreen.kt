@@ -74,7 +74,7 @@ private fun Render(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(16.dp),
+                .padding(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Setting(
@@ -145,7 +145,7 @@ private fun Setting(
     Row(
         modifier = Modifier
             .clickable(enabled = true, onClick = onClick)
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp, horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -222,12 +222,12 @@ private fun <T : Enum<T>> SettingsSheet(
         onDismissRequest = { execute(null) },
         content = {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
                     text = title,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(16.dp)
                 )
                 entries.forEach { entry ->
                     Row(
@@ -236,7 +236,7 @@ private fun <T : Enum<T>> SettingsSheet(
                                 enabled = true,
                                 onClick = { execute(entry) }
                             )
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp, horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
