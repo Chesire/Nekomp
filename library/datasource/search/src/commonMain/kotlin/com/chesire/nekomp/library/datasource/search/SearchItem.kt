@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.search
 
+import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Type
 
 data class SearchItem(
@@ -9,6 +10,6 @@ data class SearchItem(
     val canonicalTitle: String,
     // val otherTitles: Map<String, String?>,
     val subtype: String,
-    val posterImage: String,
-    val coverImage: String
+    val posterImage: Image,
+    val coverImage: Image
 )

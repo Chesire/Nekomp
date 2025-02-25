@@ -1,10 +1,12 @@
 package com.chesire.nekomp.library.datasource.library
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
 import com.chesire.nekomp.library.datasource.library.remote.model.DataDto
+import com.chesire.nekomp.library.datasource.library.remote.model.ImageModel
 import com.chesire.nekomp.library.datasource.library.remote.model.IncludedDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
 import com.chesire.nekomp.library.datasource.user.UserRepository
@@ -129,7 +131,7 @@ class LibraryRepository(
                     ?: included.attributes.chapterCount
                     ?: 0,
                 rating = data.attributes.rating ?: 0,
-                posterImage = included.attributes.posterImage?.medium ?: "",
+                posterImage = included.attributes.posterImage.toImage(),
                 startDate = included.attributes.startDate ?: "",
                 endDate = included.attributes.endDate ?: ""
             )
@@ -224,3 +226,17 @@ private fun createAddDto(
   }
 }
         """.trimIndent()
+
+private fun ImageModel?.toImage(): Image {
+    return if (this == null) {
+        Image("", "", "", "", "")
+    } else {
+        Image(
+            tiny = tiny,
+            small = small,
+            medium = medium,
+            large = large,
+            original = original
+        )
+    }
+}

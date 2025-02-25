@@ -13,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class LibraryViewModel(
     private val refreshLibraryEntries: RefreshLibraryEntriesUseCase,
-    private val observeLibraryEntries: ObserveLibraryEntriesUseCase
+    private val observeLibraryEntries: ObserveLibraryEntriesUseCase,
+    private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())

@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.library.local
 
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
 import com.chesire.nekomp.core.database.entity.LibraryEntryEntity
+import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import kotlinx.coroutines.flow.map
@@ -25,7 +26,13 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                     progress = entry.progress,
                     totalLength = entry.totalLength,
                     rating = entry.rating,
-                    posterImage = entry.posterImage,
+                    posterImage = Image(
+                        tiny = entry.posterImageTiny,
+                        small = entry.posterImageSmall,
+                        medium = entry.posterImageMedium,
+                        large = entry.posterImageLarge,
+                        original = entry.posterImageOriginal,
+                    ),
                     startDate = entry.startDate,
                     endDate = entry.endDate
                 )
@@ -47,7 +54,11 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                 progress = entry.progress,
                 totalLength = entry.totalLength,
                 rating = entry.rating,
-                posterImage = entry.posterImage,
+                posterImageTiny = entry.posterImage.tiny,
+                posterImageSmall = entry.posterImage.small,
+                posterImageMedium = entry.posterImage.medium,
+                posterImageLarge = entry.posterImage.large,
+                posterImageOriginal = entry.posterImage.original,
                 startDate = entry.startDate,
                 endDate = entry.endDate
             )
@@ -69,7 +80,11 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             progress = entry.progress,
             totalLength = entry.totalLength,
             rating = entry.rating,
-            posterImage = entry.posterImage,
+            posterImageTiny = entry.posterImage.tiny,
+            posterImageSmall = entry.posterImage.small,
+            posterImageMedium = entry.posterImage.medium,
+            posterImageLarge = entry.posterImage.large,
+            posterImageOriginal = entry.posterImage.original,
             startDate = entry.startDate,
             endDate = entry.endDate
         )

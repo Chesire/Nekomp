@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.library
 
+import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Type
 
 data class LibraryEntry(
@@ -16,7 +17,7 @@ data class LibraryEntry(
     val progress: Int,
     val totalLength: Int,
     val rating: Int,
-    val posterImage: String,
+    val posterImage: Image,
     val startDate: String,
     val endDate: String
 )

@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.trending
 
+import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Type
 
 data class TrendingItem(
@@ -9,8 +10,8 @@ data class TrendingItem(
     val canonicalTitle: String,
     // val otherTitles: Map<String, String?>,
     val subtype: String,
-    val posterImage: String,
-    val coverImage: String,
+    val posterImage: Image,
+    val coverImage: Image,
     val averageRating: String,
     val ratingRank: Int,
     val popularityRank: Int

@@ -7,6 +7,7 @@ import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingDataUseCase
 import com.chesire.nekomp.feature.discover.core.SearchForUseCase
+import com.chesire.nekomp.library.datasource.search.SearchItem
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
@@ -125,14 +126,7 @@ class DiscoverViewModel(
                         state.copy(
                             resultsState = state.resultsState.copy(
                                 searchResults = searchItems.map { item ->
-                                    DiscoverItem(
-                                        id = item.id,
-                                        title = item.canonicalTitle,
-                                        type = item.type,
-                                        coverImage = item.coverImage,
-                                        posterImage = item.posterImage,
-                                        isTracked = _libraryIds.contains(item.id)
-                                    )
+                                    item.toDiscoverItem(_libraryIds.contains(item.id))
                                 }.toPersistentList()
                             )
                         )
@@ -204,6 +198,17 @@ class DiscoverViewModel(
     }
 
     private fun TrendingItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
+        return DiscoverItem(
+            id = id,
+            title = canonicalTitle,
+            type = type,
+            coverImage = coverImage,
+            posterImage = posterImage,
+            isTracked = isTracked
+        )
+    }
+
+    private fun SearchItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
         return DiscoverItem(
             id = id,
             title = canonicalTitle,

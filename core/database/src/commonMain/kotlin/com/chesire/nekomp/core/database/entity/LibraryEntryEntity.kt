@@ -19,7 +19,11 @@ data class LibraryEntryEntity(
     val progress: Int,
     val totalLength: Int,
     val rating: Int,
-    val posterImage: String,
+    val posterImageTiny: String,
+    val posterImageSmall: String,
+    val posterImageMedium: String,
+    val posterImageLarge: String,
+    val posterImageOriginal: String,
     val startDate: String,
     val endDate: String
 )

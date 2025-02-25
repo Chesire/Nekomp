@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.trending
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.trending.local.TrendingStorage
 import com.chesire.nekomp.library.datasource.trending.remote.TrendingApi
@@ -118,8 +119,8 @@ class TrendingRepository(
                 canonicalTitle = it.attributes.canonicalTitle,
                 // otherTitles = it.attributes.titles,
                 subtype = it.attributes.subtype,
-                posterImage = it.attributes.posterImage.bestImage(),
-                coverImage = it.attributes.coverImage.bestImage(),
+                posterImage = it.attributes.posterImage.toImage(),
+                coverImage = it.attributes.coverImage.toImage(),
                 averageRating = it.attributes.averageRating,
                 ratingRank = it.attributes.ratingRank,
                 popularityRank = it.attributes.popularityRank
@@ -127,15 +128,17 @@ class TrendingRepository(
         }
     }
 
-    private fun ImageModel?.bestImage(): String {
-        return when {
-            this == null -> ""
-            large.isNotBlank() -> large
-            medium.isNotBlank() -> medium
-            small.isNotBlank() -> small
-            original.isNotBlank() -> original
-            tiny.isNotBlank() -> tiny
-            else -> ""
+    private fun ImageModel?.toImage(): Image {
+        return if (this == null) {
+            Image("", "", "", "", "")
+        } else {
+            Image(
+                tiny = tiny,
+                small = small,
+                medium = medium,
+                large = large,
+                original = original
+            )
         }
     }
 }

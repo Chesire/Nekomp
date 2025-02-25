@@ -1,9 +1,11 @@
 package com.chesire.nekomp.library.datasource.search
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.search.remote.SearchApi
 import com.chesire.nekomp.library.datasource.search.remote.model.SearchResponseDto
+import com.chesire.nekomp.library.datasource.search.remote.model.SearchResponseDto.SearchData.SearchAttributes.ImageModel
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
@@ -41,8 +43,22 @@ private fun SearchResponseDto.toSearchItems(): List<SearchItem> {
             canonicalTitle = it.attributes.canonicalTitle,
             // otherTitles = it.attributes.titles,
             subtype = it.attributes.subtype,
-            posterImage = it.attributes.posterImage?.medium ?: "",
-            coverImage = it.attributes.coverImage?.small ?: ""
+            posterImage = it.attributes.posterImage.toImage(),
+            coverImage = it.attributes.coverImage.toImage()
+        )
+    }
+}
+
+private fun ImageModel?.toImage(): Image {
+    return if (this == null) {
+        Image("", "", "", "", "")
+    } else {
+        Image(
+            tiny = tiny,
+            small = small,
+            medium = medium,
+            large = large,
+            original = original
         )
     }
 }

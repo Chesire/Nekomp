@@ -104,7 +104,9 @@ data class ImageModel(
     @SerialName("medium")
     val medium: String = "",
     @SerialName("large")
-    val large: String = ""
+    val large: String = "",
+    @SerialName("original")
+    val original: String = ""
 )
 
 @Serializable
