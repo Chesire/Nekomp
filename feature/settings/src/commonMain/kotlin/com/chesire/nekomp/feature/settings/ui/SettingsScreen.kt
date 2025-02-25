@@ -18,18 +18,27 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -70,7 +79,7 @@ private fun Render(
         ) {
             Setting(
                 title = "Theme",
-                subtitle = "Which theme the application uses",
+                subtitle = state.currentTheme,
                 startComposable = {
                     Icon(imageVector = Icons.Default.FormatPaint, contentDescription = null)
                 },
@@ -78,7 +87,7 @@ private fun Render(
             )
             Setting(
                 title = "Title Language",
-                subtitle = "Language to use for displaying Anime & Manga titles",
+                subtitle = state.titleLanguage,
                 startComposable = {
                     Icon(imageVector = Icons.Default.Language, contentDescription = null)
                 },
@@ -86,7 +95,7 @@ private fun Render(
             )
             Setting(
                 title = "Image Quality",
-                subtitle = "Quality of the displayed images within the application",
+                subtitle = state.imageQuality,
                 startComposable = {
                     Icon(imageVector = Icons.Default.Image, contentDescription = null)
                 },
@@ -117,6 +126,11 @@ private fun Render(
                 onClick = { }
             )
         }
+
+        BottomSheetEventHandler(
+            bottomSheet = state.bottomSheet,
+            execute = execute
+        )
     }
 }
 
@@ -139,7 +153,10 @@ private fun Setting(
             startComposable()
         }
 
-        Column(modifier = Modifier.weight(1f)) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium
@@ -156,6 +173,87 @@ private fun Setting(
             endComposable()
         }
     }
+}
+
+@Composable
+private fun BottomSheetEventHandler(
+    bottomSheet: SettingsBottomSheet?,
+    execute: (ViewAction) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val coroutineScope = rememberCoroutineScope()
+    var rememberedSheet by remember { mutableStateOf(bottomSheet) }
+    if (bottomSheet != null) {
+        rememberedSheet = bottomSheet
+    }
+
+    LaunchedEffect(bottomSheet) {
+        if (bottomSheet == null) {
+            coroutineScope.launch {
+                sheetState.hide()
+            }.invokeOnCompletion {
+                rememberedSheet = null
+            }
+        }
+    }
+
+    when (val sheet = rememberedSheet) {
+        is SettingsBottomSheet.ThemeBottomSheet -> SettingsSheet(
+            sheetState = sheetState,
+            title = "Theme",
+            entries = sheet.themes,
+            selectedEntry = sheet.selectedTheme,
+            execute = { execute(ViewAction.ThemeChosen(it)) }
+        )
+
+        null -> Unit
+    }
+}
+
+@Composable
+private fun <T : Enum<T>> SettingsSheet(
+    sheetState: SheetState,
+    title: String,
+    entries: ImmutableList<T>,
+    selectedEntry: T,
+    execute: (T?) -> Unit
+) {
+    ModalBottomSheet(
+        onDismissRequest = { execute(null) },
+        content = {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = title,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                entries.forEach { entry ->
+                    Row(
+                        modifier = Modifier
+                            .clickable(
+                                enabled = true,
+                                onClick = { execute(entry) }
+                            )
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = entry.name,
+                            modifier = Modifier.weight(1f)
+                        )
+                        RadioButton(
+                            selected = entry == selectedEntry,
+                            onClick = null
+                        )
+                    }
+                }
+            }
+        },
+        sheetState = sheetState
+    )
 }
 
 @Composable

@@ -1,27 +1,68 @@
 package com.chesire.nekomp.feature.settings.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.preferences.ApplicationSettings
+import com.chesire.nekomp.core.preferences.Theme
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class SettingsViewModel() : ViewModel() {
+class SettingsViewModel(
+    private val applicationSettings: ApplicationSettings
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            applicationSettings.theme.collect { theme ->
+                _uiState.update { state ->
+                    state.copy(currentTheme = theme.name)
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
         when (action) {
-            ViewAction.ImageQualityClick -> TODO()
-            ViewAction.LogoutClick -> TODO()
-            ViewAction.RateChanged -> TODO()
-            ViewAction.ThemeClick -> TODO()
+            ViewAction.ThemeClick -> onThemeClick()
+            is ViewAction.ThemeChosen -> onThemeChosen(action.theme)
+
             ViewAction.TitleLanguageClick -> TODO()
+
+            ViewAction.ImageQualityClick -> TODO()
+
+            ViewAction.RateChanged -> TODO()
+
+            ViewAction.LogoutClick -> TODO()
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
+        }
+    }
+
+    private fun onThemeClick() = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = SettingsBottomSheet.ThemeBottomSheet(
+                    themes = Theme.entries.toPersistentList(),
+                    selectedTheme = applicationSettings.theme.first()
+                )
+            )
+        }
+    }
+
+    private fun onThemeChosen(newTheme: Theme?) = viewModelScope.launch {
+        if (newTheme != null) {
+            applicationSettings.updateTheme(newTheme)
+        }
+
+        _uiState.update { state ->
+            state.copy(bottomSheet = null)
         }
     }
 

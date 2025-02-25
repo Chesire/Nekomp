@@ -44,6 +44,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.database)
             implementation(projects.core.network)
+            implementation(projects.core.preferences)
             implementation(projects.core.resources)
             implementation(projects.feature.discover)
             implementation(projects.feature.library)
