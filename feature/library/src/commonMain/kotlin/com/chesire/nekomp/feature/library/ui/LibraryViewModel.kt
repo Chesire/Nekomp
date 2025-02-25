@@ -2,12 +2,16 @@ package com.chesire.nekomp.feature.library.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.preferences.ApplicationSettings
+import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.feature.library.core.ObserveLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.core.RefreshLibraryEntriesUseCase
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -26,6 +30,7 @@ class LibraryViewModel(
         }
         viewModelScope.launch {
             observeLibraryEntries().collect { entries ->
+                val imageQuality = applicationSettings.imageQuality.first()
                 _uiState.update { state ->
                     state.copy(
                         entries = entries
@@ -33,7 +38,7 @@ class LibraryViewModel(
                                 Entry(
                                     id = it.id,
                                     title = it.title,
-                                    image = it.posterImage
+                                    image = it.posterImage.toBestImage(imageQuality)
                                 )
                             }
                             .toImmutableList()
@@ -52,6 +57,16 @@ class LibraryViewModel(
     private fun onObservedViewEvent() {
         _uiState.update {
             it.copy(viewEvent = null)
+        }
+    }
+
+    private fun Image.toBestImage(imageQuality: ImageQuality): String {
+        return when (imageQuality) {
+            ImageQuality.Lowest -> lowest
+            ImageQuality.Low -> low
+            ImageQuality.Medium -> middle
+            ImageQuality.High -> high
+            ImageQuality.Highest -> highest
         }
     }
 }
