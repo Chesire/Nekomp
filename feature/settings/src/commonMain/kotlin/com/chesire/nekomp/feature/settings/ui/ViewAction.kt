@@ -1,5 +1,6 @@
 package com.chesire.nekomp.feature.settings.ui
 
+import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.Theme
 
 sealed interface ViewAction {
@@ -10,6 +11,7 @@ sealed interface ViewAction {
     data object TitleLanguageClick : ViewAction
 
     data object ImageQualityClick : ViewAction
+    data class ImageQualityChosen(val imageQuality: ImageQuality?) : ViewAction
 
     data object RateChanged : ViewAction
 

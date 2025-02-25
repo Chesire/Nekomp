@@ -206,6 +206,14 @@ private fun BottomSheetEventHandler(
             execute = { execute(ViewAction.ThemeChosen(it)) }
         )
 
+        is SettingsBottomSheet.ImageQualityBottomSheet -> SettingsSheet(
+            sheetState = sheetState,
+            title = "Image quality",
+            entries = sheet.qualities,
+            selectedEntry = sheet.selectedQuality,
+            execute = { execute(ViewAction.ImageQualityChosen(it)) }
+        )
+
         null -> Unit
     }
 }

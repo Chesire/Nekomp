@@ -8,18 +8,31 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 private const val THEME = "THEME_KEY"
+private const val IMAGE_QUALITY = "IMAGE_QUALITY_KEY"
 
 class ApplicationSettings(private val preferences: DataStore<Preferences>) {
 
     val theme: Flow<Theme> = preferences.data.map {
-        (it[stringPreferencesKey(THEME)] ?: Theme.System.name).let {
+        (it[stringPreferencesKey(THEME)] ?: Theme.default.name).let {
             Theme.fromString(it)
+        }
+    }
+
+    val imageQuality: Flow<ImageQuality> = preferences.data.map {
+        (it[stringPreferencesKey(IMAGE_QUALITY)] ?: ImageQuality.default.name).let {
+            ImageQuality.fromString(it)
         }
     }
 
     suspend fun updateTheme(newTheme: Theme) {
         preferences.edit {
             it[stringPreferencesKey(THEME)] = newTheme.name
+        }
+    }
+
+    suspend fun updateImageQuality(newImageQuality: ImageQuality) {
+        preferences.edit {
+            it[stringPreferencesKey(IMAGE_QUALITY)] = newImageQuality.name
         }
     }
 }
@@ -31,8 +44,27 @@ enum class Theme {
 
     companion object {
 
+        internal val default: Theme = System
+
         fun fromString(input: String): Theme {
-            return Theme.entries.find { it.name.lowercase() == input.lowercase() } ?: System
+            return Theme.entries.find { it.name.lowercase() == input.lowercase() } ?: default
+        }
+    }
+}
+
+enum class ImageQuality {
+    Lowest,
+    Low,
+    Medium,
+    High,
+    Highest;
+
+    companion object {
+
+        internal val default: ImageQuality = Medium
+
+        fun fromString(input: String): ImageQuality {
+            return ImageQuality.entries.find { it.name.lowercase() == input.lowercase() } ?: default
         }
     }
 }

@@ -3,7 +3,9 @@ package com.chesire.nekomp.feature.settings.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.preferences.ApplicationSettings
+import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.Theme
+import com.chesire.nekomp.feature.settings.ui.SettingsBottomSheet.ImageQualityBottomSheet
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,9 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(
-    private val applicationSettings: ApplicationSettings
-) : ViewModel() {
+class SettingsViewModel(private val applicationSettings: ApplicationSettings) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
@@ -27,6 +27,13 @@ class SettingsViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            applicationSettings.imageQuality.collect { imageQuality ->
+                _uiState.update { state ->
+                    state.copy(imageQuality = imageQuality.name)
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
@@ -36,7 +43,8 @@ class SettingsViewModel(
 
             ViewAction.TitleLanguageClick -> TODO()
 
-            ViewAction.ImageQualityClick -> TODO()
+            ViewAction.ImageQualityClick -> onImageQualityClick()
+            is ViewAction.ImageQualityChosen -> onImageQualityChosen(action.imageQuality)
 
             ViewAction.RateChanged -> TODO()
 
@@ -59,6 +67,27 @@ class SettingsViewModel(
     private fun onThemeChosen(newTheme: Theme?) = viewModelScope.launch {
         if (newTheme != null) {
             applicationSettings.updateTheme(newTheme)
+        }
+
+        _uiState.update { state ->
+            state.copy(bottomSheet = null)
+        }
+    }
+
+    private fun onImageQualityClick() = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = ImageQualityBottomSheet(
+                    qualities = ImageQuality.entries.toPersistentList(),
+                    selectedQuality = applicationSettings.imageQuality.first()
+                )
+            )
+        }
+    }
+
+    private fun onImageQualityChosen(newImageQuality: ImageQuality?) = viewModelScope.launch {
+        if (newImageQuality != null) {
+            applicationSettings.updateImageQuality(newImageQuality)
         }
 
         _uiState.update { state ->

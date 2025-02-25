@@ -1,5 +1,6 @@
 package com.chesire.nekomp.feature.settings.ui
 
+import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.Theme
 import kotlinx.collections.immutable.ImmutableList
 
@@ -18,5 +19,10 @@ sealed interface SettingsBottomSheet {
     data class ThemeBottomSheet(
         val themes: ImmutableList<Theme>,
         val selectedTheme: Theme
+    ) : SettingsBottomSheet
+
+    data class ImageQualityBottomSheet(
+        val qualities: ImmutableList<ImageQuality>,
+        val selectedQuality: ImageQuality
     ) : SettingsBottomSheet
 }
