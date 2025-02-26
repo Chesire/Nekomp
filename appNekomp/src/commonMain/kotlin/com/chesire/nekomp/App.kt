@@ -87,7 +87,9 @@ fun App() {
                             AppDestinations.Airing -> LibraryScreen()
                             AppDestinations.Profile -> LibraryScreen()
                             AppDestinations.Activity -> LibraryScreen()
-                            AppDestinations.Settings -> SettingsScreen()
+                            AppDestinations.Settings -> SettingsScreen {
+                                navController.navigate(StartingPoint.Login.name)
+                            }
                         }
                     }
                 }

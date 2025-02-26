@@ -6,6 +6,7 @@ import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.Theme
 import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.feature.settings.core.LogoutExecutor
 import com.chesire.nekomp.feature.settings.ui.SettingsBottomSheet.ImageQualityBottomSheet
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(private val applicationSettings: ApplicationSettings) : ViewModel() {
+class SettingsViewModel(
+    private val applicationSettings: ApplicationSettings,
+    private val logout: LogoutExecutor
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
@@ -64,7 +68,7 @@ class SettingsViewModel(private val applicationSettings: ApplicationSettings) : 
 
             ViewAction.RateChanged -> onRateChanged()
 
-            ViewAction.LogoutClick -> TODO()
+            ViewAction.LogoutClick -> onLogoutClick()
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
@@ -134,6 +138,13 @@ class SettingsViewModel(private val applicationSettings: ApplicationSettings) : 
 
     private fun onRateChanged() = viewModelScope.launch {
         applicationSettings.updateRateOnFinish(!_uiState.value.rateChecked)
+    }
+
+    private fun onLogoutClick() = viewModelScope.launch {
+        logout.execute()
+        _uiState.update { state ->
+            state.copy(viewEvent = ViewEvent.LoggedOut)
+        }
     }
 
     private fun onObservedViewEvent() {

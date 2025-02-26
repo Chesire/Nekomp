@@ -1,3 +1,5 @@
 package com.chesire.nekomp.feature.settings.ui
 
-sealed interface ViewEvent
+sealed interface ViewEvent {
+    data object LoggedOut : ViewEvent
+}

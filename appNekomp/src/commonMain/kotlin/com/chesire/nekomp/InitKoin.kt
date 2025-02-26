@@ -4,6 +4,7 @@ package com.chesire.nekomp
 
 import com.chesire.nekomp.core.database.databaseModule
 import com.chesire.nekomp.core.preferences.preferencesModule
+import com.chesire.nekomp.di.logoutModule
 import com.chesire.nekomp.feature.discover.featureDiscoverModule
 import com.chesire.nekomp.feature.library.featureLibraryModule
 import com.chesire.nekomp.feature.login.featureLoginModule
@@ -38,6 +39,7 @@ fun initKoin(
                 librarySearchModule,
                 libraryTrendingModule,
                 libraryUserModule,
+                logoutModule,
                 preferencesModule
             )
         )

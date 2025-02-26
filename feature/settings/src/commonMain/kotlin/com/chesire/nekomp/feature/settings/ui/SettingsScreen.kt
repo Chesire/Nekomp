@@ -43,11 +43,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
+fun SettingsScreen(
+    viewModel: SettingsViewModel = koinViewModel(),
+    onLoggedOut: () -> Unit
+) {
     val state by viewModel.uiState.collectAsState()
 
     Render(
         state = state,
+        onLoggedOut = onLoggedOut,
         execute = { viewModel.execute(it) }
     )
 }
@@ -55,16 +59,20 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
 @Composable
 private fun Render(
     state: UIState,
+    onLoggedOut: () -> Unit,
     execute: (ViewAction) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
+            ViewEvent.LoggedOut -> onLoggedOut()
             null -> Unit
         }
 
-        execute(ViewAction.ObservedViewEvent)
+        if (state.viewEvent != null) {
+            execute(ViewAction.ObservedViewEvent)
+        }
     }
 
     Scaffold(
@@ -278,6 +286,7 @@ private fun Preview() {
     val state = UIState()
     Render(
         state = state,
+        onLoggedOut = {},
         execute = {}
     )
 }
