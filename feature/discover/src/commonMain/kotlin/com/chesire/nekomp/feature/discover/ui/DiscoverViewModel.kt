@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Suppress("TooManyFunctions")
 class DiscoverViewModel(
     private val retrieveLibrary: RetrieveLibraryUseCase,
     private val retrieveTrendingData: RetrieveTrendingDataUseCase,
