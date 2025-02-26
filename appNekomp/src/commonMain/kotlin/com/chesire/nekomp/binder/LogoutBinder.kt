@@ -16,14 +16,14 @@ class LogoutBinder(
     }
 
     private suspend fun clearAuth() {
-        Logger.Companion.d("Logout") { "Clearing auth" }
+        Logger.d("Logout") { "Clearing auth" }
         authStorage.clear()
     }
 
     private suspend fun clearDBs() {
-        Logger.Companion.d("Logout") { "Clearing user" }
+        Logger.d("Logout") { "Clearing user" }
         database.getUserDao().delete()
-        Logger.Companion.d("Logout") { "Clearing library entries" }
+        Logger.d("Logout") { "Clearing library entries" }
         database.getLibraryEntryDao().delete()
     }
 }
