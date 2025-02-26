@@ -20,8 +20,11 @@ import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.Theme
 import com.chesire.nekomp.feature.discover.ui.DiscoverScreen
+import com.chesire.nekomp.feature.home.ui.HomeScreen
 import com.chesire.nekomp.feature.library.ui.LibraryScreen
 import com.chesire.nekomp.feature.login.ui.LoginScreen
+import com.chesire.nekomp.feature.profile.ui.ProfileScreen
+import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -38,7 +41,7 @@ fun App() {
 
     NekompTheme(theme = theme) {
         val navController = rememberNavController()
-        var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Library) }
+        var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Home) }
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -47,55 +50,65 @@ fun App() {
             NavHost(
                 navController = navController,
                 startDestination = if (isLoggedIn) {
-                    StartingPoint.LoggedIn.name
+                    OriginScreen.Dashboard.name
                 } else {
-                    StartingPoint.Login.name
+                    OriginScreen.Login.name
                 },
                 modifier = Modifier.fillMaxSize()
             ) {
-                composable(route = StartingPoint.Login.name) {
+                composable(route = OriginScreen.Login.name) {
                     LoginScreen {
-                        navController.navigate(StartingPoint.LoggedIn.name) {
-                            popUpTo(StartingPoint.Login.name) {
+                        navController.navigate(OriginScreen.Dashboard.name) {
+                            popUpTo(OriginScreen.Login.name) {
                                 inclusive = true
                             }
                         }
                     }
                 }
-                composable(route = StartingPoint.LoggedIn.name) {
+                composable(route = OriginScreen.Dashboard.name) {
                     NavigationSuiteScaffold(
                         navigationSuiteItems = {
-                            AppDestinations.entries.forEach { destination ->
-                                item(
-                                    selected = destination == currentDestination,
-                                    onClick = { currentDestination = destination },
-                                    icon = {
-                                        Icon(
-                                            imageVector = destination.icon,
-                                            contentDescription = stringResource(destination.contentDescription)
-                                        )
-                                    },
-                                    label = {
-                                        Text(text = stringResource(destination.label))
-                                    }
-                                )
-                            }
+                            AppDestinations
+                                .entries
+                                .forEach { destination ->
+                                    item(
+                                        selected = destination == currentDestination,
+                                        onClick = { currentDestination = destination },
+                                        icon = {
+                                            Icon(
+                                                imageVector = destination.icon,
+                                                contentDescription = stringResource(destination.contentDescription)
+                                            )
+                                        },
+                                        label = {
+                                            Text(text = stringResource(destination.label))
+                                        }
+                                    )
+                                }
                         }
                     ) {
                         when (currentDestination) {
-                            AppDestinations.Home -> LibraryScreen()
+                            AppDestinations.Home -> HomeScreen {
+                                navController.navigate(OriginScreen.Profile.name)
+                            }
+
                             AppDestinations.Library -> LibraryScreen()
                             AppDestinations.Airing -> LibraryScreen()
                             AppDestinations.Discover -> DiscoverScreen()
-                            //AppDestinations.Profile -> LibraryScreen()
-                            //AppDestinations.Activity -> LibraryScreen()
-                            //AppDestinations.Settings -> SettingsScreen {
-                            //    navController.navigate(StartingPoint.Login.name) {
-                            //        popUpTo(StartingPoint.LoggedIn.name) {
-                            //            inclusive = true
-                            //        }
-                            //    }
-                            //}
+                        }
+                    }
+                }
+                composable(route = OriginScreen.Profile.name) {
+                    ProfileScreen {
+                        navController.navigate(OriginScreen.Settings.name)
+                    }
+                }
+                composable(route = OriginScreen.Settings.name) {
+                    SettingsScreen {
+                        navController.navigate(OriginScreen.Login.name) {
+                            popUpTo(OriginScreen.Dashboard.name) {
+                                inclusive = true
+                            }
                         }
                     }
                 }

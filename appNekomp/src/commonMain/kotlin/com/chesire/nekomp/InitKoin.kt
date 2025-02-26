@@ -9,6 +9,7 @@ import com.chesire.nekomp.feature.discover.featureDiscoverModule
 import com.chesire.nekomp.feature.home.featureHomeModule
 import com.chesire.nekomp.feature.library.featureLibraryModule
 import com.chesire.nekomp.feature.login.featureLoginModule
+import com.chesire.nekomp.feature.profile.featureProfileModule
 import com.chesire.nekomp.feature.settings.featureSettingsModule
 import com.chesire.nekomp.library.datasource.auth.libraryAuthModule
 import com.chesire.nekomp.library.datasource.library.libraryLibraryModule
@@ -35,6 +36,7 @@ fun initKoin(
                 featureHomeModule,
                 featureLibraryModule,
                 featureLoginModule,
+                featureProfileModule,
                 featureSettingsModule,
                 libraryAuthModule,
                 libraryLibraryModule,
