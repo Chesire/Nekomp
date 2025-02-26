@@ -37,7 +37,7 @@ class LibraryViewModel(
                             .map {
                                 Entry(
                                     id = it.id,
-                                    title = it.title,
+                                    title = it.titles.canonical,
                                     image = it.posterImage.toBestImage(imageQuality)
                                 )
                             }

@@ -42,8 +42,7 @@ private fun SearchResponseDto.toSearchItems(): List<SearchItem> {
             id = it.id,
             type = Type.fromString(it.type),
             synopsis = it.attributes.synopsis,
-            canonicalTitle = it.attributes.canonicalTitle,
-            titles = it.attributes.titles.toTitle(),
+            titles = it.attributes.titles.toTitle(it.attributes.canonicalTitle),
             subtype = it.attributes.subtype,
             posterImage = it.attributes.posterImage.toImage(),
             coverImage = it.attributes.coverImage.toImage()
@@ -51,11 +50,12 @@ private fun SearchResponseDto.toSearchItems(): List<SearchItem> {
     }
 }
 
-private fun Titles?.toTitle(): Title {
+private fun Titles?.toTitle(canonical: String): Title {
     return if (this == null) {
-        Title("", "", "")
+        Title(canonical = canonical, "", "", "")
     } else {
         Title(
+            canonical = canonical,
             english = english,
             romaji = romaji,
             japanese = japanese

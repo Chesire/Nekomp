@@ -8,7 +8,6 @@ data class TrendingItem(
     val id: Int,
     val type: Type,
     val synopsis: String,
-    val canonicalTitle: String,
     val titles: Title,
     val subtype: String,
     val posterImage: Image,

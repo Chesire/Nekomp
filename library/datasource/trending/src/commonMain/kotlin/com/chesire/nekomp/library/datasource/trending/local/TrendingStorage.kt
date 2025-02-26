@@ -40,8 +40,8 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             id = id,
             type = Type.fromString(type),
             synopsis = synopsis,
-            canonicalTitle = canonicalTitle,
             titles = Title(
+                canonical = canonicalTitle,
                 english = englishTitle,
                 romaji = romajiTitle,
                 japanese = japaneseTitle
@@ -72,7 +72,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             id = id,
             type = type.name,
             synopsis = synopsis,
-            canonicalTitle = canonicalTitle,
+            canonicalTitle = titles.canonical,
             englishTitle = titles.english,
             romajiTitle = titles.romaji,
             japaneseTitle = titles.japanese,

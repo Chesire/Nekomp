@@ -12,7 +12,7 @@ data class LibraryEntryEntity(
     val primaryType: String, // Enum
     val subtype: String, // Enum
     val slug: String,
-    val title: String,
+    val canonicalTitle: String,
     val englishTitle: String,
     val romajiTitle: String,
     val japaneseTitle: String,

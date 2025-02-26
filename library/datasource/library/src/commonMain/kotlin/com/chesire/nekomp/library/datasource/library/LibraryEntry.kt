@@ -11,7 +11,6 @@ data class LibraryEntry(
     val primaryType: String, // Enum
     val subtype: String, // Enum
     val slug: String,
-    val title: String,
     val titles: Title,
     val seriesStatus: String, // Enum
     val userSeriesStatus: String, // Enum

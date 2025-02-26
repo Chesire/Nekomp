@@ -124,8 +124,7 @@ class LibraryRepository(
                 primaryType = included.type,
                 subtype = included.attributes.subtype,
                 slug = included.attributes.slug,
-                title = included.attributes.canonicalTitle,
-                titles = included.attributes.titles.toTitle(),
+                titles = included.attributes.titles.toTitle(included.attributes.canonicalTitle),
                 seriesStatus = included.attributes.status,
                 userSeriesStatus = data.attributes.status,
                 progress = data.attributes.progress,
@@ -243,11 +242,12 @@ private fun ImageModel?.toImage(): Image {
     }
 }
 
-private fun Titles?.toTitle(): Title {
+private fun Titles?.toTitle(canonical: String): Title {
     return if (this == null) {
-        Title("", "", "")
+        Title(canonical = canonical, "", "", "")
     } else {
         Title(
+            canonical = canonical,
             english = english,
             romaji = romaji,
             japanese = japanese

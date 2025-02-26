@@ -206,7 +206,7 @@ class DiscoverViewModel(
         val imageQuality = applicationSettings.imageQuality.first()
         return DiscoverItem(
             id = id,
-            title = canonicalTitle,
+            title = titles.canonical,
             type = type,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
@@ -218,7 +218,7 @@ class DiscoverViewModel(
         val imageQuality = applicationSettings.imageQuality.first()
         return DiscoverItem(
             id = id,
-            title = canonicalTitle,
+            title = titles.canonical,
             type = type,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),

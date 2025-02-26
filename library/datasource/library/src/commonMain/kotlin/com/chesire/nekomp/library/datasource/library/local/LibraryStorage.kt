@@ -21,8 +21,8 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                     primaryType = entry.primaryType,
                     subtype = entry.subtype,
                     slug = entry.slug,
-                    title = entry.title,
                     titles = Title(
+                        canonical = entry.canonicalTitle,
                         english = entry.englishTitle,
                         romaji = entry.romajiTitle,
                         japanese = entry.japaneseTitle
@@ -54,7 +54,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                 primaryType = entry.primaryType,
                 subtype = entry.subtype,
                 slug = entry.slug,
-                title = entry.title,
+                canonicalTitle = entry.titles.canonical,
                 englishTitle = entry.titles.english,
                 romajiTitle = entry.titles.romaji,
                 japaneseTitle = entry.titles.japanese,
@@ -83,7 +83,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             primaryType = entry.primaryType,
             subtype = entry.subtype,
             slug = entry.slug,
-            title = entry.title,
+            canonicalTitle = entry.titles.canonical,
             englishTitle = entry.titles.english,
             romajiTitle = entry.titles.romaji,
             japaneseTitle = entry.titles.japanese,
