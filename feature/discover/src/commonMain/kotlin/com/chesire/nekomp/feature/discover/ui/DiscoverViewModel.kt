@@ -3,8 +3,10 @@ package com.chesire.nekomp.feature.discover.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.model.Title
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
+import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
@@ -204,9 +206,10 @@ class DiscoverViewModel(
 
     private suspend fun TrendingItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
         val imageQuality = applicationSettings.imageQuality.first()
+        val titleLanguage = applicationSettings.titleLanguage.first()
         return DiscoverItem(
             id = id,
-            title = titles.canonical,
+            title = titles.toChosenLanguage(titleLanguage),
             type = type,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
@@ -216,14 +219,24 @@ class DiscoverViewModel(
 
     private suspend fun SearchItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
         val imageQuality = applicationSettings.imageQuality.first()
+        val titleLanguage = applicationSettings.titleLanguage.first()
         return DiscoverItem(
             id = id,
-            title = titles.canonical,
+            title = titles.toChosenLanguage(titleLanguage),
             type = type,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
             isTracked = isTracked
         )
+    }
+
+    private fun Title.toChosenLanguage(titleLanguage: TitleLanguage): String {
+        return when (titleLanguage) {
+            TitleLanguage.Canonical -> canonical
+            TitleLanguage.English -> english.ifBlank { canonical }
+            TitleLanguage.Romaji -> romaji.ifBlank { canonical }
+            TitleLanguage.CJK -> cjk.ifBlank { canonical }
+        }
     }
 
     private fun Image.toBestImage(imageQuality: ImageQuality): String {

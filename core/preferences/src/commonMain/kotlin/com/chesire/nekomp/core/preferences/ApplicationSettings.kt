@@ -86,7 +86,7 @@ enum class TitleLanguage {
     Canonical,
     English,
     Romaji,
-    Japanese;
+    CJK;
 
     companion object {
 

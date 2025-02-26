@@ -3,8 +3,10 @@ package com.chesire.nekomp.feature.library.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.model.Title
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
+import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.library.core.ObserveLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.core.RefreshLibraryEntriesUseCase
 import kotlinx.collections.immutable.toImmutableList
@@ -31,13 +33,14 @@ class LibraryViewModel(
         viewModelScope.launch {
             observeLibraryEntries().collect { entries ->
                 val imageQuality = applicationSettings.imageQuality.first()
+                val titleLanguage = applicationSettings.titleLanguage.first()
                 _uiState.update { state ->
                     state.copy(
                         entries = entries
                             .map {
                                 Entry(
                                     id = it.id,
-                                    title = it.titles.canonical,
+                                    title = it.titles.toChosenLanguage(titleLanguage),
                                     image = it.posterImage.toBestImage(imageQuality)
                                 )
                             }
@@ -57,6 +60,15 @@ class LibraryViewModel(
     private fun onObservedViewEvent() {
         _uiState.update {
             it.copy(viewEvent = null)
+        }
+    }
+
+    private fun Title.toChosenLanguage(titleLanguage: TitleLanguage): String {
+        return when (titleLanguage) {
+            TitleLanguage.Canonical -> canonical
+            TitleLanguage.English -> english.ifBlank { canonical }
+            TitleLanguage.Romaji -> romaji.ifBlank { canonical }
+            TitleLanguage.CJK -> cjk.ifBlank { canonical }
         }
     }
 

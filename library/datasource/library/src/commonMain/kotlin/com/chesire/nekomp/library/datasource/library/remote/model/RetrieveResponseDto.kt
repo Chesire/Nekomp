@@ -97,12 +97,18 @@ data class IncludedDto(
 
 @Serializable
 data class Titles(
-    @SerialName("english")
-    val english: String = "",
-    @SerialName("romaji")
-    val romaji: String = "",
-    @SerialName("japanese")
-    val japanese: String = ""
+    @SerialName("en")
+    val english: String?,
+    @SerialName("en_us") // Backup for EN
+    val englishUS: String?,
+    @SerialName("en_jp")
+    val englishJP: String?,
+    @SerialName("ja_jp")
+    val japanese: String?,
+    @SerialName("ko_kr")
+    val korean: String?,
+    @SerialName("zh_cn")
+    val chinese: String?
 )
 
 @Serializable

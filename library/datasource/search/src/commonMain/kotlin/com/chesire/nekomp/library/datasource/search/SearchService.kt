@@ -50,15 +50,16 @@ private fun SearchResponseDto.toSearchItems(): List<SearchItem> {
     }
 }
 
+
 private fun Titles?.toTitle(canonical: String): Title {
     return if (this == null) {
         Title(canonical = canonical, "", "", "")
     } else {
         Title(
             canonical = canonical,
-            english = english,
-            romaji = romaji,
-            japanese = japanese
+            english = english ?: englishUS ?: "",
+            romaji = englishJP ?: "",
+            cjk = japanese ?: korean ?: chinese ?: ""
         )
     }
 }

@@ -248,9 +248,9 @@ private fun Titles?.toTitle(canonical: String): Title {
     } else {
         Title(
             canonical = canonical,
-            english = english,
-            romaji = romaji,
-            japanese = japanese
+            english = english ?: englishUS ?: "",
+            romaji = englishJP ?: "",
+            cjk = japanese ?: korean ?: chinese ?: ""
         )
     }
 }

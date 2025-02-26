@@ -25,7 +25,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                         canonical = entry.canonicalTitle,
                         english = entry.englishTitle,
                         romaji = entry.romajiTitle,
-                        japanese = entry.japaneseTitle
+                        cjk = entry.cjkTitle
                     ),
                     seriesStatus = entry.seriesStatus,
                     userSeriesStatus = entry.userSeriesStatus,
@@ -57,7 +57,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                 canonicalTitle = entry.titles.canonical,
                 englishTitle = entry.titles.english,
                 romajiTitle = entry.titles.romaji,
-                japaneseTitle = entry.titles.japanese,
+                cjkTitle = entry.titles.cjk,
                 seriesStatus = entry.seriesStatus,
                 userSeriesStatus = entry.userSeriesStatus,
                 progress = entry.progress,
@@ -86,7 +86,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             canonicalTitle = entry.titles.canonical,
             englishTitle = entry.titles.english,
             romajiTitle = entry.titles.romaji,
-            japaneseTitle = entry.titles.japanese,
+            cjkTitle = entry.titles.cjk,
             seriesStatus = entry.seriesStatus,
             userSeriesStatus = entry.userSeriesStatus,
             progress = entry.progress,

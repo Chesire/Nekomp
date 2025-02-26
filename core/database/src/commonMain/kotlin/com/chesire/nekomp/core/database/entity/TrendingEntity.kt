@@ -12,7 +12,7 @@ data class TrendingEntity(
     val canonicalTitle: String,
     val englishTitle: String,
     val romajiTitle: String,
-    val japaneseTitle: String,
+    val cjkTitle: String,
     val subtype: String,
     val posterImageTiny: String,
     val posterImageSmall: String,

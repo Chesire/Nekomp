@@ -44,7 +44,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
                 canonical = canonicalTitle,
                 english = englishTitle,
                 romaji = romajiTitle,
-                japanese = japaneseTitle
+                cjk = cjkTitle
             ),
             subtype = subtype,
             posterImage = Image(
@@ -75,7 +75,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             canonicalTitle = titles.canonical,
             englishTitle = titles.english,
             romajiTitle = titles.romaji,
-            japaneseTitle = titles.japanese,
+            cjkTitle = titles.cjk,
             subtype = subtype,
             posterImageTiny = posterImage.tiny,
             posterImageSmall = posterImage.small,

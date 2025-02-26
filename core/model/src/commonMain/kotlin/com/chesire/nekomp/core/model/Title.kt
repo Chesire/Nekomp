@@ -4,5 +4,8 @@ data class Title(
     val canonical: String,
     val english: String,
     val romaji: String,
-    val japanese: String
+    /**
+     * Priority order of Japanese - Korean - Chinese
+     */
+    val cjk: String
 )

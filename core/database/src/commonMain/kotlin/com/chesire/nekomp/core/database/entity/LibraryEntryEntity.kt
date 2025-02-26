@@ -15,7 +15,7 @@ data class LibraryEntryEntity(
     val canonicalTitle: String,
     val englishTitle: String,
     val romajiTitle: String,
-    val japaneseTitle: String,
+    val cjkTitle: String,
     val seriesStatus: String, // Enum
     val userSeriesStatus: String, // Enum
     val progress: Int,
