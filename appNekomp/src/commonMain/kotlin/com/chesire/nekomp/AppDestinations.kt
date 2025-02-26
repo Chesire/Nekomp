@@ -2,11 +2,11 @@ package com.chesire.nekomp
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.CollectionsBookmark
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.chesire.nekomp.core.resources.NekoRes
 import nekomp.core.resources.generated.resources.nav_activity
@@ -36,13 +36,13 @@ enum class AppDestinations(
     Discover(
         label = NekoRes.string.nav_discover,
         contentDescription = NekoRes.string.nav_content_description_discover,
-        icon = Icons.Default.Star
+        icon = Icons.Default.Search // maybe
     ),
     Airing(
         // TODO: Show when shows are airing each season
         label = NekoRes.string.nav_airing,
         contentDescription = NekoRes.string.nav_content_description_airing,
-        icon = Icons.Default.Air
+        icon = Icons.Default.DateRange
     ),
     Profile(
         // TODO: Users profile, with stats
@@ -54,7 +54,7 @@ enum class AppDestinations(
         // TODO: Users activity (watched show, rated show, etc)
         label = NekoRes.string.nav_activity,
         contentDescription = NekoRes.string.nav_content_description_activity,
-        icon = Icons.Default.DateRange
+        icon = Icons.Default.Timeline
     ),
     Settings(
         label = NekoRes.string.nav_settings,
