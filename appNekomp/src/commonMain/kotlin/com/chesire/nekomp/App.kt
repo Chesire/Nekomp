@@ -22,7 +22,6 @@ import com.chesire.nekomp.core.preferences.Theme
 import com.chesire.nekomp.feature.discover.ui.DiscoverScreen
 import com.chesire.nekomp.feature.library.ui.LibraryScreen
 import com.chesire.nekomp.feature.login.ui.LoginScreen
-import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -84,18 +83,19 @@ fun App() {
                         }
                     ) {
                         when (currentDestination) {
+                            AppDestinations.Home -> LibraryScreen()
                             AppDestinations.Library -> LibraryScreen()
-                            AppDestinations.Discover -> DiscoverScreen()
                             AppDestinations.Airing -> LibraryScreen()
-                            AppDestinations.Profile -> LibraryScreen()
-                            AppDestinations.Activity -> LibraryScreen()
-                            AppDestinations.Settings -> SettingsScreen {
-                                navController.navigate(StartingPoint.Login.name) {
-                                    popUpTo(StartingPoint.LoggedIn.name) {
-                                        inclusive = true
-                                    }
-                                }
-                            }
+                            AppDestinations.Discover -> DiscoverScreen()
+                            //AppDestinations.Profile -> LibraryScreen()
+                            //AppDestinations.Activity -> LibraryScreen()
+                            //AppDestinations.Settings -> SettingsScreen {
+                            //    navController.navigate(StartingPoint.Login.name) {
+                            //        popUpTo(StartingPoint.LoggedIn.name) {
+                            //            inclusive = true
+                            //        }
+                            //    }
+                            //}
                         }
                     }
                 }
