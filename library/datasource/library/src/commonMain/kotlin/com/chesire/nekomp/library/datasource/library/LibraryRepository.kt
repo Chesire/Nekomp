@@ -2,6 +2,8 @@ package com.chesire.nekomp.library.datasource.library
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.model.Type
+import com.chesire.nekomp.library.datasource.kitsumodels.toImage
+import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
 import com.chesire.nekomp.library.datasource.library.remote.model.DataDto
@@ -120,8 +122,7 @@ class LibraryRepository(
                 primaryType = included.type,
                 subtype = included.attributes.subtype,
                 slug = included.attributes.slug,
-                title = included.attributes.canonicalTitle,
-                // otherTitles = included.attributes.titles,
+                titles = included.attributes.titles.toTitles(included.attributes.canonicalTitle),
                 seriesStatus = included.attributes.status,
                 userSeriesStatus = data.attributes.status,
                 progress = data.attributes.progress,
@@ -129,7 +130,7 @@ class LibraryRepository(
                     ?: included.attributes.chapterCount
                     ?: 0,
                 rating = data.attributes.rating ?: 0,
-                posterImage = included.attributes.posterImage?.medium ?: "",
+                posterImage = included.attributes.posterImage.toImage(),
                 startDate = included.attributes.startDate ?: "",
                 endDate = included.attributes.endDate ?: ""
             )

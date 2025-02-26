@@ -12,14 +12,20 @@ data class LibraryEntryEntity(
     val primaryType: String, // Enum
     val subtype: String, // Enum
     val slug: String,
-    val title: String,
-    // val otherTitles: Map<String, String>, TODO Just set the EN JA etc titles as fields
+    val canonicalTitle: String,
+    val englishTitle: String,
+    val romajiTitle: String,
+    val cjkTitle: String,
     val seriesStatus: String, // Enum
     val userSeriesStatus: String, // Enum
     val progress: Int,
     val totalLength: Int,
     val rating: Int,
-    val posterImage: String,
+    val posterImageTiny: String,
+    val posterImageSmall: String,
+    val posterImageMedium: String,
+    val posterImageLarge: String,
+    val posterImageOriginal: String,
     val startDate: String,
     val endDate: String
 )

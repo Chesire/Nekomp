@@ -20,4 +20,7 @@ interface LibraryEntryDao {
 
     @Query("SELECT * FROM LibraryEntryEntity WHERE userId = :userSeriesId LIMIT 1")
     suspend fun entries(userSeriesId: Int): LibraryEntryEntity
+
+    @Query("DELETE FROM LibraryEntryEntity")
+    suspend fun delete()
 }

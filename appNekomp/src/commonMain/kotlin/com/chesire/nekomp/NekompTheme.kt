@@ -14,13 +14,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chesire.nekomp.core.preferences.Theme
 
 @Composable
-fun MyApplicationTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+fun NekompTheme(
+    theme: Theme,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
+    val useDarkTheme = when {
+        theme == Theme.System && isSystemInDarkTheme() -> true
+        theme == Theme.System && !isSystemInDarkTheme() -> false
+        theme == Theme.Light -> false
+        theme == Theme.Dark -> true
+        else -> false
+    }
+    val colors = if (useDarkTheme) {
         darkColorScheme(
             primary = Color(0xFFBB86FC),
             secondary = Color(0xFF03DAC5),

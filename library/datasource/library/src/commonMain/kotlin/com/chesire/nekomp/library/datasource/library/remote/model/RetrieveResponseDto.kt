@@ -1,5 +1,7 @@
 package com.chesire.nekomp.library.datasource.library.remote.model
 
+import com.chesire.nekomp.library.datasource.kitsumodels.ImagesDto
+import com.chesire.nekomp.library.datasource.kitsumodels.TitlesDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -77,7 +79,7 @@ data class IncludedDto(
         @SerialName("canonicalTitle")
         val canonicalTitle: String,
         @SerialName("titles")
-        val titles: Map<String, String?>,
+        val titles: TitlesDto,
         @SerialName("startDate")
         val startDate: String?,
         @SerialName("endDate")
@@ -87,25 +89,13 @@ data class IncludedDto(
         @SerialName("status")
         val status: String, // enum
         @SerialName("posterImage")
-        val posterImage: ImageModel?,
+        val posterImage: ImagesDto?,
         @SerialName("chapterCount")
         val chapterCount: Int?,
         @SerialName("episodeCount")
         val episodeCount: Int?
     )
 }
-
-@Serializable
-data class ImageModel(
-    @SerialName("tiny")
-    val tiny: String = "",
-    @SerialName("small")
-    val small: String = "",
-    @SerialName("medium")
-    val medium: String = "",
-    @SerialName("large")
-    val large: String = ""
-)
 
 @Serializable
 data class Links(

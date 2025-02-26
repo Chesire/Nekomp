@@ -142,7 +142,7 @@ private fun ListContent(
     onEntryClick: (Entry) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

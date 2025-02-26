@@ -2,6 +2,8 @@ package com.chesire.nekomp.library.datasource.search
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.model.Type
+import com.chesire.nekomp.library.datasource.kitsumodels.toImage
+import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
 import com.chesire.nekomp.library.datasource.search.remote.SearchApi
 import com.chesire.nekomp.library.datasource.search.remote.model.SearchResponseDto
 import com.github.michaelbull.result.Err
@@ -30,19 +32,18 @@ class SearchService(private val searchApi: SearchApi) {
                 onFailure = { Err(Unit) } // TODO: Add custom error
             )
     }
-}
 
-private fun SearchResponseDto.toSearchItems(): List<SearchItem> {
-    return data.map {
-        SearchItem(
-            id = it.id,
-            type = Type.fromString(it.type),
-            synopsis = it.attributes.synopsis,
-            canonicalTitle = it.attributes.canonicalTitle,
-            // otherTitles = it.attributes.titles,
-            subtype = it.attributes.subtype,
-            posterImage = it.attributes.posterImage?.medium ?: "",
-            coverImage = it.attributes.coverImage?.small ?: ""
-        )
+    private fun SearchResponseDto.toSearchItems(): List<SearchItem> {
+        return data.map {
+            SearchItem(
+                id = it.id,
+                type = Type.fromString(it.type),
+                synopsis = it.attributes.synopsis,
+                titles = it.attributes.titles.toTitles(it.attributes.canonicalTitle),
+                subtype = it.attributes.subtype,
+                posterImage = it.attributes.posterImage.toImage(),
+                coverImage = it.attributes.coverImage.toImage()
+            )
+        }
     }
 }

@@ -2,10 +2,11 @@ package com.chesire.nekomp.library.datasource.trending
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.model.Type
+import com.chesire.nekomp.library.datasource.kitsumodels.toImage
+import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
 import com.chesire.nekomp.library.datasource.trending.local.TrendingStorage
 import com.chesire.nekomp.library.datasource.trending.remote.TrendingApi
 import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto
-import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto.TrendingData.TrendingAttributes.ImageModel
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
@@ -51,6 +52,7 @@ class TrendingRepository(
     }
 
     suspend fun getTrendingAnime(): List<TrendingItem> {
+        Logger.d("TrendingService") { "Getting trending anime" }
         return trendingStorage
             .trendingAnime
             .firstOrNull()
@@ -115,27 +117,14 @@ class TrendingRepository(
                 id = it.id,
                 type = Type.fromString(it.type),
                 synopsis = it.attributes.synopsis,
-                canonicalTitle = it.attributes.canonicalTitle,
-                // otherTitles = it.attributes.titles,
+                titles = it.attributes.titles.toTitles(it.attributes.canonicalTitle),
                 subtype = it.attributes.subtype,
-                posterImage = it.attributes.posterImage.bestImage(),
-                coverImage = it.attributes.coverImage.bestImage(),
+                posterImage = it.attributes.posterImage.toImage(),
+                coverImage = it.attributes.coverImage.toImage(),
                 averageRating = it.attributes.averageRating,
                 ratingRank = it.attributes.ratingRank,
                 popularityRank = it.attributes.popularityRank
             )
-        }
-    }
-
-    private fun ImageModel?.bestImage(): String {
-        return when {
-            this == null -> ""
-            large.isNotBlank() -> large
-            medium.isNotBlank() -> medium
-            small.isNotBlank() -> small
-            original.isNotBlank() -> original
-            tiny.isNotBlank() -> tiny
-            else -> ""
         }
     }
 }

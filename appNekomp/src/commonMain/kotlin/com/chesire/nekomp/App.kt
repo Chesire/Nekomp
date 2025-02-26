@@ -7,6 +7,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -16,19 +17,27 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.preferences.ApplicationSettings
+import com.chesire.nekomp.core.preferences.Theme
 import com.chesire.nekomp.feature.discover.ui.DiscoverScreen
 import com.chesire.nekomp.feature.library.ui.LibraryScreen
 import com.chesire.nekomp.feature.login.ui.LoginScreen
+import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.getKoin
 import org.koin.compose.koinInject
 
 @Composable
 @Preview
 fun App() {
     Logger.setTag("Nekomp")
-    MyApplicationTheme {
+
+    val applicationSettings = getKoin().get<ApplicationSettings>()
+    val theme by applicationSettings.theme.collectAsState(Theme.System)
+
+    NekompTheme(theme = theme) {
         val navController = rememberNavController()
         var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Library) }
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
@@ -78,7 +87,9 @@ fun App() {
                             AppDestinations.Airing -> LibraryScreen()
                             AppDestinations.Profile -> LibraryScreen()
                             AppDestinations.Activity -> LibraryScreen()
-                            AppDestinations.Settings -> LibraryScreen()
+                            AppDestinations.Settings -> SettingsScreen {
+                                navController.navigate(StartingPoint.Login.name)
+                            }
                         }
                     }
                 }

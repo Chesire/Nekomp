@@ -2,11 +2,17 @@ package com.chesire.nekomp.feature.discover.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.model.Titles
+import com.chesire.nekomp.core.preferences.ApplicationSettings
+import com.chesire.nekomp.core.preferences.ImageQuality
+import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingDataUseCase
 import com.chesire.nekomp.feature.discover.core.SearchForUseCase
+import com.chesire.nekomp.library.datasource.search.SearchItem
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
@@ -15,15 +21,18 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Suppress("TooManyFunctions")
 class DiscoverViewModel(
     private val retrieveLibrary: RetrieveLibraryUseCase,
     private val retrieveTrendingData: RetrieveTrendingDataUseCase,
     private val addItemToTracking: AddItemToTrackingUseCase,
     private val recentSearches: RecentSearchesUseCase,
-    private val searchFor: SearchForUseCase
+    private val searchFor: SearchForUseCase,
+    private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
@@ -125,14 +134,7 @@ class DiscoverViewModel(
                         state.copy(
                             resultsState = state.resultsState.copy(
                                 searchResults = searchItems.map { item ->
-                                    DiscoverItem(
-                                        id = item.id,
-                                        title = item.canonicalTitle,
-                                        type = item.type,
-                                        coverImage = item.coverImage,
-                                        posterImage = item.posterImage,
-                                        isTracked = _libraryIds.contains(item.id)
-                                    )
+                                    item.toDiscoverItem(_libraryIds.contains(item.id))
                                 }.toPersistentList()
                             )
                         )
@@ -203,14 +205,48 @@ class DiscoverViewModel(
         }
     }
 
-    private fun TrendingItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
+    private suspend fun TrendingItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
+        val imageQuality = applicationSettings.imageQuality.first()
+        val titleLanguage = applicationSettings.titleLanguage.first()
         return DiscoverItem(
             id = id,
-            title = canonicalTitle,
+            title = titles.toChosenLanguage(titleLanguage),
             type = type,
-            coverImage = coverImage,
-            posterImage = posterImage,
+            coverImage = coverImage.toBestImage(imageQuality),
+            posterImage = posterImage.toBestImage(imageQuality),
             isTracked = isTracked
         )
+    }
+
+    private suspend fun SearchItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
+        val imageQuality = applicationSettings.imageQuality.first()
+        val titleLanguage = applicationSettings.titleLanguage.first()
+        return DiscoverItem(
+            id = id,
+            title = titles.toChosenLanguage(titleLanguage),
+            type = type,
+            coverImage = coverImage.toBestImage(imageQuality),
+            posterImage = posterImage.toBestImage(imageQuality),
+            isTracked = isTracked
+        )
+    }
+
+    private fun Titles.toChosenLanguage(titleLanguage: TitleLanguage): String {
+        return when (titleLanguage) {
+            TitleLanguage.Canonical -> canonical
+            TitleLanguage.English -> english.ifBlank { canonical }
+            TitleLanguage.Romaji -> romaji.ifBlank { canonical }
+            TitleLanguage.CJK -> cjk.ifBlank { canonical }
+        }
+    }
+
+    private fun Image.toBestImage(imageQuality: ImageQuality): String {
+        return when (imageQuality) {
+            ImageQuality.Lowest -> lowest
+            ImageQuality.Low -> low
+            ImageQuality.Medium -> middle
+            ImageQuality.High -> high
+            ImageQuality.Highest -> highest
+        }
     }
 }

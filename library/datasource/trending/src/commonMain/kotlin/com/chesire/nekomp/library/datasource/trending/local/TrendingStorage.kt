@@ -2,6 +2,8 @@ package com.chesire.nekomp.library.datasource.trending.local
 
 import com.chesire.nekomp.core.database.dao.TrendingDao
 import com.chesire.nekomp.core.database.entity.TrendingEntity
+import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import kotlinx.coroutines.flow.Flow
@@ -38,10 +40,27 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             id = id,
             type = Type.fromString(type),
             synopsis = synopsis,
-            canonicalTitle = canonicalTitle,
+            titles = Titles(
+                canonical = canonicalTitle,
+                english = englishTitle,
+                romaji = romajiTitle,
+                cjk = cjkTitle
+            ),
             subtype = subtype,
-            posterImage = posterImage,
-            coverImage = coverImage,
+            posterImage = Image(
+                tiny = posterImageTiny,
+                small = posterImageSmall,
+                medium = posterImageMedium,
+                large = posterImageLarge,
+                original = posterImageOriginal
+            ),
+            coverImage = Image(
+                tiny = coverImageTiny,
+                small = coverImageSmall,
+                medium = coverImageMedium,
+                large = coverImageLarge,
+                original = coverImageOriginal
+            ),
             averageRating = averageRating,
             ratingRank = ratingRank,
             popularityRank = popularityRank
@@ -53,10 +72,21 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             id = id,
             type = type.name,
             synopsis = synopsis,
-            canonicalTitle = canonicalTitle,
+            canonicalTitle = titles.canonical,
+            englishTitle = titles.english,
+            romajiTitle = titles.romaji,
+            cjkTitle = titles.cjk,
             subtype = subtype,
-            posterImage = posterImage,
-            coverImage = coverImage,
+            posterImageTiny = posterImage.tiny,
+            posterImageSmall = posterImage.small,
+            posterImageMedium = posterImage.medium,
+            posterImageLarge = posterImage.large,
+            posterImageOriginal = posterImage.original,
+            coverImageTiny = coverImage.tiny,
+            coverImageSmall = coverImage.small,
+            coverImageMedium = coverImage.medium,
+            coverImageLarge = coverImage.large,
+            coverImageOriginal = coverImage.original,
             averageRating = averageRating,
             ratingRank = ratingRank,
             popularityRank = popularityRank
