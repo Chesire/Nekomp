@@ -3,7 +3,7 @@ package com.chesire.nekomp.library.datasource.trending.local
 import com.chesire.nekomp.core.database.dao.TrendingDao
 import com.chesire.nekomp.core.database.entity.TrendingEntity
 import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Title
+import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import kotlinx.coroutines.flow.Flow
@@ -40,7 +40,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             id = id,
             type = Type.fromString(type),
             synopsis = synopsis,
-            titles = Title(
+            titles = Titles(
                 canonical = canonicalTitle,
                 english = englishTitle,
                 romaji = romajiTitle,

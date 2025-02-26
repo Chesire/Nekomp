@@ -3,7 +3,7 @@ package com.chesire.nekomp.library.datasource.library.local
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
 import com.chesire.nekomp.core.database.entity.LibraryEntryEntity
 import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Title
+import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import kotlinx.coroutines.flow.map
@@ -21,7 +21,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                     primaryType = entry.primaryType,
                     subtype = entry.subtype,
                     slug = entry.slug,
-                    titles = Title(
+                    titles = Titles(
                         canonical = entry.canonicalTitle,
                         english = entry.englishTitle,
                         romaji = entry.romajiTitle,

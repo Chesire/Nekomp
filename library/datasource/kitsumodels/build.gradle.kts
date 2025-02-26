@@ -34,6 +34,7 @@ kotlin {
         androidMain.dependencies {
         }
         commonMain.dependencies {
+            implementation(projects.core.model)
             implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {

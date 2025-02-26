@@ -1,6 +1,6 @@
 package com.chesire.nekomp.core.model
 
-data class Title(
+data class Titles(
     val canonical: String,
     val english: String,
     val romaji: String,

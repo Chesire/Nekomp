@@ -3,7 +3,7 @@ package com.chesire.nekomp.feature.discover.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Title
+import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.TitleLanguage
@@ -230,7 +230,7 @@ class DiscoverViewModel(
         )
     }
 
-    private fun Title.toChosenLanguage(titleLanguage: TitleLanguage): String {
+    private fun Titles.toChosenLanguage(titleLanguage: TitleLanguage): String {
         return when (titleLanguage) {
             TitleLanguage.Canonical -> canonical
             TitleLanguage.English -> english.ifBlank { canonical }

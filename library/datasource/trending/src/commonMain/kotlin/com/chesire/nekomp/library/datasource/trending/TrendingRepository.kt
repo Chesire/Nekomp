@@ -1,14 +1,12 @@
 package com.chesire.nekomp.library.datasource.trending
 
 import co.touchlab.kermit.Logger
-import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Title
 import com.chesire.nekomp.core.model.Type
+import com.chesire.nekomp.library.datasource.kitsumodels.toImage
+import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
 import com.chesire.nekomp.library.datasource.trending.local.TrendingStorage
 import com.chesire.nekomp.library.datasource.trending.remote.TrendingApi
 import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto
-import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto.TrendingData.TrendingAttributes.ImageModel
-import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto.TrendingData.TrendingAttributes.Titles
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
@@ -119,40 +117,13 @@ class TrendingRepository(
                 id = it.id,
                 type = Type.fromString(it.type),
                 synopsis = it.attributes.synopsis,
-                titles = it.attributes.titles.toTitle(it.attributes.canonicalTitle),
+                titles = it.attributes.titles.toTitles(it.attributes.canonicalTitle),
                 subtype = it.attributes.subtype,
                 posterImage = it.attributes.posterImage.toImage(),
                 coverImage = it.attributes.coverImage.toImage(),
                 averageRating = it.attributes.averageRating,
                 ratingRank = it.attributes.ratingRank,
                 popularityRank = it.attributes.popularityRank
-            )
-        }
-    }
-
-    private fun Titles?.toTitle(canonical: String): Title {
-        return if (this == null) {
-            Title(canonical = canonical, "", "", "")
-        } else {
-            Title(
-                canonical = canonical,
-                english = english ?: englishUS ?: "",
-                romaji = englishJP ?: "",
-                cjk = japanese ?: korean ?: chinese ?: ""
-            )
-        }
-    }
-
-    private fun ImageModel?.toImage(): Image {
-        return if (this == null) {
-            Image("", "", "", "", "")
-        } else {
-            Image(
-                tiny = tiny,
-                small = small,
-                medium = medium,
-                large = large,
-                original = original
             )
         }
     }

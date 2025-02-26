@@ -1,16 +1,14 @@
 package com.chesire.nekomp.library.datasource.library
 
 import co.touchlab.kermit.Logger
-import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Title
 import com.chesire.nekomp.core.model.Type
+import com.chesire.nekomp.library.datasource.kitsumodels.toImage
+import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
 import com.chesire.nekomp.library.datasource.library.remote.model.DataDto
-import com.chesire.nekomp.library.datasource.library.remote.model.ImageModel
 import com.chesire.nekomp.library.datasource.library.remote.model.IncludedDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
-import com.chesire.nekomp.library.datasource.library.remote.model.Titles
 import com.chesire.nekomp.library.datasource.user.UserRepository
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
@@ -124,7 +122,7 @@ class LibraryRepository(
                 primaryType = included.type,
                 subtype = included.attributes.subtype,
                 slug = included.attributes.slug,
-                titles = included.attributes.titles.toTitle(included.attributes.canonicalTitle),
+                titles = included.attributes.titles.toTitles(included.attributes.canonicalTitle),
                 seriesStatus = included.attributes.status,
                 userSeriesStatus = data.attributes.status,
                 progress = data.attributes.progress,
@@ -227,30 +225,3 @@ private fun createAddDto(
   }
 }
         """.trimIndent()
-
-private fun ImageModel?.toImage(): Image {
-    return if (this == null) {
-        Image("", "", "", "", "")
-    } else {
-        Image(
-            tiny = tiny,
-            small = small,
-            medium = medium,
-            large = large,
-            original = original
-        )
-    }
-}
-
-private fun Titles?.toTitle(canonical: String): Title {
-    return if (this == null) {
-        Title(canonical = canonical, "", "", "")
-    } else {
-        Title(
-            canonical = canonical,
-            english = english ?: englishUS ?: "",
-            romaji = englishJP ?: "",
-            cjk = japanese ?: korean ?: chinese ?: ""
-        )
-    }
-}
