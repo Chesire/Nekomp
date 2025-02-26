@@ -1,4 +1,4 @@
-package com.chesire.nekomp
+package com.chesire.nekomp.navigation
 
 enum class OriginScreen {
     Dashboard,

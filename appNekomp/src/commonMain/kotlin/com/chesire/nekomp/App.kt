@@ -26,6 +26,8 @@ import com.chesire.nekomp.feature.login.ui.LoginScreen
 import com.chesire.nekomp.feature.profile.ui.ProfileScreen
 import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
+import com.chesire.nekomp.navigation.DashboardDestination
+import com.chesire.nekomp.navigation.OriginScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.getKoin
@@ -41,7 +43,6 @@ fun App() {
 
     NekompTheme(theme = theme) {
         val navController = rememberNavController()
-        var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Home) }
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -66,9 +67,10 @@ fun App() {
                     }
                 }
                 composable(route = OriginScreen.Dashboard.name) {
+                    var currentDestination by rememberSaveable { mutableStateOf(DashboardDestination.Home) }
                     NavigationSuiteScaffold(
                         navigationSuiteItems = {
-                            AppDestinations
+                            DashboardDestination
                                 .entries
                                 .forEach { destination ->
                                     item(
@@ -88,13 +90,15 @@ fun App() {
                         }
                     ) {
                         when (currentDestination) {
-                            AppDestinations.Home -> HomeScreen {
+                            DashboardDestination.Home -> HomeScreen {
                                 navController.navigate(OriginScreen.Profile.name)
                             }
 
-                            AppDestinations.Library -> LibraryScreen()
-                            AppDestinations.Airing -> LibraryScreen()
-                            AppDestinations.Discover -> DiscoverScreen()
+                            DashboardDestination.Library -> LibraryScreen()
+
+                            DashboardDestination.Airing -> LibraryScreen()
+
+                            DashboardDestination.Discover -> DiscoverScreen()
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-package com.chesire.nekomp
+package com.chesire.nekomp.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CollectionsBookmark
@@ -17,7 +17,7 @@ import nekomp.core.resources.generated.resources.nav_home
 import nekomp.core.resources.generated.resources.nav_library
 import org.jetbrains.compose.resources.StringResource
 
-enum class AppDestinations(
+enum class DashboardDestination(
     val label: StringResource,
     val contentDescription: StringResource,
     val icon: ImageVector
