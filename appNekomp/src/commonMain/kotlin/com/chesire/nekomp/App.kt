@@ -57,7 +57,9 @@ fun App() {
                 composable(route = StartingPoint.Login.name) {
                     LoginScreen {
                         navController.navigate(StartingPoint.LoggedIn.name) {
-                            // TODO Remove login from backstack
+                            popUpTo(StartingPoint.Login.name) {
+                                inclusive = true
+                            }
                         }
                     }
                 }
@@ -88,7 +90,11 @@ fun App() {
                             AppDestinations.Profile -> LibraryScreen()
                             AppDestinations.Activity -> LibraryScreen()
                             AppDestinations.Settings -> SettingsScreen {
-                                navController.navigate(StartingPoint.Login.name)
+                                navController.navigate(StartingPoint.Login.name) {
+                                    popUpTo(StartingPoint.LoggedIn.name) {
+                                        inclusive = true
+                                    }
+                                }
                             }
                         }
                     }
