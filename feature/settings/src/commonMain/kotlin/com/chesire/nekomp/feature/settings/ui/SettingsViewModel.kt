@@ -42,6 +42,13 @@ class SettingsViewModel(private val applicationSettings: ApplicationSettings) : 
                 }
             }
         }
+        viewModelScope.launch {
+            applicationSettings.rateOnFinish.collect { rateOnFinish ->
+                _uiState.update { state ->
+                    state.copy(rateChecked = rateOnFinish)
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
@@ -55,7 +62,7 @@ class SettingsViewModel(private val applicationSettings: ApplicationSettings) : 
             ViewAction.ImageQualityClick -> onImageQualityClick()
             is ViewAction.ImageQualityChosen -> onImageQualityChosen(action.imageQuality)
 
-            ViewAction.RateChanged -> TODO()
+            ViewAction.RateChanged -> onRateChanged()
 
             ViewAction.LogoutClick -> TODO()
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
@@ -123,6 +130,10 @@ class SettingsViewModel(private val applicationSettings: ApplicationSettings) : 
         _uiState.update { state ->
             state.copy(bottomSheet = null)
         }
+    }
+
+    private fun onRateChanged() = viewModelScope.launch {
+        applicationSettings.updateRateOnFinish(!_uiState.value.rateChecked)
     }
 
     private fun onObservedViewEvent() {

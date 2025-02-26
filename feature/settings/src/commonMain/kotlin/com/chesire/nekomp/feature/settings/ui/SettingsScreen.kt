@@ -108,7 +108,7 @@ private fun Render(
                     Icon(imageVector = Icons.Default.RateReview, contentDescription = null)
                 },
                 endComposable = {
-                    Checkbox(checked = state.rateCheckbox, onCheckedChange = null)
+                    Checkbox(checked = state.rateChecked, onCheckedChange = null)
                 },
                 onClick = { execute(ViewAction.RateChanged) }
             )

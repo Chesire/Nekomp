@@ -2,6 +2,7 @@ package com.chesire.nekomp.core.preferences
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.map
 private const val THEME = "THEME_KEY"
 private const val IMAGE_QUALITY = "IMAGE_QUALITY_KEY"
 private const val TITLE_LANGUAGE = "TITLE_LANGUAGE_KEY"
+private const val RATE_ON_FINISH = "RATE_ON_FINISH_KEY"
 
 class ApplicationSettings(private val preferences: DataStore<Preferences>) {
 
@@ -31,6 +33,10 @@ class ApplicationSettings(private val preferences: DataStore<Preferences>) {
         }
     }
 
+    val rateOnFinish: Flow<Boolean> = preferences.data.map {
+        it[booleanPreferencesKey(RATE_ON_FINISH)] == true
+    }
+
     suspend fun updateTheme(newTheme: Theme) {
         preferences.edit {
             it[stringPreferencesKey(THEME)] = newTheme.name
@@ -46,6 +52,12 @@ class ApplicationSettings(private val preferences: DataStore<Preferences>) {
     suspend fun updateTitleLanguage(newTitleLanguage: TitleLanguage) {
         preferences.edit {
             it[stringPreferencesKey(TITLE_LANGUAGE)] = newTitleLanguage.name
+        }
+    }
+
+    suspend fun updateRateOnFinish(newValue: Boolean) {
+        preferences.edit {
+            it[booleanPreferencesKey(RATE_ON_FINISH)] = newValue
         }
     }
 }

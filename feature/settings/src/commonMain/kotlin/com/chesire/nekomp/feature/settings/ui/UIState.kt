@@ -9,7 +9,7 @@ data class UIState(
     val currentTheme: String = "",
     val titleLanguage: String = "",
     val imageQuality: String = "",
-    val rateCheckbox: Boolean = false,
+    val rateChecked: Boolean = false,
     val version: String = "",
     val viewEvent: ViewEvent? = null,
     val bottomSheet: SettingsBottomSheet? = null
