@@ -10,7 +10,9 @@ data class TrendingEntity(
     val type: String, // Enum
     val synopsis: String,
     val canonicalTitle: String,
-    // val otherTitles: Map<String, String?>,
+    val englishTitle: String,
+    val romajiTitle: String,
+    val japaneseTitle: String,
     val subtype: String,
     val posterImageTiny: String,
     val posterImageSmall: String,

@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.library
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.model.Title
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
@@ -9,6 +10,7 @@ import com.chesire.nekomp.library.datasource.library.remote.model.DataDto
 import com.chesire.nekomp.library.datasource.library.remote.model.ImageModel
 import com.chesire.nekomp.library.datasource.library.remote.model.IncludedDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
+import com.chesire.nekomp.library.datasource.library.remote.model.Titles
 import com.chesire.nekomp.library.datasource.user.UserRepository
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
@@ -123,7 +125,7 @@ class LibraryRepository(
                 subtype = included.attributes.subtype,
                 slug = included.attributes.slug,
                 title = included.attributes.canonicalTitle,
-                // otherTitles = included.attributes.titles,
+                titles = included.attributes.titles.toTitle(),
                 seriesStatus = included.attributes.status,
                 userSeriesStatus = data.attributes.status,
                 progress = data.attributes.progress,
@@ -237,6 +239,18 @@ private fun ImageModel?.toImage(): Image {
             medium = medium,
             large = large,
             original = original
+        )
+    }
+}
+
+private fun Titles?.toTitle(): Title {
+    return if (this == null) {
+        Title("", "", "")
+    } else {
+        Title(
+            english = english,
+            romaji = romaji,
+            japanese = japanese
         )
     }
 }

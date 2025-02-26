@@ -24,7 +24,7 @@ data class SearchResponseDto(
             @SerialName("synopsis")
             val synopsis: String,
             @SerialName("titles")
-            val titles: Map<String, String?>,
+            val titles: Titles,
             @SerialName("canonicalTitle")
             val canonicalTitle: String,
             @SerialName("subtype")
@@ -34,6 +34,16 @@ data class SearchResponseDto(
             @SerialName("coverImage")
             val coverImage: ImageModel?
         ) {
+
+            @Serializable
+            data class Titles(
+                @SerialName("english")
+                val english: String = "",
+                @SerialName("romaji")
+                val romaji: String = "",
+                @SerialName("japanese")
+                val japanese: String = ""
+            )
 
             @Serializable
             data class ImageModel(

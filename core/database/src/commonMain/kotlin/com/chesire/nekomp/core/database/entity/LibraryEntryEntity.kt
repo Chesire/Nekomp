@@ -13,7 +13,9 @@ data class LibraryEntryEntity(
     val subtype: String, // Enum
     val slug: String,
     val title: String,
-    // val otherTitles: Map<String, String>, TODO Just set the EN JA etc titles as fields
+    val englishTitle: String,
+    val romajiTitle: String,
+    val japaneseTitle: String,
     val seriesStatus: String, // Enum
     val userSeriesStatus: String, // Enum
     val progress: Int,

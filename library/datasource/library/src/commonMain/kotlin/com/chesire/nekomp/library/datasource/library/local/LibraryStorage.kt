@@ -3,6 +3,7 @@ package com.chesire.nekomp.library.datasource.library.local
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
 import com.chesire.nekomp.core.database.entity.LibraryEntryEntity
 import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.model.Title
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import kotlinx.coroutines.flow.map
@@ -21,6 +22,11 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                     subtype = entry.subtype,
                     slug = entry.slug,
                     title = entry.title,
+                    titles = Title(
+                        english = entry.englishTitle,
+                        romaji = entry.romajiTitle,
+                        japanese = entry.japaneseTitle
+                    ),
                     seriesStatus = entry.seriesStatus,
                     userSeriesStatus = entry.userSeriesStatus,
                     progress = entry.progress,
@@ -49,6 +55,9 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                 subtype = entry.subtype,
                 slug = entry.slug,
                 title = entry.title,
+                englishTitle = entry.titles.english,
+                romajiTitle = entry.titles.romaji,
+                japaneseTitle = entry.titles.japanese,
                 seriesStatus = entry.seriesStatus,
                 userSeriesStatus = entry.userSeriesStatus,
                 progress = entry.progress,
@@ -75,6 +84,9 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             subtype = entry.subtype,
             slug = entry.slug,
             title = entry.title,
+            englishTitle = entry.titles.english,
+            romajiTitle = entry.titles.romaji,
+            japaneseTitle = entry.titles.japanese,
             seriesStatus = entry.seriesStatus,
             userSeriesStatus = entry.userSeriesStatus,
             progress = entry.progress,

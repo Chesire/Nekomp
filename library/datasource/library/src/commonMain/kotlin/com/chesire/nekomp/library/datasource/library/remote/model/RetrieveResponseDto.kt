@@ -77,7 +77,7 @@ data class IncludedDto(
         @SerialName("canonicalTitle")
         val canonicalTitle: String,
         @SerialName("titles")
-        val titles: Map<String, String?>,
+        val titles: Titles,
         @SerialName("startDate")
         val startDate: String?,
         @SerialName("endDate")
@@ -94,6 +94,16 @@ data class IncludedDto(
         val episodeCount: Int?
     )
 }
+
+@Serializable
+data class Titles(
+    @SerialName("english")
+    val english: String = "",
+    @SerialName("romaji")
+    val romaji: String = "",
+    @SerialName("japanese")
+    val japanese: String = ""
+)
 
 @Serializable
 data class ImageModel(

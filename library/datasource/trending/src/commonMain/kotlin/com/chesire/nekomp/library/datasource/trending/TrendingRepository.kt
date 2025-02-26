@@ -2,11 +2,13 @@ package com.chesire.nekomp.library.datasource.trending
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.model.Title
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.trending.local.TrendingStorage
 import com.chesire.nekomp.library.datasource.trending.remote.TrendingApi
 import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto
 import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto.TrendingData.TrendingAttributes.ImageModel
+import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingResponseDto.TrendingData.TrendingAttributes.Titles
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
@@ -117,13 +119,25 @@ class TrendingRepository(
                 type = Type.fromString(it.type),
                 synopsis = it.attributes.synopsis,
                 canonicalTitle = it.attributes.canonicalTitle,
-                // otherTitles = it.attributes.titles,
+                titles = it.attributes.titles.toTitle(),
                 subtype = it.attributes.subtype,
                 posterImage = it.attributes.posterImage.toImage(),
                 coverImage = it.attributes.coverImage.toImage(),
                 averageRating = it.attributes.averageRating,
                 ratingRank = it.attributes.ratingRank,
                 popularityRank = it.attributes.popularityRank
+            )
+        }
+    }
+
+    private fun Titles?.toTitle(): Title {
+        return if (this == null) {
+            Title("", "", "")
+        } else {
+            Title(
+                english = english,
+                romaji = romaji,
+                japanese = japanese
             )
         }
     }
