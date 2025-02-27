@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.user
 
+import com.chesire.nekomp.library.datasource.kitsumodels.toImage
 import com.chesire.nekomp.library.datasource.user.local.UserStorage
 import com.chesire.nekomp.library.datasource.user.remote.UserApi
 import com.github.michaelbull.result.Err
@@ -19,7 +20,12 @@ class UserRepository(
         return userApi.retrieveUser()
             .map {
                 val dto = it.data.first()
-                User(dto.id, dto.attributes.name)
+                User(
+                    id = dto.id,
+                    name = dto.attributes.name,
+                    avatar = dto.attributes.avatar.toImage(),
+                    coverImage = dto.attributes.coverImage.toImage()
+                )
             }
             .onSuccess {
                 userStorage.updateUser(it)
