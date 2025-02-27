@@ -2,7 +2,10 @@ package com.chesire.nekomp.feature.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.model.Type
+import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import com.chesire.nekomp.library.datasource.user.UserRepository
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +15,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val libraryRepository: LibraryRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
@@ -26,8 +30,27 @@ class HomeViewModel(
                 }
             }
         }
-        // TODO: Pull down users current watching series
-        // TODO: Sort the series based on updated time (update in api)
+        viewModelScope.launch(Dispatchers.IO) {
+            libraryRepository.libraryEntries.collect { libraryEntries ->
+                _uiState.update { state ->
+                    state.copy(
+                        watchList = libraryEntries
+                            .filter { it.type == Type.Anime }
+                            .filter { it.userSeriesStatus != "complete" }
+                            .sortedBy { it.updatedAt }
+                            .take(10)
+                            .map { libraryEntry ->
+                                WatchItem(
+                                    name = libraryEntry.titles.canonical, // TODO: get correct
+                                    coverImage = libraryEntry.posterImage.medium // TODO: get correct
+
+                                )
+                            }
+                            .toPersistentList()
+                    )
+                }
+            }
+        }
         // TODO: Pull the current trending
     }
 
