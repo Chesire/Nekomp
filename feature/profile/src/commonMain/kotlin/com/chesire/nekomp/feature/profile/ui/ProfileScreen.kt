@@ -2,8 +2,11 @@
 
 package com.chesire.nekomp.feature.profile.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -21,11 +24,16 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
+import kotlin.math.absoluteValue
 import nekomp.core.resources.generated.resources.nav_content_description_settings
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -62,28 +70,45 @@ private fun Render(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Text("Profile")
-                },
-                navigationIcon = {
-                    IconButton(onClick = goBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null // Go back string
+            Box {
+                AsyncImage(
+                    model = state.coverImage,
+                    contentDescription = null,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                        .heightIn(max = TopAppBarDefaults.LargeAppBarExpandedHeight)
+                        .fillMaxHeight((scrollBehavior.state.collapsedFraction - 1f).absoluteValue),
+                    contentScale = ContentScale.Crop,
+                    alpha = (scrollBehavior.state.collapsedFraction - 1f).absoluteValue
+                )
+                LargeTopAppBar(
+                    title = {
+                        Text(
+                            text = "Profile",
                         )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = navigateToSettings) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(NekoRes.string.nav_content_description_settings)
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
-            )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = goBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = null // Go back string
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = navigateToSettings) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = stringResource(NekoRes.string.nav_content_description_settings)
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        scrolledContainerColor = Color.Transparent
+                    ),
+                    scrollBehavior = scrollBehavior
+                )
+            }
         }
     ) { innerPadding ->
         Column(
