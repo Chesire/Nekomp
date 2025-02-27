@@ -1,8 +1,7 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.multiplatform)
@@ -23,9 +22,9 @@ kotlin {
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "Nekomp"
+    ).forEach {
+        it.binaries.framework {
+            baseName = "featurehome"
             isStatic = true
         }
     }
@@ -35,23 +34,14 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.work.runtime.ktx)
             implementation(libs.koin.android)
-            implementation(libs.koin.androidx.workmanager)
-            implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
-            implementation(projects.core.database)
+            implementation(projects.core.model)
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.core.resources)
-            implementation(projects.feature.discover)
-            implementation(projects.feature.home)
-            implementation(projects.feature.library)
-            implementation(projects.feature.login)
-            implementation(projects.feature.profile)
-            implementation(projects.feature.settings)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.search)
@@ -65,70 +55,42 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.ui)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.androidx.navigation.compose)
-            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
             implementation(libs.compose.material3.adaptive)
             implementation(libs.compose.material3.adaptive.layout)
             implementation(libs.compose.material3.adaptive.navigation)
             implementation(libs.compose.material3.windowsizeclass)
-            implementation(libs.koin.compose)
+            implementation(libs.compose.ui.backhandler)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
-            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.collections.immutable)
             implementation(libs.touchlab.kermit)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+        iosMain.dependencies {
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
         }
     }
 }
 
 android {
-    namespace = "com.chesire.nekomp"
+    namespace = "com.chesire.nekomp.feature.home"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        applicationId = "com.chesire.nekomp"
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
     }
+
     buildFeatures {
         compose = true
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-    lint {
-        abortOnError = false
-        checkDependencies = true
-        xmlReport = true
-    }
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.chesire.nekomp.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            modules("jdk.unsupported") // For datastore
-            modules("jdk.unsupported.desktop") // For datastore
-            packageName = "com.chesire.nekomp"
-            packageVersion = "1.0.0"
-        }
     }
 }
 
 dependencies {
-    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(compose.uiTooling)
 }
