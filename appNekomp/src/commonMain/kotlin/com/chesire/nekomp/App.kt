@@ -9,12 +9,14 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.preferences.ApplicationSettings
@@ -38,18 +40,17 @@ import org.koin.compose.koinInject
 fun App() {
     Logger.setTag("Nekomp")
 
-    val applicationSettings = getKoin().get<ApplicationSettings>()
-    val theme by applicationSettings.theme.collectAsState(Theme.System)
+    val theme by getKoin().get<ApplicationSettings>().theme.collectAsState(Theme.System)
 
     NekompTheme(theme = theme) {
-        val navController = rememberNavController()
+        val appNavController = rememberNavController()
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
             NavHost(
-                navController = navController,
+                navController = appNavController,
                 startDestination = if (isLoggedIn) {
                     OriginScreen.Dashboard.name
                 } else {
@@ -57,64 +58,107 @@ fun App() {
                 },
                 modifier = Modifier.fillMaxSize()
             ) {
-                composable(route = OriginScreen.Login.name) {
-                    LoginScreen {
-                        navController.navigate(OriginScreen.Dashboard.name) {
-                            popUpTo(OriginScreen.Login.name) {
-                                inclusive = true
-                            }
-                        }
+                addLogin(appNavController)
+                addDashboard(appNavController)
+                addProfile(appNavController)
+                addSettings(appNavController)
+            }
+        }
+    }
+}
+
+private fun NavGraphBuilder.addLogin(appNavController: NavController) {
+    composable(route = OriginScreen.Login.name) {
+        LoginScreen(
+            onLoggedIn = {
+                appNavController.navigate(OriginScreen.Dashboard.name) {
+                    popUpTo(OriginScreen.Login.name) {
+                        inclusive = true
                     }
                 }
-                composable(route = OriginScreen.Dashboard.name) {
-                    var currentDestination by rememberSaveable { mutableStateOf(DashboardDestination.Home) }
-                    NavigationSuiteScaffold(
-                        navigationSuiteItems = {
-                            DashboardDestination
-                                .entries
-                                .forEach { destination ->
-                                    item(
-                                        selected = destination == currentDestination,
-                                        onClick = { currentDestination = destination },
-                                        icon = {
-                                            Icon(
-                                                imageVector = destination.icon,
-                                                contentDescription = stringResource(destination.contentDescription)
-                                            )
-                                        },
-                                        label = {
-                                            Text(text = stringResource(destination.label))
-                                        }
-                                    )
+            }
+        )
+    }
+}
+
+private fun NavGraphBuilder.addProfile(appNavController: NavController) {
+    composable(route = OriginScreen.Profile.name) {
+        ProfileScreen(
+            navigateToSettings = {
+                appNavController.navigate(OriginScreen.Settings.name)
+            }
+        )
+    }
+}
+
+private fun NavGraphBuilder.addSettings(appNavController: NavController) {
+    composable(route = OriginScreen.Settings.name) {
+        SettingsScreen(
+            onLoggedOut = {
+                appNavController.navigate(OriginScreen.Login.name) {
+                    popUpTo(OriginScreen.Dashboard.name) {
+                        inclusive = true
+                    }
+                }
+            }
+        )
+    }
+}
+
+private fun NavGraphBuilder.addDashboard(appNavController: NavController) {
+    composable(route = OriginScreen.Dashboard.name) {
+        val dashboardNavController = rememberNavController()
+        val navBackStackEntry by dashboardNavController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
+
+        NavigationSuiteScaffold(
+            navigationSuiteItems = {
+                DashboardDestination.entries.forEach { destination ->
+                    item(
+                        selected = currentDestination?.hierarchy?.any {
+                            it.hasRoute(destination.name, null)
+                        } == true,
+                        onClick = {
+                            dashboardNavController.navigate(destination.name) {
+                                popUpTo(dashboardNavController.graph.findStartDestination().route!!) {
+                                    saveState = true
                                 }
-                        }
-                    ) {
-                        when (currentDestination) {
-                            DashboardDestination.Home -> HomeScreen {
-                                navController.navigate(OriginScreen.Profile.name)
+                                launchSingleTop = true
+                                restoreState = true
                             }
-
-                            DashboardDestination.Library -> LibraryScreen()
-
-                            DashboardDestination.Airing -> LibraryScreen()
-
-                            DashboardDestination.Discover -> DiscoverScreen()
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = destination.icon,
+                                contentDescription = stringResource(destination.contentDescription)
+                            )
+                        },
+                        label = {
+                            Text(text = stringResource(destination.label))
                         }
-                    }
+                    )
                 }
-                composable(route = OriginScreen.Profile.name) {
-                    ProfileScreen {
-                        navController.navigate(OriginScreen.Settings.name)
-                    }
-                }
-                composable(route = OriginScreen.Settings.name) {
-                    SettingsScreen {
-                        navController.navigate(OriginScreen.Login.name) {
-                            popUpTo(OriginScreen.Dashboard.name) {
-                                inclusive = true
-                            }
+            }
+        ) {
+            NavHost(
+                navController = dashboardNavController,
+                startDestination = DashboardDestination.Home.name
+            ) {
+                composable(route = DashboardDestination.Home.name) {
+                    HomeScreen(
+                        navigateToProfile = {
+                            appNavController.navigate(OriginScreen.Profile.name)
                         }
-                    }
+                    )
+                }
+                composable(route = DashboardDestination.Library.name) {
+                    LibraryScreen()
+                }
+                composable(route = DashboardDestination.Airing.name) {
+                    LibraryScreen()
+                }
+                composable(route = DashboardDestination.Discover.name) {
+                    DiscoverScreen()
                 }
             }
         }
