@@ -37,9 +37,11 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.database)
+            implementation(projects.core.model)
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.library.datasource.auth)
+            implementation(projects.library.datasource.kitsumodels)
             implementation(libs.koin.core)
             api(libs.kotlin.result)
             implementation(libs.kotlinx.coroutines.core)

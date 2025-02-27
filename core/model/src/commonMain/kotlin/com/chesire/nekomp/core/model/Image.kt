@@ -14,4 +14,9 @@ data class Image(
     val middle get() = medium.ifBlank { large.ifBlank { small.ifBlank { original.ifBlank { tiny } } } }
     val high get() = large.ifBlank { medium.ifBlank { original.ifBlank { small.ifBlank { tiny } } } }
     val highest get() = original.ifBlank { large.ifBlank { medium.ifBlank { small.ifBlank { tiny } } } }
+
+    companion object {
+
+        val empty: Image get() = Image("", "", "", "", "")
+    }
 }

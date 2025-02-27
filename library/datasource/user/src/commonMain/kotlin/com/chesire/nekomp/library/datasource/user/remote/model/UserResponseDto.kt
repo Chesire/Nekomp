@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.user.remote.model
 
+import com.chesire.nekomp.library.datasource.kitsumodels.ImagesDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -20,6 +21,10 @@ data class UserItemDto(
     @Serializable
     data class Attributes(
         @SerialName("name")
-        val name: String
+        val name: String,
+        @SerialName("avatar")
+        val avatar: ImagesDto?,
+        @SerialName("coverImage")
+        val coverImage: ImagesDto?
     )
 }

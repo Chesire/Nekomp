@@ -10,6 +10,6 @@ interface UserApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/users?filter[self]=true&fields[users]=id,name")
+    @GET("api/edge/users?filter[self]=true&fields[users]=id,name,avatar,coverImage")
     suspend fun retrieveUser(): Result<UserResponseDto>
 }
