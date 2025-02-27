@@ -3,7 +3,7 @@
 package com.chesire.nekomp.feature.home.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,12 +42,12 @@ private fun Render(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Welcome back, NAME")
+                    Text("Welcome back, ${state.username}")
                 },
                 actions = {
                     IconButton(onClick = navigateToProfile) {
                         Icon(
-                            imageVector = Icons.Default.AccountCircle,
+                            imageVector = Icons.Default.PersonOutline,
                             contentDescription = stringResource(NekoRes.string.nav_content_description_profile)
                         )
                     }
