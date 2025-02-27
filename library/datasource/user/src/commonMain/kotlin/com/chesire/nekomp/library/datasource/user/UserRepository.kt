@@ -23,7 +23,7 @@ class UserRepository(
                 User(
                     id = dto.id,
                     name = dto.attributes.name,
-                    posterImage = dto.attributes.avatar.toImage(),
+                    avatar = dto.attributes.avatar.toImage(),
                     coverImage = dto.attributes.coverImage.toImage()
                 )
             }
