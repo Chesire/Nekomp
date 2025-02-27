@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3fdffa081809b3dd5236ccb8ca7b0dd1",
+    "identityHash": "8cf9cd621a54575f1a0d64644e09cc09",
     "entities": [
       {
         "tableName": "LibraryEntryEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `type` TEXT NOT NULL, `primaryType` TEXT NOT NULL, `subtype` TEXT NOT NULL, `slug` TEXT NOT NULL, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `seriesStatus` TEXT NOT NULL, `userSeriesStatus` TEXT NOT NULL, `progress` INTEGER NOT NULL, `totalLength` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `type` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `primaryType` TEXT NOT NULL, `subtype` TEXT NOT NULL, `slug` TEXT NOT NULL, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `seriesStatus` TEXT NOT NULL, `userSeriesStatus` TEXT NOT NULL, `progress` INTEGER NOT NULL, `totalLength` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -23,6 +23,12 @@
           {
             "fieldPath": "type",
             "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -373,7 +379,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3fdffa081809b3dd5236ccb8ca7b0dd1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8cf9cd621a54575f1a0d64644e09cc09')"
     ]
   }
 }

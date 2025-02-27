@@ -21,7 +21,7 @@ interface LibraryApi {
     @GET(
         "api/edge/users/{userId}/library-entries" +
             "?include=anime" +
-            "&fields[libraryEntries]=status,progress,anime,startedAt,finishedAt,ratingTwenty" +
+            "&fields[libraryEntries]=updatedAt,status,progress,anime,startedAt,finishedAt,ratingTwenty" +
             "&fields[anime]=$FIELDS,episodeCount" +
             "&filter[kind]=anime" +
             "&sort=anime.titles.canonical"
@@ -39,7 +39,7 @@ interface LibraryApi {
     @GET(
         "api/edge/users/{userId}/library-entries" +
             "?include=manga" +
-            "&fields[libraryEntries]=status,progress,manga,startedAt,finishedAt,ratingTwenty" +
+            "&fields[libraryEntries]=updatedAt,status,progress,manga,startedAt,finishedAt,ratingTwenty" +
             "&fields[manga]=$FIELDS,chapterCount" +
             "&filter[kind]=manga" +
             "&sort=manga.titles.canonical"

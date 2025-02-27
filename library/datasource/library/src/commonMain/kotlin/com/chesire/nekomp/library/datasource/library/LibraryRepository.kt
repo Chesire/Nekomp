@@ -19,6 +19,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.datetime.Clock
 import kotlin.Result as KResult
 
 private const val LIMIT = 20
@@ -119,6 +120,7 @@ class LibraryRepository(
                 id = included.id,
                 userId = data.id,
                 type = if (data.relationships.manga != null) Type.Manga else Type.Anime,
+                updatedAt = data.attributes.updatedAt ?: Clock.System.now(),
                 primaryType = included.type,
                 subtype = included.attributes.subtype,
                 slug = included.attributes.slug,
