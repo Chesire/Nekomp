@@ -1,6 +1,5 @@
-package com.chesire.nekomp
+package com.chesire.nekomp.core.ui
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -14,20 +13,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.chesire.nekomp.core.preferences.Theme
 
 @Composable
 fun NekompTheme(
-    theme: Theme,
+    useDarkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
-    val useDarkTheme = when {
-        theme == Theme.System && isSystemInDarkTheme() -> true
-        theme == Theme.System && !isSystemInDarkTheme() -> false
-        theme == Theme.Light -> false
-        theme == Theme.Dark -> true
-        else -> false
-    }
     val colors = if (useDarkTheme) {
         darkColorScheme(
             primary = Color(0xFFBB86FC),
