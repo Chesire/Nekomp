@@ -51,6 +51,7 @@ class HomeViewModel(
                         watchList = libraryEntries
                             .filter { it.type == Type.Anime }
                             .filter { it.entryStatus != EntryStatus.Completed }
+                            .filter { it.progress != it.totalLength }
                             .sortedBy { it.updatedAt }
                             .take(10)
                             .map { it.toWatchItem(imageQuality, titleLanguage) }
