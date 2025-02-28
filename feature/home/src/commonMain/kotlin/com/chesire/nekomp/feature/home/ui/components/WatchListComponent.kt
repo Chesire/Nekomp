@@ -134,6 +134,7 @@ private fun WatchItemComponent(
         Text(
             text = watchItem.title,
             style = MaterialTheme.typography.titleSmall,
+            minLines = 2,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
