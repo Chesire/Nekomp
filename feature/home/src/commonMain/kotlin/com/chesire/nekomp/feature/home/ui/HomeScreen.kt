@@ -4,6 +4,8 @@ package com.chesire.nekomp.feature.home.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.home.ui.components.TrendingListComponent
 import com.chesire.nekomp.feature.home.ui.components.WatchListComponent
@@ -48,7 +51,12 @@ private fun Render(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Welcome back, ${state.username}")
+                    Text(
+                        text = "Welcome back, ${state.username}",
+                        minLines = 1,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 actions = {
                     IconButton(onClick = navigateToProfile) {
@@ -62,7 +70,11 @@ private fun Render(
         }
     ) { innerPadding ->
         // TODO: Add sealed class for UI states so we can hide the UI until its loaded
-        Column(modifier = Modifier.padding(innerPadding)) {
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+        ) {
             WatchListComponent(
                 watchItems = state.watchList,
                 onWatchItemClick = { execute(ViewAction.WatchItemClick(it)) },

@@ -93,6 +93,7 @@ private fun WatchItemComponent(
                 AsyncImage(
                     model = watchItem.posterImage,
                     contentDescription = null,
+                    modifier = Modifier.fillMaxHeight(),
                     onState = {
                         width = with(density) {
                             it.painter?.intrinsicSize?.width?.toInt()?.toDp() ?: 0.dp
