@@ -18,6 +18,8 @@ import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,7 +43,7 @@ class DiscoverViewModel(
     private var _libraryIds: Set<Int> = emptySet() // TODO: Find better way to handle this
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val trendingData = retrieveTrendingData()
             retrieveLibrary().collect { libraryItems ->
                 _libraryIds = libraryItems.map { it.id }.toSet()
@@ -84,7 +86,7 @@ class DiscoverViewModel(
                 }
             }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             recentSearches.recents.collect { recents ->
                 _uiState.update { state ->
                     state.copy(recentSearches = recents.reversed().toPersistentList())

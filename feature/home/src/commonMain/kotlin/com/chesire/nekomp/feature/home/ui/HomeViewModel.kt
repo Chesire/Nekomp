@@ -9,7 +9,10 @@ import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
+import com.chesire.nekomp.library.datasource.trending.TrendingItem
+import com.chesire.nekomp.library.datasource.trending.TrendingRepository
 import com.chesire.nekomp.library.datasource.user.UserRepository
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +27,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val userRepository: UserRepository,
     private val libraryRepository: LibraryRepository,
+    private val trendingRepository: TrendingRepository,
     private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
@@ -49,24 +53,28 @@ class HomeViewModel(
                             .filter { it.entryStatus != EntryStatus.Completed }
                             .sortedBy { it.updatedAt }
                             .take(10)
-                            .map { libraryEntry ->
-                                WatchItem(
-                                    id = libraryEntry.id,
-                                    title = libraryEntry.titles.toChosenLanguage(titleLanguage),
-                                    posterImage = libraryEntry.posterImage.toBestImage(imageQuality),
-                                    progress = if (libraryEntry.totalLength == 0) {
-                                        0f
-                                    } else {
-                                        (libraryEntry.progress.toFloat() / libraryEntry.totalLength.toFloat())
-                                    }
-                                )
-                            }
+                            .map { it.toWatchItem(imageQuality, titleLanguage) }
                             .toPersistentList()
                     )
                 }
             }
         }
-        // TODO: Pull the current trending
+        viewModelScope.launch(Dispatchers.IO) {
+            val imageQuality = applicationSettings.imageQuality.first()
+            val titleLanguage = applicationSettings.titleLanguage.first()
+            val trendingAnime = trendingRepository.getTrendingAnime()
+            val trendingManga = trendingRepository.getTrendingManga()
+            _uiState.update { state ->
+                state.copy(
+                    trendingAnime = trendingAnime
+                        .map { it.toTrendItem(imageQuality, titleLanguage) }
+                        .toPersistentList(),
+                    trendingManga = trendingManga
+                        .map { it.toTrendItem(imageQuality, titleLanguage) }
+                        .toPersistentList()
+                )
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
@@ -94,7 +102,36 @@ class HomeViewModel(
         }
     }
 
+    private fun LibraryEntry.toWatchItem(
+        imageQuality: ImageQuality,
+        titleLanguage: TitleLanguage
+    ): WatchItem {
+        return WatchItem(
+            id = id,
+            title = titles.toChosenLanguage(titleLanguage),
+            posterImage = posterImage.toBestImage(imageQuality),
+            progress = if (totalLength == 0) {
+                0f
+            } else {
+                (progress.toFloat() / totalLength.toFloat())
+            }
+        )
+    }
+
+    private fun TrendingItem.toTrendItem(
+        imageQuality: ImageQuality,
+        titleLanguage: TitleLanguage
+    ): TrendItem {
+        return TrendItem(
+            id = id,
+            title = titles.toChosenLanguage(titleLanguage),
+            posterImage = posterImage.toBestImage(imageQuality)
+        )
+    }
+
     // TODO: Move these with the other implementations somewhere
+    // TODO: Find way to do this in compose. Listen in the app class to the flows and then recompose
+    //       when they change? Or set in the composition local?
     private fun Titles.toChosenLanguage(titleLanguage: TitleLanguage): String {
         return when (titleLanguage) {
             TitleLanguage.Canonical -> canonical

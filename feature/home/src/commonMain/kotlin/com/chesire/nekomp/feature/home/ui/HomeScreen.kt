@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.feature.home.ui.components.TrendingListComponent
 import com.chesire.nekomp.feature.home.ui.components.WatchListComponent
 import nekomp.core.resources.generated.resources.nav_content_description_profile
 import org.jetbrains.compose.resources.stringResource
@@ -65,6 +66,11 @@ private fun Render(
                 watchItems = state.watchList,
                 onWatchItemClick = { execute(ViewAction.WatchItemClick(it)) },
                 onPlusOneClick = { execute(ViewAction.WatchItemPlusOneClick(it)) }
+            )
+            TrendingListComponent(
+                trendingAnime = state.trendingAnime,
+                trendingManga = state.trendingManga,
+                onTrendItemClick = {}
             )
         }
     }

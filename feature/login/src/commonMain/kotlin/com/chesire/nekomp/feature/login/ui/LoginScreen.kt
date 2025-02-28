@@ -189,6 +189,7 @@ private fun PasswordInput(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    // TODO: Look at OutlinedSecureTextField
     OutlinedTextField(
         value = password,
         onValueChange = onPasswordChanged,
