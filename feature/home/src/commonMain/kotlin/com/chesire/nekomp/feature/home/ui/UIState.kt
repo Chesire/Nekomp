@@ -12,6 +12,8 @@ data class UIState(
 
 @Stable
 data class WatchItem(
-    val name: String,
-    val coverImage: String
+    val id: Int,
+    val title: String,
+    val posterImage: String,
+    val progress: Float
 )
