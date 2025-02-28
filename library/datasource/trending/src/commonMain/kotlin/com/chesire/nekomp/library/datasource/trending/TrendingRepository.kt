@@ -10,9 +10,7 @@ import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingRespo
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import com.github.michaelbull.result.anyOk
-import com.github.michaelbull.result.map
-import com.github.michaelbull.result.onSuccess
+import com.github.michaelbull.result.get
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -30,47 +28,59 @@ class TrendingRepository(
     suspend fun performFullSync(): List<Result<Any, Any>> {
         Logger.d("TrendingService") { "Syncing all data" }
         return coroutineScope {
-            // Do trending separate since we have to manually edit, they MUST be executed last
-            val trendingAnimeJob = async {
-                trendingApi.trendingAnime().map { dto ->
-                    dto.copy(
-                        data = dto.data.mapIndexed { index, item ->
-                            item.copy(attributes = item.attributes.copy(trendingRank = index + 1))
-                        }
-                    )
-                }
-            }
-            val trendingMangaJob = async {
-                trendingApi.trendingManga().map { dto ->
-                    dto.copy(
-                        data = dto.data.mapIndexed { index, item ->
-                            item.copy(attributes = item.attributes.copy(trendingRank = index + 1))
-                        }
-                    )
-                }
-            }
-            val otherJobs = awaitAll(
+            val jobs = awaitAll(
+                async {
+                    trendingApi.trendingAnime().map { dto ->
+                        dto.copy(
+                            data = dto.data.mapIndexed { index, item ->
+                                item.copy(
+                                    attributes = item.attributes.copy(trendingRank = index + 1)
+                                )
+                            }
+                        )
+                    }
+                },
+                async {
+                    trendingApi.trendingManga().map { dto ->
+                        dto.copy(
+                            data = dto.data.mapIndexed { index, item ->
+                                item.copy(
+                                    attributes = item.attributes.copy(trendingRank = index + 1)
+                                )
+                            }
+                        )
+                    }
+                },
                 async { trendingApi.topRatedAnime() },
                 async { trendingApi.topRatedManga() },
                 async { trendingApi.mostPopularAnime() },
                 async { trendingApi.mostPopularManga() }
             )
-            (otherJobs + awaitAll(trendingAnimeJob, trendingMangaJob))
+            jobs
                 .map { jobs ->
+                    // Map to a list of success/failure
                     jobs.fold(
                         onSuccess = { Ok(it) },
                         onFailure = { Err(Unit) }
                     )
                 }
                 .apply {
-                    if (anyOk()) {
-                        trendingStorage.clearLegacyData()
-                    }
-                }
-                .map { result ->
-                    result
-                        .map { it.toTrendingItems() }
-                        .onSuccess { trendingStorage.updateTrending(it) }
+                    // Now iterate over them all and get a single list of items to put into the DB
+                    this
+                        .mapNotNull { result ->
+                            result.get()?.toTrendingItems()
+                        }
+                        .flatten()
+                        .let { trendingItems ->
+                            trendingItems
+                                .groupBy { it.id }
+                                .values
+                                .map { it.firstOrNull { it.trendingRank != -1 } ?: it.first() }
+                        }
+                        .apply {
+                            trendingStorage.clearLegacyData()
+                            trendingStorage.updateTrending(this)
+                        }
                 }
         }
     }

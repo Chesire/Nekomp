@@ -31,7 +31,6 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
     suspend fun updateTrending(newTrending: List<TrendingItem>) {
         trendingDao.apply {
             val models = newTrending.map { it.toTrendingEntity() }
-            // clearType(models.first().type) - this needs some more thought to clear old models...
             upsert(models)
         }
     }
