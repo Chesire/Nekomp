@@ -53,7 +53,7 @@ fun WatchListComponent(
         ) {
             items(
                 items = watchItems,
-                key = { it.id }
+                key = { it.entryId }
             ) {
                 WatchItemComponent(
                     watchItem = it,
@@ -123,7 +123,7 @@ private fun WatchItemComponent(
                         )
                     }
                     LinearProgressIndicator(
-                        progress = { watchItem.progress },
+                        progress = { watchItem.progressPercent },
                         modifier = Modifier.height(4.dp),
                         gapSize = 0.dp,
                         drawStopIndicator = {}

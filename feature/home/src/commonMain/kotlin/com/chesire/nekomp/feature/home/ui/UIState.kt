@@ -15,10 +15,11 @@ data class UIState(
 
 @Stable
 data class WatchItem(
-    val id: Int,
+    val entryId: Int,
     val title: String,
     val posterImage: String,
-    val progress: Float
+    val progressPercent: Float,
+    val progress: Int
 )
 
 @Stable

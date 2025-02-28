@@ -107,69 +107,36 @@ class LibraryRepository(
         }
     }
 
-    private fun buildEntry(included: IncludedDto, data: DataDto): LibraryEntry? {
-        val type = when {
-            data.relationships.anime != null -> Type.Anime
-            data.relationships.manga != null -> Type.Manga
-            else -> null
-        }
-        return if (type == null) {
-            Logger.e("LibraryRepository") { "Invalid type found for $data" }
-            null
-        } else {
-            LibraryEntry(
-                id = included.id,
-                userId = data.id,
-                type = if (data.relationships.manga != null) Type.Manga else Type.Anime,
-                updatedAt = data.attributes.updatedAt ?: Clock.System.now(),
-                primaryType = included.type,
-                subtype = included.attributes.subtype,
-                slug = included.attributes.slug,
-                titles = included.attributes.titles.toTitles(included.attributes.canonicalTitle),
-                seriesStatus = included.attributes.status,
-                entryStatus = EntryStatus.fromString(data.attributes.status),
-                progress = data.attributes.progress,
-                totalLength = included.attributes.episodeCount
-                    ?: included.attributes.chapterCount
-                    ?: 0,
-                rating = data.attributes.rating ?: 0,
-                posterImage = included.attributes.posterImage.toImage(),
-                startDate = included.attributes.startDate ?: "",
-                endDate = included.attributes.endDate ?: ""
-            )
-        }
-    }
-
-    suspend fun addAnime(entryId: Int): Result<LibraryEntry, Unit> {
-        Logger.d("LibraryRepository") { "Making call to add anime $entryId" }
+    suspend fun addAnime(seriesId: Int): Result<LibraryEntry, Unit> {
+        Logger.d("LibraryRepository") { "Making call to add anime $seriesId" }
         val user = userRepository.user.firstOrNull()
         if (user?.isAuthenticated != true) {
             Logger.e("LibraryRepository") { "No user object, cancelling add call" }
             return Err(Unit) // TODO: Add custom error type
         }
 
-        return addEntry(user.id, entryId, Type.Anime)
+        return addEntry(user.id, seriesId, Type.Anime)
     }
 
-    suspend fun addManga(entryId: Int): Result<LibraryEntry, Unit> {
-        Logger.d("LibraryRepository") { "Making call to add manga $entryId" }
+    suspend fun addManga(seriesId: Int): Result<LibraryEntry, Unit> {
+        Logger.d("LibraryRepository") { "Making call to add manga $seriesId" }
         val user = userRepository.user.firstOrNull()
         if (user?.isAuthenticated != true) {
             Logger.e("LibraryRepository") { "No user object, cancelling add call" }
             return Err(Unit) // TODO: Add custom error type
         }
 
-        return addEntry(user.id, entryId, Type.Manga)
+        return addEntry(user.id, seriesId, Type.Manga)
     }
 
     private suspend fun addEntry(
         userId: Int,
-        entryId: Int,
+        seriesId: Int,
         type: Type
     ): Result<LibraryEntry, Unit> {
         val addJson = createAddDto(
             userId,
-            entryId,
+            seriesId,
             type.name.lowercase()
         )
 
@@ -194,6 +161,72 @@ class LibraryRepository(
                 onSuccess = { Ok(it) },
                 onFailure = { Err(Unit) }
             )
+    }
+
+    suspend fun updateEntry(
+        entryId: Int,
+        newProgress: Int
+    ): Result<LibraryEntry, Unit> {
+        Logger.d("LibraryRepository") { "Making call to update entry $entryId" }
+        val user = userRepository.user.firstOrNull()
+        if (user?.isAuthenticated != true) {
+            Logger.e("LibraryRepository") { "No user object, cancelling update call" }
+            return Err(Unit) // TODO: Add custom error type
+        }
+
+        val updateDto = createUpdateDto(entryId, newProgress)
+        return libraryApi
+            .updateItem(entryId = entryId, data = updateDto)
+            .map {
+                val id = it.data.relationships.anime?.data?.id
+                    ?: it.data.relationships.manga?.data?.id
+                it.included
+                    .find { it.id == id }
+                    ?.let { included ->
+                        buildEntry(included, it.data)
+                    }
+                    ?: return Err(Unit)
+            }
+            .onSuccess {
+                libraryStorage.updateEntry(it)
+            }
+            .fold(
+                onSuccess = { Ok(it) },
+                onFailure = { Err(Unit) }
+            )
+    }
+
+    private fun buildEntry(included: IncludedDto, data: DataDto): LibraryEntry? {
+        val type = when {
+            data.relationships.anime?.data != null -> Type.Anime
+            data.relationships.manga?.data != null -> Type.Manga
+            else -> null
+        }
+        return if (type == null) {
+            Logger.e("LibraryRepository") { "Invalid type found for $data" }
+            null
+        } else {
+            LibraryEntry(
+                id = included.id,
+                entryId = data.id,
+                type = type,
+                updatedAt = data.attributes.updatedAt ?: Clock.System.now(),
+                primaryType = included.type,
+                subtype = included.attributes.subtype,
+                slug = included.attributes.slug,
+                titles = included.attributes.titles.toTitles(included.attributes.canonicalTitle),
+                seriesStatus = included.attributes.status,
+                entryStatus = EntryStatus.fromString(data.attributes.status),
+                progress = data.attributes.progress,
+                totalLength = included.attributes.episodeCount
+                    ?: included.attributes.chapterCount
+                    ?: 0,
+                rating = data.attributes.rating ?: 0,
+                posterImage = included.attributes.posterImage.toImage(),
+                startDate = included.attributes.startDate ?: "",
+                endDate = included.attributes.endDate ?: ""
+            )
+        }
     }
 }
 
@@ -224,6 +257,21 @@ private fun createAddDto(
           "id": $userId
         }
       }
+    }
+  }
+}
+        """.trimIndent()
+
+private fun createUpdateDto(
+    entryId: Int,
+    newProgress: Int
+) = """
+{
+  "data": {
+    "id": $entryId,
+    "type": "libraryEntries",
+    "attributes": {
+      "progress": $newProgress
     }
   }
 }

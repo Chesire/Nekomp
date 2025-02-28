@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val WATCH_LIST_LIMIT = 20
+
 class HomeViewModel(
     private val userRepository: UserRepository,
     private val libraryRepository: LibraryRepository,
@@ -52,8 +54,8 @@ class HomeViewModel(
                             .filter { it.type == Type.Anime }
                             .filter { it.entryStatus != EntryStatus.Completed }
                             .filter { it.progress != it.totalLength }
-                            .sortedBy { it.updatedAt }
-                            .take(10)
+                            .sortedByDescending { it.updatedAt }
+                            .take(WATCH_LIST_LIMIT)
                             .map { it.toWatchItem(imageQuality, titleLanguage) }
                             .toPersistentList()
                     )
@@ -99,8 +101,13 @@ class HomeViewModel(
     }
 
     private fun onWatchItemPlusOneClick(watchItem: WatchItem) {
-        // TODO
-        // Increment the progress by one and send to api
+        // TODO: Update UI in some way?
+        viewModelScope.launch(Dispatchers.IO) {
+            libraryRepository.updateEntry(
+                entryId = watchItem.entryId,
+                newProgress = watchItem.progress + 1
+            )
+        }
     }
 
     private fun onObservedViewEvent() {
@@ -114,14 +121,15 @@ class HomeViewModel(
         titleLanguage: TitleLanguage
     ): WatchItem {
         return WatchItem(
-            id = id,
+            entryId = entryId,
             title = titles.toChosenLanguage(titleLanguage),
             posterImage = posterImage.toBestImage(imageQuality),
-            progress = if (totalLength == 0) {
+            progressPercent = if (totalLength == 0) {
                 0f
             } else {
-                (progress.toFloat() / totalLength.toFloat())
-            }
+                (this@toWatchItem.progress.toFloat() / totalLength.toFloat())
+            },
+            progress = this@toWatchItem.progress
         )
     }
 

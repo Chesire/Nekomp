@@ -18,7 +18,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             entries.map { entry ->
                 LibraryEntry(
                     id = entry.id,
-                    userId = entry.userId,
+                    entryId = entry.entryId,
                     type = Type.fromString(entry.type),
                     updatedAt = Instant.parse(entry.updatedAt),
                     primaryType = entry.primaryType,
@@ -52,7 +52,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
         val newEntries = entries.map { entry ->
             LibraryEntryEntity(
                 id = entry.id,
-                userId = entry.userId,
+                entryId = entry.entryId,
                 type = entry.type.name,
                 updatedAt = entry.updatedAt.toString(),
                 primaryType = entry.primaryType,
@@ -82,7 +82,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
     suspend fun updateEntry(entry: LibraryEntry) {
         val newEntry = LibraryEntryEntity(
             id = entry.id,
-            userId = entry.userId,
+            entryId = entry.entryId,
             type = entry.type.name,
             updatedAt = entry.updatedAt.toString(),
             primaryType = entry.primaryType,

@@ -7,8 +7,10 @@ import com.chesire.nekomp.core.model.Type
 import kotlinx.datetime.Instant
 
 data class LibraryEntry(
+    // Id of the database entry in the API
     val id: Int,
-    val userId: Int,
+    // Id of the item within the users library
+    val entryId: Int,
     val type: Type,
     val updatedAt: Instant,
     val primaryType: String, // Enum
