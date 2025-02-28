@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 
 package com.chesire.nekomp.feature.settings.ui
 
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.FormatPaint
 import androidx.compose.material.icons.filled.Image
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.RateReview
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
@@ -25,6 +27,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +38,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
@@ -45,12 +50,14 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
+    goBack: () -> Unit,
     onLoggedOut: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     Render(
         state = state,
+        goBack = goBack,
         onLoggedOut = onLoggedOut,
         execute = { viewModel.execute(it) }
     )
@@ -59,10 +66,13 @@ fun SettingsScreen(
 @Composable
 private fun Render(
     state: UIState,
+    goBack: () -> Unit,
     onLoggedOut: () -> Unit,
     execute: (ViewAction) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    // TODO: Switch to predictive
+    BackHandler { goBack() }
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
@@ -77,12 +87,25 @@ private fun Render(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Settings")
+                },
+                navigationIcon = {
+                    IconButton(onClick = goBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null // Go back string
+                        )
+                    }
+                }
+            )
+        },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(vertical = 16.dp),
+            modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Setting(
@@ -286,6 +309,7 @@ private fun Preview() {
     val state = UIState()
     Render(
         state = state,
+        goBack = {},
         onLoggedOut = {},
         execute = {}
     )
