@@ -65,13 +65,19 @@ class HomeViewModel(
             val trendingAnime = trendingRepository.getTrendingAnime()
             val trendingManga = trendingRepository.getTrendingManga()
             _uiState.update { state ->
+                val animeItems = trendingAnime
+                    .map { it.toTrendItem(imageQuality, titleLanguage) }
+                    .toPersistentList()
+                val mangaItems = trendingManga
+                    .map { it.toTrendItem(imageQuality, titleLanguage) }
+                    .toPersistentList()
                 state.copy(
-                    trendingAnime = trendingAnime
-                        .map { it.toTrendItem(imageQuality, titleLanguage) }
+                    trendingAll = animeItems
+                        .zip(mangaItems)
+                        .flatMap { (first, second) -> listOf(first, second) }
                         .toPersistentList(),
-                    trendingManga = trendingManga
-                        .map { it.toTrendItem(imageQuality, titleLanguage) }
-                        .toPersistentList()
+                    trendingAnime = animeItems,
+                    trendingManga = mangaItems
                 )
             }
         }

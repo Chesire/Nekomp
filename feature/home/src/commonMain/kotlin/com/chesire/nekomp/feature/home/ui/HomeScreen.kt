@@ -61,17 +61,21 @@ private fun Render(
             )
         }
     ) { innerPadding ->
+        // TODO: Add sealed class for UI states so we can hide the UI until its loaded
         Column(modifier = Modifier.padding(innerPadding)) {
             WatchListComponent(
                 watchItems = state.watchList,
                 onWatchItemClick = { execute(ViewAction.WatchItemClick(it)) },
                 onPlusOneClick = { execute(ViewAction.WatchItemPlusOneClick(it)) }
             )
-            TrendingListComponent(
-                trendingAnime = state.trendingAnime,
-                trendingManga = state.trendingManga,
-                onTrendItemClick = {}
-            )
+            if (state.trendingAll.isNotEmpty()) {
+                TrendingListComponent(
+                    trendingAll = state.trendingAll,
+                    trendingAnime = state.trendingAnime,
+                    trendingManga = state.trendingManga,
+                    onTrendItemClick = {}
+                )
+            }
         }
     }
 }
