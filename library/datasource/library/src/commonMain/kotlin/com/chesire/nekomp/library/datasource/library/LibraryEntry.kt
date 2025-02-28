@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.library
 
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
@@ -15,7 +16,7 @@ data class LibraryEntry(
     val slug: String,
     val titles: Titles,
     val seriesStatus: String, // Enum
-    val userSeriesStatus: String, // Enum
+    val entryStatus: EntryStatus,
     val progress: Int,
     val totalLength: Int,
     val rating: Int,

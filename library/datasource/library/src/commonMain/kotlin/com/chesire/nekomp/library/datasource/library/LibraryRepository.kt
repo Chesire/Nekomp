@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.library
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.library.datasource.kitsumodels.toImage
 import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
@@ -126,7 +127,7 @@ class LibraryRepository(
                 slug = included.attributes.slug,
                 titles = included.attributes.titles.toTitles(included.attributes.canonicalTitle),
                 seriesStatus = included.attributes.status,
-                userSeriesStatus = data.attributes.status,
+                entryStatus = EntryStatus.fromString(data.attributes.status),
                 progress = data.attributes.progress,
                 totalLength = included.attributes.episodeCount
                     ?: included.attributes.chapterCount

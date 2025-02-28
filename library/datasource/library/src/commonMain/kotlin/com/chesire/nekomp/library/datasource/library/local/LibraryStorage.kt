@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.library.local
 
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
 import com.chesire.nekomp.core.database.entity.LibraryEntryEntity
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
@@ -30,7 +31,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                         cjk = entry.cjkTitle
                     ),
                     seriesStatus = entry.seriesStatus,
-                    userSeriesStatus = entry.userSeriesStatus,
+                    entryStatus = EntryStatus.fromString(entry.entryStatus),
                     progress = entry.progress,
                     totalLength = entry.totalLength,
                     rating = entry.rating,
@@ -62,7 +63,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                 romajiTitle = entry.titles.romaji,
                 cjkTitle = entry.titles.cjk,
                 seriesStatus = entry.seriesStatus,
-                userSeriesStatus = entry.userSeriesStatus,
+                entryStatus = entry.entryStatus.name,
                 progress = entry.progress,
                 totalLength = entry.totalLength,
                 rating = entry.rating,
@@ -92,7 +93,7 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             romajiTitle = entry.titles.romaji,
             cjkTitle = entry.titles.cjk,
             seriesStatus = entry.seriesStatus,
-            userSeriesStatus = entry.userSeriesStatus,
+            entryStatus = entry.entryStatus.name,
             progress = entry.progress,
             totalLength = entry.totalLength,
             rating = entry.rating,

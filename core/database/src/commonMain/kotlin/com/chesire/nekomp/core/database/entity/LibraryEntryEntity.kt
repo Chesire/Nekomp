@@ -18,7 +18,7 @@ data class LibraryEntryEntity(
     val romajiTitle: String,
     val cjkTitle: String,
     val seriesStatus: String, // Enum
-    val userSeriesStatus: String, // Enum
+    val entryStatus: String, // Enum
     val progress: Int,
     val totalLength: Int,
     val rating: Int,
