@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TrendingDao {
 
-    @Query("DELETE FROM TrendingEntity WHERE type == :type")
-    suspend fun clearType(type: String)
+    @Query("DELETE FROM TrendingEntity")
+    suspend fun delete(): Int
 
-    @Upsert
+    @Upsert(entity = TrendingEntity::class)
     suspend fun upsert(trending: List<TrendingEntity>)
 
     @Query("SELECT * FROM TrendingEntity")

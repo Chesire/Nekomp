@@ -10,8 +10,7 @@ import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingRespo
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import com.github.michaelbull.result.map
-import com.github.michaelbull.result.onSuccess
+import com.github.michaelbull.result.get
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -29,24 +28,59 @@ class TrendingRepository(
     suspend fun performFullSync(): List<Result<Any, Any>> {
         Logger.d("TrendingService") { "Syncing all data" }
         return coroutineScope {
-            awaitAll(
-                async { trendingApi.trendingAnime() }, // TODO: maybe need to set a trending rank manually?
-                async { trendingApi.trendingManga() },
+            val jobs = awaitAll(
+                async {
+                    trendingApi.trendingAnime().map { dto ->
+                        dto.copy(
+                            data = dto.data.mapIndexed { index, item ->
+                                item.copy(
+                                    attributes = item.attributes.copy(trendingRank = index + 1)
+                                )
+                            }
+                        )
+                    }
+                },
+                async {
+                    trendingApi.trendingManga().map { dto ->
+                        dto.copy(
+                            data = dto.data.mapIndexed { index, item ->
+                                item.copy(
+                                    attributes = item.attributes.copy(trendingRank = index + 1)
+                                )
+                            }
+                        )
+                    }
+                },
                 async { trendingApi.topRatedAnime() },
                 async { trendingApi.topRatedManga() },
                 async { trendingApi.mostPopularAnime() },
                 async { trendingApi.mostPopularManga() }
             )
+            jobs
                 .map { jobs ->
+                    // Map to a list of success/failure
                     jobs.fold(
                         onSuccess = { Ok(it) },
                         onFailure = { Err(Unit) }
                     )
                 }
-                .map { results ->
-                    results
-                        .map { it.toTrendingItems() }
-                        .onSuccess { trendingStorage.updateTrending(it) }
+                .apply {
+                    // Now iterate over them all and get a single list of items to put into the DB
+                    this
+                        .mapNotNull { result ->
+                            result.get()?.toTrendingItems()
+                        }
+                        .flatten()
+                        .let { trendingItems ->
+                            trendingItems
+                                .groupBy { it.id }
+                                .values
+                                .map { it.firstOrNull { it.trendingRank != -1 } ?: it.first() }
+                        }
+                        .apply {
+                            trendingStorage.clearLegacyData()
+                            trendingStorage.updateTrending(this)
+                        }
                 }
         }
     }
@@ -56,7 +90,8 @@ class TrendingRepository(
         return trendingStorage
             .trendingAnime
             .firstOrNull()
-            ?.sortedBy { it.averageRating }
+            ?.filterNot { it.trendingRank == -1 }
+            ?.sortedBy { it.trendingRank }
             ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
@@ -66,7 +101,8 @@ class TrendingRepository(
         return trendingStorage
             .trendingManga
             .firstOrNull()
-            ?.sortedBy { it.averageRating }
+            ?.filterNot { it.trendingRank == -1 }
+            ?.sortedBy { it.trendingRank }
             ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
@@ -123,7 +159,8 @@ class TrendingRepository(
                 coverImage = it.attributes.coverImage.toImage(),
                 averageRating = it.attributes.averageRating,
                 ratingRank = it.attributes.ratingRank,
-                popularityRank = it.attributes.popularityRank
+                popularityRank = it.attributes.popularityRank,
+                trendingRank = it.attributes.trendingRank
             )
         }
     }

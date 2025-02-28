@@ -95,6 +95,7 @@ private fun NavGraphBuilder.addProfile(appNavController: NavController) {
 private fun NavGraphBuilder.addSettings(appNavController: NavController) {
     composable(route = OriginScreen.Settings.name) {
         SettingsScreen(
+            goBack = { appNavController.popBackStack() },
             onLoggedOut = {
                 appNavController.navigate(OriginScreen.Login.name) {
                     popUpTo(OriginScreen.Dashboard.name) {

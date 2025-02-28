@@ -1,10 +1,11 @@
 package com.chesire.nekomp.library.datasource.library.remote
 
-import com.chesire.nekomp.library.datasource.library.remote.model.AddEntryResponseDto
+import com.chesire.nekomp.library.datasource.library.remote.model.EntryResponseDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
+import de.jensklingenberg.ktorfit.http.PATCH
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
@@ -21,7 +22,7 @@ interface LibraryApi {
     @GET(
         "api/edge/users/{userId}/library-entries" +
             "?include=anime" +
-            "&fields[libraryEntries]=status,progress,anime,startedAt,finishedAt,ratingTwenty" +
+            "&fields[libraryEntries]=updatedAt,status,progress,anime,startedAt,finishedAt,ratingTwenty" +
             "&fields[anime]=$FIELDS,episodeCount" +
             "&filter[kind]=anime" +
             "&sort=anime.titles.canonical"
@@ -39,7 +40,7 @@ interface LibraryApi {
     @GET(
         "api/edge/users/{userId}/library-entries" +
             "?include=manga" +
-            "&fields[libraryEntries]=status,progress,manga,startedAt,finishedAt,ratingTwenty" +
+            "&fields[libraryEntries]=updatedAt,status,progress,manga,startedAt,finishedAt,ratingTwenty" +
             "&fields[manga]=$FIELDS,chapterCount" +
             "&filter[kind]=manga" +
             "&sort=manga.titles.canonical"
@@ -59,7 +60,7 @@ interface LibraryApi {
             "?include=anime" +
             "&fields[anime]=$FIELDS,episodeCount"
     )
-    suspend fun addAnime(@Body data: String): Result<AddEntryResponseDto>
+    suspend fun addAnime(@Body data: String): Result<EntryResponseDto>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -70,5 +71,20 @@ interface LibraryApi {
             "?include=manga" +
             "&fields[manga]=$FIELDS,chapterCount"
     )
-    suspend fun addManga(@Body data: String): Result<AddEntryResponseDto>
+    suspend fun addManga(@Body data: String): Result<EntryResponseDto>
+
+    @Headers(
+        "Accept: application/vnd.api+json",
+        "Content-Type: application/vnd.api+json"
+    )
+    @PATCH(
+        "api/edge/library-entries/{id}" +
+            "?include=anime,manga" +
+            "&fields[anime]=$FIELDS,episodeCount" +
+            "&fields[manga]=$FIELDS,chapterCount"
+    )
+    suspend fun updateItem(
+        @Path("id") entryId: Int,
+        @Body data: String
+    ): Result<EntryResponseDto>
 }

@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.library.remote.model
 
 import com.chesire.nekomp.library.datasource.kitsumodels.ImagesDto
 import com.chesire.nekomp.library.datasource.kitsumodels.TitlesDto
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -27,6 +28,13 @@ data class DataDto(
 
     @Serializable
     data class Attributes(
+        /**
+         * ISO 8601 of last modification.
+         *
+         * ex: 2016-01-15T05:53:48.037Z
+         */
+        @SerialName("updatedAt")
+        val updatedAt: Instant?,
         @SerialName("status")
         val status: String, // enum
         @SerialName("progress")

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AddEntryResponseDto(
+data class EntryResponseDto(
     @SerialName("data")
     val data: DataDto,
     @SerialName("included")

@@ -91,6 +91,7 @@ internal fun ListPane(
                     )
                 }
             }
+            // TODO: Look at using the SearchBar composable
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { execute(ViewAction.SearchTextUpdated(it)) },

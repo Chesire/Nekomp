@@ -1,5 +1,6 @@
 package com.chesire.nekomp.core.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -26,5 +27,7 @@ data class TrendingEntity(
     val coverImageOriginal: String,
     val averageRating: String,
     val ratingRank: Int,
-    val popularityRank: Int
+    val popularityRank: Int,
+    @ColumnInfo(defaultValue = "null")
+    val trendingRank: Int?
 )

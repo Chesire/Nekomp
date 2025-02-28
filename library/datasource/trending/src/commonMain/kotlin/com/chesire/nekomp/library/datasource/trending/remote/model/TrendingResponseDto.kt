@@ -4,6 +4,7 @@ import com.chesire.nekomp.library.datasource.kitsumodels.ImagesDto
 import com.chesire.nekomp.library.datasource.kitsumodels.TitlesDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class TrendingResponseDto(
@@ -40,7 +41,9 @@ data class TrendingResponseDto(
             @SerialName("ratingRank")
             val ratingRank: Int,
             @SerialName("popularityRank")
-            val popularityRank: Int
+            val popularityRank: Int,
+            @Transient
+            val trendingRank: Int = -1
         )
     }
 }

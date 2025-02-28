@@ -57,6 +57,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
+// TODO: Look at using Auth0 for Android (and others if can)
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel(),
@@ -189,6 +190,7 @@ private fun PasswordInput(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    // TODO: Look at OutlinedSecureTextField
     OutlinedTextField(
         value = password,
         onValueChange = onPasswordChanged,

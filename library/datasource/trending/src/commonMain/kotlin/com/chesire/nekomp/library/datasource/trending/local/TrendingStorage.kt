@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.trending.local
 
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.dao.TrendingDao
 import com.chesire.nekomp.core.database.entity.TrendingEntity
 import com.chesire.nekomp.core.model.Image
@@ -30,9 +31,14 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
     suspend fun updateTrending(newTrending: List<TrendingItem>) {
         trendingDao.apply {
             val models = newTrending.map { it.toTrendingEntity() }
-            // clearType(models.first().type) - this needs some more thought to clear old models...
             upsert(models)
         }
+    }
+
+    suspend fun clearLegacyData() {
+        Logger.d("TrendingStorage") { "Executing call to clear trending dao" }
+        val clearAmount = trendingDao.delete()
+        Logger.d("TrendingStorage") { "Finished delete call, cleared $clearAmount entries" }
     }
 
     private fun TrendingEntity.toTrendingItem(): TrendingItem {
@@ -63,7 +69,8 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             ),
             averageRating = averageRating,
             ratingRank = ratingRank,
-            popularityRank = popularityRank
+            popularityRank = popularityRank,
+            trendingRank = trendingRank ?: -1
         )
     }
 
@@ -89,7 +96,8 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             coverImageOriginal = coverImage.original,
             averageRating = averageRating,
             ratingRank = ratingRank,
-            popularityRank = popularityRank
+            popularityRank = popularityRank,
+            trendingRank = if (trendingRank == -1) null else trendingRank
         )
     }
 }

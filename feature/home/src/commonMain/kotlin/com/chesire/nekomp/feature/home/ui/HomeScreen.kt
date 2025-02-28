@@ -1,10 +1,15 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 
 package com.chesire.nekomp.feature.home.ui
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -13,7 +18,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.feature.home.ui.components.TrendingListComponent
+import com.chesire.nekomp.feature.home.ui.components.WatchListComponent
 import nekomp.core.resources.generated.resources.nav_content_description_profile
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -42,7 +51,12 @@ private fun Render(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Welcome back, ${state.username}")
+                    Text(
+                        text = "Welcome back, ${state.username}",
+                        minLines = 1,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 actions = {
                     IconButton(onClick = navigateToProfile) {
@@ -54,7 +68,28 @@ private fun Render(
                 }
             )
         }
-    ) {
-        Text("Home")
+    ) { innerPadding ->
+        // TODO: Add sealed class for UI states so we can hide the UI until its loaded
+        // Maybe this should be a SupportingPane layout? Look into it when we have the trending and library detail
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+        ) {
+            WatchListComponent(
+                watchItems = state.watchList,
+                onWatchItemClick = { execute(ViewAction.WatchItemClick(it)) },
+                onPlusOneClick = { execute(ViewAction.WatchItemPlusOneClick(it)) }
+            )
+            // AiringListComponent() TODO
+            if (state.trendingAll.isNotEmpty()) {
+                TrendingListComponent(
+                    trendingAll = state.trendingAll,
+                    trendingAnime = state.trendingAnime,
+                    trendingManga = state.trendingManga,
+                    onTrendItemClick = { execute(ViewAction.TrendItemClick(it)) }
+                )
+            }
+        }
     }
 }

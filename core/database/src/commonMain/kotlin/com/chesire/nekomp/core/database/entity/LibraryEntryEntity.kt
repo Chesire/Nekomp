@@ -7,8 +7,9 @@ import androidx.room.PrimaryKey
 data class LibraryEntryEntity(
     @PrimaryKey
     val id: Int,
-    val userId: Int,
+    val entryId: Int,
     val type: String, // Enum
+    val updatedAt: String,
     val primaryType: String, // Enum
     val subtype: String, // Enum
     val slug: String,
@@ -17,7 +18,7 @@ data class LibraryEntryEntity(
     val romajiTitle: String,
     val cjkTitle: String,
     val seriesStatus: String, // Enum
-    val userSeriesStatus: String, // Enum
+    val entryStatus: String, // Enum
     val progress: Int,
     val totalLength: Int,
     val rating: Int,
