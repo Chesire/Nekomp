@@ -10,7 +10,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -35,7 +34,6 @@ import com.chesire.nekomp.navigation.DashboardDestination
 import com.chesire.nekomp.navigation.OriginScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.getKoin
 import org.koin.compose.koinInject
 
 @Composable
@@ -43,8 +41,7 @@ import org.koin.compose.koinInject
 fun App() {
     Logger.setTag("Nekomp")
 
-    val koin = getKoin()
-    val appSettings = remember { koin.get<ApplicationSettings>() }
+    val appSettings = koinInject<ApplicationSettings>()
     val theme by appSettings.theme.collectAsState(Theme.System)
 
     val useDarkTheme = when {
