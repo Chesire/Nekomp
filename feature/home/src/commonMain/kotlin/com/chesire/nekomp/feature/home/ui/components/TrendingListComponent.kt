@@ -1,5 +1,6 @@
 package com.chesire.nekomp.feature.home.ui.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Card
@@ -51,11 +53,11 @@ fun TrendingListComponent(
     onTrendItemClick: (TrendItem) -> Unit
 ) {
     var selectedType by rememberSaveable { mutableStateOf(DisplayType.Anime) }
+    val listState = rememberLazyListState()
     Column {
-        TrendItemHeading(selectedType = selectedType) {
-            selectedType = it
-        }
+        TrendItemHeading(selectedType = selectedType) { selectedType = it }
         LazyRow(
+            state = listState,
             contentPadding = PaddingValues(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -69,6 +71,7 @@ fun TrendingListComponent(
             ) {
                 TrendItemComponent(
                     trendItem = it,
+                    modifier = Modifier.animateItem(),
                     onTrendItemClick = onTrendItemClick
                 )
             }
@@ -112,6 +115,7 @@ private fun TrendItemHeading(
         ) {
             Text(
                 text = trendingText,
+                modifier = Modifier.animateContentSize(),
                 onTextLayout = {
                     with(density) {
                         textWidth = it.size.width.toDp()
@@ -165,10 +169,11 @@ private fun TrendItemHeading(
 @Composable
 private fun TrendItemComponent(
     trendItem: TrendItem,
+    modifier: Modifier = Modifier,
     onTrendItemClick: (TrendItem) -> Unit
 ) {
     Column(
-        modifier = Modifier.width(IntrinsicSize.Min),
+        modifier = modifier.width(IntrinsicSize.Min),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -185,7 +190,7 @@ private fun TrendItemComponent(
 }
 
 private enum class DisplayType(val displayText: String) {
-    All("all"),
-    Anime("anime"),
-    Manga("manga")
+    All("All"),
+    Anime("Anime"),
+    Manga("Manga")
 }

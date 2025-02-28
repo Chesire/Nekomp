@@ -38,6 +38,7 @@ import com.chesire.nekomp.feature.home.ui.WatchItem
 import kotlinx.collections.immutable.ImmutableList
 
 // TODO: Move this somewhere shared to reuse the components?
+// TODO: Make a core:ui module that contains a lot of these shared / almost shared components
 @Composable
 fun WatchListComponent(
     watchItems: ImmutableList<WatchItem>,
@@ -57,6 +58,7 @@ fun WatchListComponent(
                 WatchItemComponent(
                     watchItem = it,
                     onWatchItemClick = onWatchItemClick,
+                    modifier = Modifier.animateItem(),
                     onPlusOneClick = onPlusOneClick
                 )
             }
@@ -68,13 +70,14 @@ fun WatchListComponent(
 private fun WatchItemComponent(
     watchItem: WatchItem,
     onWatchItemClick: (WatchItem) -> Unit,
+    modifier: Modifier = Modifier,
     onPlusOneClick: (WatchItem) -> Unit
 ) {
     var width by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
 
     Column(
-        modifier = Modifier.width(IntrinsicSize.Min),
+        modifier = modifier.width(IntrinsicSize.Min),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
