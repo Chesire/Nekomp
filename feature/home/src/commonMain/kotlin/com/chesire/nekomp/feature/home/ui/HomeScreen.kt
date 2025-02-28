@@ -70,6 +70,7 @@ private fun Render(
         }
     ) { innerPadding ->
         // TODO: Add sealed class for UI states so we can hide the UI until its loaded
+        // Maybe this should be a SupportingPane layout? Look into it when we have the trending and library detail
         Column(
             modifier = Modifier
                 .padding(innerPadding)
