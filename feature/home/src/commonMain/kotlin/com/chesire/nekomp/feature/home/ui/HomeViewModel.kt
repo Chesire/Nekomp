@@ -90,6 +90,7 @@ class HomeViewModel(
         when (action) {
             is ViewAction.WatchItemClick -> onWatchItemClick(action.watchItem)
             is ViewAction.WatchItemPlusOneClick -> onWatchItemPlusOneClick(action.watchItem)
+            is ViewAction.TrendItemClick -> onTrendItemClick(action.trendItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
@@ -108,6 +109,12 @@ class HomeViewModel(
                 newProgress = watchItem.progress + 1
             )
         }
+    }
+
+    private fun onTrendItemClick(trendItem: TrendItem) {
+        // TODO
+        // Set as the selected item
+        // UI needs to navigate to a detail view
     }
 
     private fun onObservedViewEvent() {

@@ -86,7 +86,7 @@ private fun Render(
                     trendingAll = state.trendingAll,
                     trendingAnime = state.trendingAnime,
                     trendingManga = state.trendingManga,
-                    onTrendItemClick = {}
+                    onTrendItemClick = { execute(ViewAction.TrendItemClick(it)) }
                 )
             }
         }
