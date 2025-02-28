@@ -10,6 +10,7 @@ import com.chesire.nekomp.library.datasource.trending.remote.model.TrendingRespo
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.anyOk
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.onSuccess
 import kotlinx.coroutines.async
@@ -29,22 +30,45 @@ class TrendingRepository(
     suspend fun performFullSync(): List<Result<Any, Any>> {
         Logger.d("TrendingService") { "Syncing all data" }
         return coroutineScope {
-            awaitAll(
-                async { trendingApi.trendingAnime() }, // TODO: maybe need to set a trending rank manually?
-                async { trendingApi.trendingManga() },
+            // Do trending separate since we have to manually edit, they MUST be executed last
+            val trendingAnimeJob = async {
+                trendingApi.trendingAnime().map { dto ->
+                    dto.copy(
+                        data = dto.data.mapIndexed { index, item ->
+                            item.copy(attributes = item.attributes.copy(trendingRank = index + 1))
+                        }
+                    )
+                }
+            }
+            val trendingMangaJob = async {
+                trendingApi.trendingManga().map { dto ->
+                    dto.copy(
+                        data = dto.data.mapIndexed { index, item ->
+                            item.copy(attributes = item.attributes.copy(trendingRank = index + 1))
+                        }
+                    )
+                }
+            }
+            val otherJobs = awaitAll(
                 async { trendingApi.topRatedAnime() },
                 async { trendingApi.topRatedManga() },
                 async { trendingApi.mostPopularAnime() },
                 async { trendingApi.mostPopularManga() }
             )
+            (otherJobs + awaitAll(trendingAnimeJob, trendingMangaJob))
                 .map { jobs ->
                     jobs.fold(
                         onSuccess = { Ok(it) },
                         onFailure = { Err(Unit) }
                     )
                 }
-                .map { results ->
-                    results
+                .apply {
+                    if (anyOk()) {
+                        trendingStorage.clearLegacyData()
+                    }
+                }
+                .map { result ->
+                    result
                         .map { it.toTrendingItems() }
                         .onSuccess { trendingStorage.updateTrending(it) }
                 }
@@ -56,7 +80,8 @@ class TrendingRepository(
         return trendingStorage
             .trendingAnime
             .firstOrNull()
-            ?.sortedBy { it.averageRating }
+            ?.filterNot { it.trendingRank == -1 }
+            ?.sortedBy { it.trendingRank }
             ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
@@ -66,7 +91,8 @@ class TrendingRepository(
         return trendingStorage
             .trendingManga
             .firstOrNull()
-            ?.sortedBy { it.averageRating }
+            ?.filterNot { it.trendingRank == -1 }
+            ?.sortedBy { it.trendingRank }
             ?.take(TRENDING_LIMIT)
             ?: emptyList()
     }
@@ -123,7 +149,8 @@ class TrendingRepository(
                 coverImage = it.attributes.coverImage.toImage(),
                 averageRating = it.attributes.averageRating,
                 ratingRank = it.attributes.ratingRank,
-                popularityRank = it.attributes.popularityRank
+                popularityRank = it.attributes.popularityRank,
+                trendingRank = it.attributes.trendingRank
             )
         }
     }

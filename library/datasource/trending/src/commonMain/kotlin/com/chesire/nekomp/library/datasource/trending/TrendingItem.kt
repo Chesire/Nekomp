@@ -14,5 +14,6 @@ data class TrendingItem(
     val coverImage: Image,
     val averageRating: String,
     val ratingRank: Int,
-    val popularityRank: Int
+    val popularityRank: Int,
+    val trendingRank: Int
 )
