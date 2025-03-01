@@ -19,9 +19,7 @@ class NekompApp : Application() {
     }
 
     private fun initDi() {
-        initKoin(
-            platformModules = listOf(workManagerModule)
-        ) {
+        initKoin(platformModules = listOf(workManagerModule)) {
             androidContext(this@NekompApp)
             androidLogger(Level.INFO)
             workManagerFactory()
@@ -30,6 +28,7 @@ class NekompApp : Application() {
 
     private fun startWorkers() {
         get<WorkerQueue>().apply {
+            enqueueLibraryRefresh()
             enqueueTrendingRefresh()
             enqueueUserRefresh()
         }

@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit
 
 private const val TRENDING_REFRESH_TAG = "TrendingRefresh"
 private const val TRENDING_UNIQUE_NAME = "TrendingSync"
+private const val LIBRARY_REFRESH_TAG = "LibraryRefresh"
+private const val LIBRARY_UNIQUE_NAME = "LibrarySync"
 private const val USER_REFRESH_TAG = "UserRefresh"
 private const val USER_UNIQUE_NAME = "UserSync"
 
@@ -19,6 +21,19 @@ class WorkerQueue(private val workManager: WorkManager) {
     private val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .build()
+
+    fun enqueueLibraryRefresh() {
+        val request = PeriodicWorkRequestBuilder<RefreshLibraryWorker>(12, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .addTag(LIBRARY_REFRESH_TAG)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            LIBRARY_UNIQUE_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            request
+        )
+    }
 
     fun enqueueTrendingRefresh() {
         val request = PeriodicWorkRequestBuilder<RefreshTrendingDataWorker>(12, TimeUnit.HOURS)
