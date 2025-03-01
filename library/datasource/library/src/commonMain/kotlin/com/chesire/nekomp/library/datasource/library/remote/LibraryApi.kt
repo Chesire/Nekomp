@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.library.remote
 
+import com.chesire.nekomp.library.datasource.library.remote.model.EntryRequestDto
 import com.chesire.nekomp.library.datasource.library.remote.model.EntryResponseDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
 import de.jensklingenberg.ktorfit.http.Body
@@ -85,6 +86,6 @@ interface LibraryApi {
     )
     suspend fun updateItem(
         @Path("id") entryId: Int,
-        @Body data: String
+        @Body data: EntryRequestDto
     ): Result<EntryResponseDto>
 }

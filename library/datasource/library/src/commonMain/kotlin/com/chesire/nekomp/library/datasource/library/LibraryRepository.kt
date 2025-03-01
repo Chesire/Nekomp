@@ -8,6 +8,7 @@ import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
 import com.chesire.nekomp.library.datasource.library.remote.model.DataDto
+import com.chesire.nekomp.library.datasource.library.remote.model.EntryRequestDto
 import com.chesire.nekomp.library.datasource.library.remote.model.IncludedDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
 import com.chesire.nekomp.library.datasource.user.UserRepository
@@ -174,7 +175,7 @@ class LibraryRepository(
             return Err(Unit) // TODO: Add custom error type
         }
 
-        val updateDto = createUpdateDto(entryId, newProgress)
+        val updateDto = EntryRequestDto.build(entryId = entryId, newProgress = newProgress)
         return libraryApi
             .updateItem(entryId = entryId, data = updateDto)
             .map {
@@ -257,21 +258,6 @@ private fun createAddDto(
           "id": $userId
         }
       }
-    }
-  }
-}
-        """.trimIndent()
-
-private fun createUpdateDto(
-    entryId: Int,
-    newProgress: Int
-) = """
-{
-  "data": {
-    "id": $entryId,
-    "type": "libraryEntries",
-    "attributes": {
-      "progress": $newProgress
     }
   }
 }
