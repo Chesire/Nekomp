@@ -3,11 +3,11 @@ package com.chesire.nekomp.binder
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.AppDatabase
 import com.chesire.nekomp.feature.settings.core.LogoutExecutor
-import com.chesire.nekomp.library.datasource.auth.local.AuthStorage
+import com.chesire.nekomp.library.datasource.auth.AuthRepository
 
 class LogoutBinder(
     private val database: AppDatabase,
-    private val authStorage: AuthStorage
+    private val authRepository: AuthRepository
 ) : LogoutExecutor {
 
     override suspend fun execute() {
@@ -17,7 +17,7 @@ class LogoutBinder(
 
     private suspend fun clearAuth() {
         Logger.d("Logout") { "Clearing auth" }
-        authStorage.clear()
+        authRepository.clear()
     }
 
     private suspend fun clearDBs() {
