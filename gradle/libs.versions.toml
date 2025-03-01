@@ -15,7 +15,7 @@ kotlin = "2.1.0"
 ktor = "3.1.0"
 ktorfit = "2.2.0"
 lifecycle = "2.8.4"
-room = "2.7.0-alpha13"
+room = "2.7.0-rc01" # Might cause issues with iOS
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.10.1" }
