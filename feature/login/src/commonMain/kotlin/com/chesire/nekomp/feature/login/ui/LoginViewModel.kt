@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.login.core.PerformLoginUseCase
 import com.chesire.nekomp.library.datasource.auth.AuthFailure
+import com.chesire.nekomp.library.datasource.library.LibraryRepository
+import com.github.michaelbull.result.onSuccess
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +18,11 @@ import nekomp.core.resources.generated.resources.login_error_generic
 import nekomp.core.resources.generated.resources.login_error_invalid_credentials
 import org.jetbrains.compose.resources.getString
 
-class LoginViewModel(private val performLogin: PerformLoginUseCase) : ViewModel() {
+class LoginViewModel(
+    private val performLogin: PerformLoginUseCase,
+    private val libraryRepository: LibraryRepository,
+    private val externalScope: CoroutineScope
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
@@ -40,6 +47,11 @@ class LoginViewModel(private val performLogin: PerformLoginUseCase) : ViewModel(
     private fun onLoginPressed() = viewModelScope.launch {
         val state = _uiState.updateAndGet { it.copy(isPendingLogin = true) }
         val loginResult = performLogin(state.email, state.password)
+            .onSuccess {
+                externalScope.launch {
+                    libraryRepository.retrieve()
+                }
+            }
 
         _uiState.update {
             it.copy(
