@@ -1,5 +1,6 @@
 package com.chesire.nekomp
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.Theme
+import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.feature.discover.ui.DiscoverScreen
 import com.chesire.nekomp.feature.home.ui.HomeScreen
 import com.chesire.nekomp.feature.library.ui.LibraryScreen
@@ -32,7 +34,6 @@ import com.chesire.nekomp.navigation.DashboardDestination
 import com.chesire.nekomp.navigation.OriginScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.getKoin
 import org.koin.compose.koinInject
 
 @Composable
@@ -40,9 +41,18 @@ import org.koin.compose.koinInject
 fun App() {
     Logger.setTag("Nekomp")
 
-    val theme by getKoin().get<ApplicationSettings>().theme.collectAsState(Theme.System)
+    val appSettings = koinInject<ApplicationSettings>()
+    val theme by appSettings.theme.collectAsState(Theme.System)
 
-    NekompTheme(theme = theme) {
+    val useDarkTheme = when {
+        theme == Theme.System && isSystemInDarkTheme() -> true
+        theme == Theme.System && !isSystemInDarkTheme() -> false
+        theme == Theme.Light -> false
+        theme == Theme.Dark -> true
+        else -> false
+    }
+
+    NekompTheme(useDarkTheme) {
         val appNavController = rememberNavController()
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
         Surface(

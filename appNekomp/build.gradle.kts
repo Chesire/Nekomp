@@ -46,6 +46,7 @@ kotlin {
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.core.resources)
+            implementation(projects.core.ui)
             implementation(projects.feature.discover)
             implementation(projects.feature.home)
             implementation(projects.feature.library)
