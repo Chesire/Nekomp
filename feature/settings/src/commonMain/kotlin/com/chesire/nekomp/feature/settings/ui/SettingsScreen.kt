@@ -71,9 +71,6 @@ private fun Render(
     execute: (ViewAction) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    // TODO: Switch to predictive
-    BackHandler { goBack() }
-
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
             ViewEvent.LoggedOut -> onLoggedOut()

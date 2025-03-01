@@ -1,5 +1,9 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.chesire.nekomp
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
@@ -10,7 +14,13 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.PredictiveBackHandler
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -32,6 +42,7 @@ import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import com.chesire.nekomp.navigation.DashboardDestination
 import com.chesire.nekomp.navigation.OriginScreen
+import kotlin.coroutines.cancellation.CancellationException
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -55,16 +66,39 @@ fun App() {
     NekompTheme(useDarkTheme) {
         val appNavController = rememberNavController()
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
+        var appScale by remember { mutableFloatStateOf(1F) }
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(appScale),
             color = MaterialTheme.colorScheme.background
         ) {
+            PredictiveBackHandler(appNavController.currentBackStackEntry != null) { progress ->
+                try {
+                    progress.collect { backEvent ->
+                        appScale = 1F - (1F * backEvent.progress)
+                    }
+                    appScale = 0F
+                } catch (_: CancellationException) {
+                    appScale = 1F
+                }
+            }
             NavHost(
                 navController = appNavController,
                 startDestination = if (isLoggedIn) {
                     OriginScreen.Dashboard.name
                 } else {
                     OriginScreen.Login.name
+                },
+                popExitTransition = {
+                    scaleOut(
+                        targetScale = 0.9f,
+                        transformOrigin = TransformOrigin(
+                            pivotFractionX = 0.5f,
+                            pivotFractionY = 0.5f
+                        )
+                    )
+                },
+                popEnterTransition = {
+                    EnterTransition.None
                 },
                 modifier = Modifier.fillMaxSize()
             ) {

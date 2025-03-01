@@ -75,6 +75,7 @@ kotlin {
             implementation(libs.compose.material3.adaptive.layout)
             implementation(libs.compose.material3.adaptive.navigation)
             implementation(libs.compose.material3.windowsizeclass)
+            implementation(libs.compose.ui.backhandler)
             implementation(libs.koin.compose)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
