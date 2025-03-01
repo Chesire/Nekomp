@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class EntryRequestDto(
+data class EntryRequestDto(
     @SerialName("data")
     val data: EntryDataRequestDto
 ) {
