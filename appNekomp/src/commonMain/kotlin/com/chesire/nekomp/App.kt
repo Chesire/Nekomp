@@ -14,12 +14,8 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -42,7 +38,6 @@ import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import com.chesire.nekomp.navigation.DashboardDestination
 import com.chesire.nekomp.navigation.OriginScreen
-import kotlin.coroutines.cancellation.CancellationException
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -66,21 +61,10 @@ fun App() {
     NekompTheme(useDarkTheme) {
         val appNavController = rememberNavController()
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
-        var appScale by remember { mutableFloatStateOf(1F) }
         Surface(
-            modifier = Modifier.fillMaxSize(appScale),
+            modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            PredictiveBackHandler(appNavController.currentBackStackEntry != null) { progress ->
-                try {
-                    progress.collect { backEvent ->
-                        appScale = 1F - (1F * backEvent.progress)
-                    }
-                    appScale = 0F
-                } catch (_: CancellationException) {
-                    appScale = 1F
-                }
-            }
             NavHost(
                 navController = appNavController,
                 startDestination = if (isLoggedIn) {
