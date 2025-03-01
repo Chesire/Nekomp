@@ -42,6 +42,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
         }
         commonMain.dependencies {
+            implementation(projects.core.coroutines)
             implementation(projects.core.database)
             implementation(projects.core.network)
             implementation(projects.core.preferences)

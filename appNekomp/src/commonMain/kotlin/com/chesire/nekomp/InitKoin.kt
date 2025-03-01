@@ -2,9 +2,9 @@
 
 package com.chesire.nekomp
 
+import com.chesire.nekomp.core.coroutines.coroutinesModule
 import com.chesire.nekomp.core.database.databaseModule
 import com.chesire.nekomp.core.preferences.preferencesModule
-import com.chesire.nekomp.di.coroutinesModule
 import com.chesire.nekomp.di.logoutModule
 import com.chesire.nekomp.feature.discover.featureDiscoverModule
 import com.chesire.nekomp.feature.home.featureHomeModule
