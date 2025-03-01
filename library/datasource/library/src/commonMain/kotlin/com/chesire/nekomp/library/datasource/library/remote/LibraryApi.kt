@@ -61,7 +61,7 @@ interface LibraryApi {
             "?include=anime" +
             "&fields[anime]=$FIELDS,episodeCount"
     )
-    suspend fun addAnime(@Body data: String): Result<EntryResponseDto>
+    suspend fun addAnime(@Body data: EntryRequestDto): Result<EntryResponseDto>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -72,7 +72,7 @@ interface LibraryApi {
             "?include=manga" +
             "&fields[manga]=$FIELDS,chapterCount"
     )
-    suspend fun addManga(@Body data: String): Result<EntryResponseDto>
+    suspend fun addManga(@Body data: EntryRequestDto): Result<EntryResponseDto>
 
     @Headers(
         "Accept: application/vnd.api+json",
