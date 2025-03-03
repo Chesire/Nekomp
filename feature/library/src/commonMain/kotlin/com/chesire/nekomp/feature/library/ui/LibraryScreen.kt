@@ -1,6 +1,7 @@
 @file:OptIn(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
+    ExperimentalMaterial3Api::class,
     ExperimentalSharedTransitionApi::class
 )
 
@@ -9,8 +10,10 @@ package com.chesire.nekomp.feature.library.ui
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,13 +24,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
@@ -44,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -97,7 +105,7 @@ private fun Render(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        SharedTransitionLayout(modifier = Modifier.padding(paddingValues)) {
+        SharedTransitionLayout {
             AnimatedContent(
                 targetState = isListAndDetailVisible,
                 label = "listDetailAnimatedContent"
@@ -144,16 +152,41 @@ private fun ListContent(
     entries: ImmutableList<Entry>,
     onEntryClick: (Entry) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(
-            items = entries,
-            key = { it.id }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Anime")
+                },
+                actions = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Default.FilterList,
+                            contentDescription = "Filter"
+                        )
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Sort,
+                            contentDescription = "Sort"
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier.padding(paddingValues).padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.Start,
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            ListItem(it, onEntryClick)
+            items(
+                items = entries,
+                key = { it.id }
+            ) {
+                ListItem(it, onEntryClick)
+            }
         }
     }
 }
@@ -188,26 +221,31 @@ private fun DetailContent(
     showBack: Boolean,
     goBack: () -> Unit
 ) {
-    if (entry != null) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (showBack) {
-                IconButton(
-                    onClick = goBack,
-                    modifier = Modifier.align(Alignment.Start)
-                ) {
-                    Icon(
-                        painter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack),
-                        contentDescription = stringResource(
-                            NekoRes.string.nav_content_description_go_back
-                        )
-                    )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = entry?.title ?: "")
+                },
+                navigationIcon = {
+                    if (showBack) {
+                        IconButton(onClick = goBack) {
+                            Icon(
+                                painter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack),
+                                contentDescription = stringResource(
+                                    NekoRes.string.nav_content_description_go_back
+                                )
+                            )
+                        }
+                    }
                 }
+            )
+        }
+    ) { paddingValues ->
+        if (entry != null) {
+            Column(modifier = Modifier.padding(paddingValues)) {
+                Text("Test")
             }
-            Text(text = entry.title)
         }
     }
 }
