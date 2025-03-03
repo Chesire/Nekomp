@@ -37,11 +37,11 @@ data class TrendingResponseDto(
             @SerialName("coverImage")
             val coverImage: ImagesDto?,
             @SerialName("averageRating")
-            val averageRating: String,
+            val averageRating: String?,
             @SerialName("ratingRank")
-            val ratingRank: Int,
+            val ratingRank: Int?,
             @SerialName("popularityRank")
-            val popularityRank: Int,
+            val popularityRank: Int?,
             @Transient
             val trendingRank: Int = -1
         )
