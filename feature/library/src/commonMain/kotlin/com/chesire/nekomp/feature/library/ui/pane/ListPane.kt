@@ -28,12 +28,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.chesire.nekomp.feature.library.data.LibraryViewType
 import com.chesire.nekomp.feature.library.ui.Entry
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ListPane(
     entries: ImmutableList<Entry>,
+    currentViewType: LibraryViewType,
     onEntryClick: (Entry) -> Unit
 ) {
     Scaffold(
@@ -43,6 +47,12 @@ fun ListPane(
                     Text("Anime")
                 },
                 actions = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = currentViewType.icon,
+                            contentDescription = "Change view"
+                        )
+                    }
                     IconButton(onClick = {}) {
                         Icon(
                             imageVector = Icons.Default.FilterList,
@@ -59,27 +69,70 @@ fun ListPane(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .animateContentSize(),
-            horizontalAlignment = Alignment.Start,
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                items = entries,
-                key = { it.id }
-            ) {
-                ListItem(
-                    entry = it,
-                    modifier = Modifier.animateItem(),
-                    onEntryClick = onEntryClick
-                )
-            }
+        when (currentViewType) {
+            LibraryViewType.List -> ListView(
+                entries = entries,
+                modifier = Modifier.padding(paddingValues),
+                onEntryClick = onEntryClick
+            )
+
+            LibraryViewType.Card -> ListView(
+                entries = entries,
+                modifier = Modifier.padding(paddingValues),
+                onEntryClick = onEntryClick
+            )
+
+            LibraryViewType.Grid -> ListView(
+                entries = entries,
+                modifier = Modifier.padding(paddingValues),
+                onEntryClick = onEntryClick
+            )
         }
     }
+}
+
+@Composable
+private fun ListView(
+    entries: ImmutableList<Entry>,
+    modifier: Modifier = Modifier,
+    onEntryClick: (Entry) -> Unit
+) {
+}
+
+@Composable
+private fun CardView(
+    entries: ImmutableList<Entry>,
+    modifier: Modifier = Modifier,
+    onEntryClick: (Entry) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .animateContentSize(),
+        horizontalAlignment = Alignment.Start,
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(
+            items = entries,
+            key = { it.id }
+        ) {
+            ListItem(
+                entry = it,
+                modifier = Modifier.animateItem(),
+                onEntryClick = onEntryClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun GridView(
+    entries: ImmutableList<Entry>,
+    modifier: Modifier = Modifier,
+    onEntryClick: (Entry) -> Unit
+) {
+
 }
 
 @Composable
@@ -108,4 +161,16 @@ private fun ListItem(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    ListPane(
+        entries = persistentListOf<Entry>(
+            Entry(0, "Title1", "")
+        ),
+        currentViewType = LibraryViewType.Card,
+        onEntryClick = {}
+    )
 }
