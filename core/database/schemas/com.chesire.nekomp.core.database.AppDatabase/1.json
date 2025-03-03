@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7de1803736f19e093569c73844bd6985",
+    "identityHash": "843be9ba193e1a918bdc4a598b58f0b1",
     "entities": [
       {
         "tableName": "LibraryEntryEntity",
@@ -156,7 +156,7 @@
       },
       {
         "tableName": "TrendingEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `type` TEXT NOT NULL, `synopsis` TEXT NOT NULL, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `subtype` TEXT NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `coverImageTiny` TEXT NOT NULL, `coverImageSmall` TEXT NOT NULL, `coverImageMedium` TEXT NOT NULL, `coverImageLarge` TEXT NOT NULL, `coverImageOriginal` TEXT NOT NULL, `averageRating` TEXT NOT NULL, `ratingRank` INTEGER NOT NULL, `popularityRank` INTEGER NOT NULL, `trendingRank` INTEGER DEFAULT null, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `type` TEXT NOT NULL, `synopsis` TEXT NOT NULL, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `subtype` TEXT NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `coverImageTiny` TEXT NOT NULL, `coverImageSmall` TEXT NOT NULL, `coverImageMedium` TEXT NOT NULL, `coverImageLarge` TEXT NOT NULL, `coverImageOriginal` TEXT NOT NULL, `averageRating` TEXT NOT NULL, `ratingRank` INTEGER NOT NULL, `popularityRank` INTEGER NOT NULL, `trendingRank` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -287,8 +287,7 @@
           {
             "fieldPath": "trendingRank",
             "columnName": "trendingRank",
-            "affinity": "INTEGER",
-            "defaultValue": "null"
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -385,7 +384,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7de1803736f19e093569c73844bd6985')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '843be9ba193e1a918bdc4a598b58f0b1')"
     ]
   }
 }
