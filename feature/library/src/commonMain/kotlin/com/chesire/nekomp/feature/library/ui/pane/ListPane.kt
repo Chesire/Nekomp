@@ -62,21 +62,21 @@ fun ListPane(
                 entries = entries,
                 modifier = Modifier.padding(paddingValues),
                 onEntryClick = onEntryClick,
-                onPlusOneClick = { execute(ViewAction.ViewTypeClick) } // TODO
+                onPlusOneClick = { execute(ViewAction.ItemPlusOneClick(it)) }
             )
 
             ViewType.Card -> CardItemsPane(
                 entries = entries,
                 modifier = Modifier.padding(paddingValues),
                 onEntryClick = onEntryClick,
-                onPlusOneClick = { execute(ViewAction.ViewTypeClick) } // TODO
+                onPlusOneClick = { execute(ViewAction.ItemPlusOneClick(it)) }
             )
 
             ViewType.Grid -> GridItemsPane(
                 entries = entries,
                 modifier = Modifier.padding(paddingValues),
                 onEntryClick = onEntryClick,
-                onPlusOneClick = { execute(ViewAction.ViewTypeClick) } // TODO
+                onPlusOneClick = { execute(ViewAction.ItemPlusOneClick(it)) }
             )
         }
     }
@@ -87,7 +87,7 @@ fun ListPane(
 private fun Preview() {
     ListPane(
         entries = persistentListOf<Entry>(
-            Entry(0, "Title1", "", "")
+            Entry(0, "Title1", "", "", 0f, 0)
         ),
         currentViewType = ViewType.Card,
         execute = {},

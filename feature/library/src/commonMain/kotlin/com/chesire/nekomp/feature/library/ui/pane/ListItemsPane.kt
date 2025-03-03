@@ -43,7 +43,7 @@ internal fun ListItemsPane(
     ) {
         items(
             items = entries,
-            key = { it.id }
+            key = { it.entryId }
         ) {
             ListItem(
                 entry = it,

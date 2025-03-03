@@ -38,7 +38,7 @@ internal fun CardItemsPane(
     ) {
         items(
             items = entries,
-            key = { it.id }
+            key = { it.entryId }
         ) {
             CardItem(
                 entry = it,

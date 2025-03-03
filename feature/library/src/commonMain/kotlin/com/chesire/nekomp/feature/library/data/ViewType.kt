@@ -7,8 +7,8 @@ import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class ViewType(val title: String, val icon: ImageVector) {
-    List(title = "List", icon = Icons.AutoMirrored.Filled.ViewList),
     Card(title = "Card", icon = Icons.Default.ViewAgenda),
+    List(title = "List", icon = Icons.AutoMirrored.Filled.ViewList),
     Grid(title = "Grid", icon = Icons.Default.GridView);
 
     companion object {

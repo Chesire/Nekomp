@@ -7,5 +7,7 @@ sealed interface ViewAction {
     data object ViewTypeClick : ViewAction
     data class ViewTypeChosen(val newType: ViewType?) : ViewAction
 
+    data class ItemPlusOneClick(val entry: Entry) : ViewAction
+
     data object ObservedViewEvent : ViewAction
 }

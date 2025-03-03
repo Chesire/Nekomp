@@ -1,5 +1,6 @@
 package com.chesire.nekomp.feature.library.ui
 
+import androidx.compose.runtime.Stable
 import com.chesire.nekomp.feature.library.data.ViewType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -19,9 +20,12 @@ sealed interface LibraryBottomSheet {
     ) : LibraryBottomSheet
 }
 
+@Stable
 data class Entry(
-    val id: Int,
+    val entryId: Int,
     val title: String,
     val posterImage: String,
-    val coverImage: String
+    val coverImage: String,
+    val progressPercent: Float,
+    val progress: Int
 )

@@ -11,8 +11,12 @@ import com.chesire.nekomp.feature.library.core.ObserveLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.core.RefreshLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.data.LibrarySettings
 import com.chesire.nekomp.feature.library.data.ViewType
+import com.chesire.nekomp.library.datasource.library.LibraryEntry
+import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +27,7 @@ import kotlinx.coroutines.launch
 class LibraryViewModel(
     private val refreshLibraryEntries: RefreshLibraryEntriesUseCase,
     private val observeLibraryEntries: ObserveLibraryEntriesUseCase,
+    private val libraryRepository: LibraryRepository,
     private val applicationSettings: ApplicationSettings,
     private val librarySettings: LibrarySettings
 ) : ViewModel() {
@@ -41,14 +46,7 @@ class LibraryViewModel(
                 _uiState.update { state ->
                     state.copy(
                         entries = entries
-                            .map {
-                                Entry(
-                                    id = it.id,
-                                    title = it.titles.toChosenLanguage(titleLanguage),
-                                    posterImage = it.posterImage.toBestImage(imageQuality),
-                                    coverImage = it.coverImage.toBestImage(imageQuality)
-                                )
-                            }
+                            .map { it.toEntry(imageQuality, titleLanguage) }
                             .toImmutableList()
                     )
                 }
@@ -67,6 +65,7 @@ class LibraryViewModel(
         when (action) {
             ViewAction.ViewTypeClick -> onViewTypeClick()
             is ViewAction.ViewTypeChosen -> onViewTypeChosen(action.newType)
+            is ViewAction.ItemPlusOneClick -> onItemPlusOneClick(action.entry)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
@@ -92,10 +91,36 @@ class LibraryViewModel(
         }
     }
 
+    private fun onItemPlusOneClick(entry: Entry) = viewModelScope.launch(Dispatchers.IO) {
+        // TODO: Update UI in some way?
+        libraryRepository.updateEntry(
+            entryId = entry.entryId,
+            newProgress = entry.progress + 1
+        )
+    }
+
     private fun onObservedViewEvent() {
         _uiState.update {
             it.copy(viewEvent = null)
         }
+    }
+
+    private fun LibraryEntry.toEntry(
+        imageQuality: ImageQuality,
+        titleLanguage: TitleLanguage
+    ): Entry {
+        return Entry(
+            entryId = entryId,
+            title = titles.toChosenLanguage(titleLanguage),
+            posterImage = posterImage.toBestImage(imageQuality),
+            coverImage = coverImage.toBestImage(imageQuality),
+            progressPercent = if (totalLength == 0) {
+                0f
+            } else {
+                (progress.toFloat() / totalLength.toFloat())
+            },
+            progress = progress
+        )
     }
 
     private fun Titles.toChosenLanguage(titleLanguage: TitleLanguage): String {

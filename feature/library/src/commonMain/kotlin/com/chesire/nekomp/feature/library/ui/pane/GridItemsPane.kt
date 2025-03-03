@@ -43,7 +43,7 @@ internal fun GridItemsPane(
     ) {
         items(
             items = entries,
-            key = { it.id }
+            key = { it.entryId }
         ) {
             GridItem(
                 entry = it,
