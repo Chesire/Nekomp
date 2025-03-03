@@ -6,9 +6,13 @@
 
     <application
         android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".NekompApp">
+        android:name=".NekompApp"
+        tools:ignore="UnusedAttribute">
 
         <provider
             android:name="androidx.startup.InitializationProvider"

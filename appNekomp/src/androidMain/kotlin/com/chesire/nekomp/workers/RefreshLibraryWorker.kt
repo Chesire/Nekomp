@@ -5,36 +5,37 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
-import com.chesire.nekomp.library.datasource.user.UserRepository
+import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import com.github.michaelbull.result.mapBoth
 
 private const val MAX_RETRIES = 3
 
-class RefreshUserWorker(
+class RefreshLibraryWorker(
     appContext: Context,
     workerParams: WorkerParameters,
-    private val userRepository: UserRepository,
+    private val libraryRepository: LibraryRepository,
     private val authRepository: AuthRepository
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        Logger.d("RefreshUserWorker") { "Starting worker for refreshing user" }
+        Logger.d("RefreshLibraryWorker") { "Starting worker for refreshing library" }
+
         return if (authRepository.accessToken().isNullOrBlank()) {
-            Logger.d("RefreshUserWorker") { "No user stored, exiting early" }
+            Logger.d("RefreshLibraryWorker") { "No user stored, exiting early" }
             Result.success()
         } else {
-            userRepository.retrieve()
+            libraryRepository.retrieve()
                 .mapBoth(
                     success = {
-                        Logger.d("RefreshUserWorker") { "Worker successful" }
+                        Logger.d("RefreshLibraryWorker") { "Worker successful" }
                         Result.success()
                     },
                     failure = {
                         if (runAttemptCount < MAX_RETRIES) {
-                            Logger.d("RefreshUserWorker") { "Worker failure, retrying" }
+                            Logger.d("RefreshLibraryWorker") { "Worker failure, retrying" }
                             Result.retry()
                         } else {
-                            Logger.d("RefreshUserWorker") { "Worker failure, not retrying" }
+                            Logger.d("RefreshLibraryWorker") { "Worker failure, not retrying" }
                             Result.failure()
                         }
                     }

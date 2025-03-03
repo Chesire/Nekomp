@@ -157,9 +157,9 @@ class TrendingRepository(
                 subtype = it.attributes.subtype,
                 posterImage = it.attributes.posterImage.toImage(),
                 coverImage = it.attributes.coverImage.toImage(),
-                averageRating = it.attributes.averageRating,
-                ratingRank = it.attributes.ratingRank,
-                popularityRank = it.attributes.popularityRank,
+                averageRating = it.attributes.averageRating ?: "",
+                ratingRank = it.attributes.ratingRank ?: -1,
+                popularityRank = it.attributes.popularityRank ?: -1,
                 trendingRank = it.attributes.trendingRank
             )
         }

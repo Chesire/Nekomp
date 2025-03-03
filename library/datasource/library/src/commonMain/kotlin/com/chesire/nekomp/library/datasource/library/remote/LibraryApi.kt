@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.library.remote
 
+import com.chesire.nekomp.library.datasource.library.remote.model.EntryRequestDto
 import com.chesire.nekomp.library.datasource.library.remote.model.EntryResponseDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
 import de.jensklingenberg.ktorfit.http.Body
@@ -60,7 +61,7 @@ interface LibraryApi {
             "?include=anime" +
             "&fields[anime]=$FIELDS,episodeCount"
     )
-    suspend fun addAnime(@Body data: String): Result<EntryResponseDto>
+    suspend fun addAnime(@Body data: EntryRequestDto): Result<EntryResponseDto>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -71,7 +72,7 @@ interface LibraryApi {
             "?include=manga" +
             "&fields[manga]=$FIELDS,chapterCount"
     )
-    suspend fun addManga(@Body data: String): Result<EntryResponseDto>
+    suspend fun addManga(@Body data: EntryRequestDto): Result<EntryResponseDto>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -85,6 +86,6 @@ interface LibraryApi {
     )
     suspend fun updateItem(
         @Path("id") entryId: Int,
-        @Body data: String
+        @Body data: EntryRequestDto
     ): Result<EntryResponseDto>
 }

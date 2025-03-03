@@ -27,9 +27,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.discover.ui.DiscoverItem
 import com.chesire.nekomp.feature.discover.ui.TrendingState
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun TrendingPane(
@@ -137,4 +140,30 @@ private fun TrendingDisplay(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    val model = DiscoverItem(
+        id = 1,
+        title = "Item",
+        type = Type.Anime,
+        coverImage = "",
+        posterImage = "",
+        isTracked = false,
+        isPendingTrack = false,
+    )
+    val state = TrendingState(
+        trendingAnime = persistentListOf(model),
+        trendingManga = persistentListOf(model),
+        topRatedAnime = persistentListOf(model),
+        topRatedManga = persistentListOf(model),
+        mostPopularAnime = persistentListOf(model),
+        mostPopularManga = persistentListOf(model)
+    )
+    TrendingPane(
+        trendingState = state,
+        onItemClick = {}
+    )
 }

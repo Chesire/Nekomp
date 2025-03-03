@@ -8,6 +8,7 @@ import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
 import com.chesire.nekomp.library.datasource.library.remote.model.DataDto
+import com.chesire.nekomp.library.datasource.library.remote.model.EntryRequestDto
 import com.chesire.nekomp.library.datasource.library.remote.model.IncludedDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
 import com.chesire.nekomp.library.datasource.user.UserRepository
@@ -109,40 +110,26 @@ class LibraryRepository(
 
     suspend fun addAnime(seriesId: Int): Result<LibraryEntry, Unit> {
         Logger.d("LibraryRepository") { "Making call to add anime $seriesId" }
-        val user = userRepository.user.firstOrNull()
-        if (user?.isAuthenticated != true) {
-            Logger.e("LibraryRepository") { "No user object, cancelling add call" }
-            return Err(Unit) // TODO: Add custom error type
-        }
-
-        return addEntry(user.id, seriesId, Type.Anime)
+        return addEntry(seriesId, Type.Anime)
     }
 
     suspend fun addManga(seriesId: Int): Result<LibraryEntry, Unit> {
         Logger.d("LibraryRepository") { "Making call to add manga $seriesId" }
+        return addEntry(seriesId, Type.Manga)
+    }
+
+    private suspend fun addEntry(seriesId: Int, type: Type): Result<LibraryEntry, Unit> {
         val user = userRepository.user.firstOrNull()
         if (user?.isAuthenticated != true) {
             Logger.e("LibraryRepository") { "No user object, cancelling add call" }
             return Err(Unit) // TODO: Add custom error type
         }
 
-        return addEntry(user.id, seriesId, Type.Manga)
-    }
-
-    private suspend fun addEntry(
-        userId: Int,
-        seriesId: Int,
-        type: Type
-    ): Result<LibraryEntry, Unit> {
-        val addJson = createAddDto(
-            userId,
-            seriesId,
-            type.name.lowercase()
-        )
+        val addDto = EntryRequestDto.buildAdd(type = type, seriesId = seriesId, userId = user.id)
 
         return when (type) {
-            Type.Anime -> libraryApi.addAnime(addJson)
-            Type.Manga -> libraryApi.addManga(addJson)
+            Type.Anime -> libraryApi.addAnime(addDto)
+            Type.Manga -> libraryApi.addManga(addDto)
         }
             .map {
                 val id = it.data.relationships.anime?.data?.id
@@ -163,6 +150,7 @@ class LibraryRepository(
             )
     }
 
+    @Suppress("ReturnCount")
     suspend fun updateEntry(
         entryId: Int,
         newProgress: Int
@@ -174,7 +162,7 @@ class LibraryRepository(
             return Err(Unit) // TODO: Add custom error type
         }
 
-        val updateDto = createUpdateDto(entryId, newProgress)
+        val updateDto = EntryRequestDto.buildUpdate(entryId = entryId, newProgress = newProgress)
         return libraryApi
             .updateItem(entryId = entryId, data = updateDto)
             .map {
@@ -229,50 +217,3 @@ class LibraryRepository(
         }
     }
 }
-
-// TODO: This could probably be some actual DTO classes?
-private fun createAddDto(
-    userId: Int,
-    seriesId: Int,
-    seriesType: String
-) =
-    """
-{
-  "data": {
-    "type": "libraryEntries",
-    "attributes": {
-      "progress": 0,
-      "status": "current"
-    },
-    "relationships": {
-      "$seriesType": {
-        "data": {
-          "type": "$seriesType",
-          "id": $seriesId
-        }
-      },
-      "user": {
-        "data": {
-          "type": "users",
-          "id": $userId
-        }
-      }
-    }
-  }
-}
-        """.trimIndent()
-
-private fun createUpdateDto(
-    entryId: Int,
-    newProgress: Int
-) = """
-{
-  "data": {
-    "id": $entryId,
-    "type": "libraryEntries",
-    "attributes": {
-      "progress": $newProgress
-    }
-  }
-}
-        """.trimIndent()

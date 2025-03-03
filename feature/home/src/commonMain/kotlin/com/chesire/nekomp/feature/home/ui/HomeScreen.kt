@@ -23,8 +23,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.home.ui.components.TrendingListComponent
 import com.chesire.nekomp.feature.home.ui.components.WatchListComponent
+import kotlinx.collections.immutable.persistentListOf
 import nekomp.core.resources.generated.resources.nav_content_description_profile
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -92,4 +94,21 @@ private fun Render(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    val state = UIState(
+        username = "Nekomp",
+        watchList = persistentListOf(),
+        trendingAll = persistentListOf(),
+        trendingAnime = persistentListOf(),
+        trendingManga = persistentListOf()
+    )
+    Render(
+        state = state,
+        navigateToProfile = {},
+        execute = {}
+    )
 }
