@@ -17,6 +17,7 @@
     <string name="nav_content_description_profile">Navigate to Profile</string>
     <string name="nav_content_description_activity">Navigate to Activity</string>
     <string name="nav_content_description_settings">Navigate to Settings</string>
+    <string name="nav_content_description_go_back">Go back</string>
 
     <!-- Login -->
     <string name="login_subtitle">Login with your kitsu.app credentials to continue</string>
@@ -27,4 +28,14 @@
     <string name="login_cta">Login via Kitsu</string>
     <string name="login_error_invalid_credentials">Failed to login, invalid credentials provided</string>
     <string name="login_error_generic">Failed to login, please check your internet and try again</string>
+
+    <!-- Settings -->
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_title_language_title">Title Language</string>
+    <string name="settings_image_quality_title">Image Quality</string>
+    <string name="settings_rate_series_title">Rate Series</string>
+    <string name="settings_rate_series_body">Prompt to rate series when finishing it</string>
+    <string name="settings_logout_title">Logout</string>
+    <string name="settings_logout_body">Logout of the application</string>
+    <string name="settings_version_title">Version</string>
 </resources>

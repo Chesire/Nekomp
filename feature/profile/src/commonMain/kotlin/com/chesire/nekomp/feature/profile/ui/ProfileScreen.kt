@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
 import kotlin.math.absoluteValue
+import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_content_description_settings
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -86,7 +87,9 @@ private fun Render(
                         IconButton(onClick = goBack) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null // Go back string
+                                contentDescription = stringResource(
+                                    NekoRes.string.nav_content_description_go_back
+                                )
                             )
                         }
                     },

@@ -41,8 +41,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.chesire.nekomp.core.resources.NekoRes
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
+import nekomp.core.resources.generated.resources.nav_content_description_go_back
+import nekomp.core.resources.generated.resources.nav_settings
+import nekomp.core.resources.generated.resources.settings_image_quality_title
+import nekomp.core.resources.generated.resources.settings_logout_body
+import nekomp.core.resources.generated.resources.settings_logout_title
+import nekomp.core.resources.generated.resources.settings_rate_series_body
+import nekomp.core.resources.generated.resources.settings_rate_series_title
+import nekomp.core.resources.generated.resources.settings_theme_title
+import nekomp.core.resources.generated.resources.settings_title_language_title
+import nekomp.core.resources.generated.resources.settings_version_title
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -86,14 +98,14 @@ private fun Render(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = {
-                    Text("Settings")
-                },
+                title = { Text(text = stringResource(NekoRes.string.nav_settings)) },
                 navigationIcon = {
                     IconButton(onClick = goBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null // Go back string
+                            contentDescription = stringResource(
+                                NekoRes.string.nav_content_description_go_back
+                            )
                         )
                     }
                 }
@@ -106,7 +118,7 @@ private fun Render(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Setting(
-                title = "Theme",
+                title = stringResource(NekoRes.string.settings_theme_title),
                 subtitle = state.currentTheme,
                 startComposable = {
                     Icon(imageVector = Icons.Default.FormatPaint, contentDescription = null)
@@ -114,7 +126,7 @@ private fun Render(
                 onClick = { execute(ViewAction.ThemeClick) }
             )
             Setting(
-                title = "Title Language",
+                title = stringResource(NekoRes.string.settings_title_language_title),
                 subtitle = state.titleLanguage,
                 startComposable = {
                     Icon(imageVector = Icons.Default.Language, contentDescription = null)
@@ -122,7 +134,7 @@ private fun Render(
                 onClick = { execute(ViewAction.TitleLanguageClick) }
             )
             Setting(
-                title = "Image Quality",
+                title = stringResource(NekoRes.string.settings_image_quality_title),
                 subtitle = state.imageQuality,
                 startComposable = {
                     Icon(imageVector = Icons.Default.Image, contentDescription = null)
@@ -130,8 +142,8 @@ private fun Render(
                 onClick = { execute(ViewAction.ImageQualityClick) }
             )
             Setting(
-                title = "Rate Series",
-                subtitle = "Prompt to rate series when finishing it",
+                title = stringResource(NekoRes.string.settings_rate_series_title),
+                subtitle = stringResource(NekoRes.string.settings_rate_series_body),
                 startComposable = {
                     Icon(imageVector = Icons.Default.RateReview, contentDescription = null)
                 },
@@ -141,15 +153,15 @@ private fun Render(
                 onClick = { execute(ViewAction.RateChanged) }
             )
             Setting(
-                title = "Logout",
-                subtitle = "Logout of the application",
+                title = stringResource(NekoRes.string.settings_logout_title),
+                subtitle = stringResource(NekoRes.string.settings_logout_body),
                 startComposable = {
                     Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = null)
                 },
                 onClick = { execute(ViewAction.LogoutClick) }
             )
             Setting(
-                title = "Version",
+                title = stringResource(NekoRes.string.settings_version_title),
                 subtitle = state.version,
                 onClick = { }
             )
@@ -228,7 +240,7 @@ private fun BottomSheetEventHandler(
     when (val sheet = rememberedSheet) {
         is SettingsBottomSheet.ThemeBottomSheet -> SettingsSheet(
             sheetState = sheetState,
-            title = "Theme",
+            title = stringResource(NekoRes.string.settings_theme_title),
             entries = sheet.themes,
             selectedEntry = sheet.selectedTheme,
             execute = { execute(ViewAction.ThemeChosen(it)) }
@@ -236,7 +248,7 @@ private fun BottomSheetEventHandler(
 
         is SettingsBottomSheet.TitleLanguageBottomSheet -> SettingsSheet(
             sheetState = sheetState,
-            title = "Title Language",
+            title = stringResource(NekoRes.string.settings_title_language_title),
             entries = sheet.languages,
             selectedEntry = sheet.selectedLanguage,
             execute = { execute(ViewAction.TitleLanguageChosen(it)) }
@@ -244,7 +256,7 @@ private fun BottomSheetEventHandler(
 
         is SettingsBottomSheet.ImageQualityBottomSheet -> SettingsSheet(
             sheetState = sheetState,
-            title = "Image quality",
+            title = stringResource(NekoRes.string.settings_image_quality_title),
             entries = sheet.qualities,
             selectedEntry = sheet.selectedQuality,
             execute = { execute(ViewAction.ImageQualityChosen(it)) }
@@ -303,7 +315,13 @@ private fun <T : Enum<T>> SettingsSheet(
 @Composable
 @Preview
 private fun Preview() {
-    val state = UIState()
+    val state = UIState(
+        currentTheme = "Dark",
+        titleLanguage = "Canonical",
+        imageQuality = "Highest",
+        rateChecked = true,
+        version = "2.1.2"
+    )
     Render(
         state = state,
         goBack = {},

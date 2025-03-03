@@ -47,9 +47,12 @@ import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.chesire.nekomp.core.resources.NekoRes
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
+import nekomp.core.resources.generated.resources.nav_content_description_go_back
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -198,7 +201,9 @@ private fun DetailContent(
                 ) {
                     Icon(
                         painter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack),
-                        contentDescription = "Go back"
+                        contentDescription = stringResource(
+                            NekoRes.string.nav_content_description_go_back
+                        )
                     )
                 }
             }
