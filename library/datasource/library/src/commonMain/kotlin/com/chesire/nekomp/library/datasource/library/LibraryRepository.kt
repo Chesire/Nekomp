@@ -150,6 +150,7 @@ class LibraryRepository(
             )
     }
 
+    @Suppress("ReturnCount")
     suspend fun updateEntry(
         entryId: Int,
         newProgress: Int
