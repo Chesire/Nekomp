@@ -1,7 +1,6 @@
 @file:OptIn(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
-    ExperimentalMaterial3Api::class,
     ExperimentalSharedTransitionApi::class
 )
 
@@ -10,6 +9,7 @@ package com.chesire.nekomp.feature.library.ui
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleFloatingActionButtonDefaults.animateIcon
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
@@ -56,6 +57,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.feature.library.ui.pane.DetailPane
+import com.chesire.nekomp.feature.library.ui.pane.ListPane
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
@@ -115,7 +118,7 @@ private fun Render(
                     value = navigator.scaffoldValue,
                     listPane = {
                         AnimatedPane {
-                            ListContent(
+                            ListPane(
                                 entries = state.entries,
                                 onEntryClick = { entry ->
                                     scope.launch {
@@ -130,7 +133,7 @@ private fun Render(
                     },
                     detailPane = {
                         AnimatedPane {
-                            DetailContent(
+                            DetailPane(
                                 entry = navigator.currentDestination?.contentKey,
                                 showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
                                 goBack = {
@@ -142,109 +145,6 @@ private fun Render(
                         }
                     }
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ListContent(
-    entries: ImmutableList<Entry>,
-    onEntryClick: (Entry) -> Unit
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("Anime")
-                },
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Default.FilterList,
-                            contentDescription = "Filter"
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Sort,
-                            contentDescription = "Sort"
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.padding(paddingValues).padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.Start,
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                items = entries,
-                key = { it.id }
-            ) {
-                ListItem(it, onEntryClick)
-            }
-        }
-    }
-}
-
-@Composable
-private fun ListItem(entry: Entry, onEntryClick: (Entry) -> Unit) {
-    ElevatedCard(
-        onClick = { onEntryClick(entry) },
-        modifier = Modifier
-            .widthIn(max = 360.dp)
-            .padding(8.dp)
-    ) {
-        Row {
-            AsyncImage(
-                model = entry.image,
-                contentDescription = null,
-                modifier = Modifier.requiredHeight(200.dp)
-            )
-            Column(modifier = Modifier.padding(8.dp)) {
-                Text(
-                    text = entry.title,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun DetailContent(
-    entry: Entry?,
-    showBack: Boolean,
-    goBack: () -> Unit
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = entry?.title ?: "")
-                },
-                navigationIcon = {
-                    if (showBack) {
-                        IconButton(onClick = goBack) {
-                            Icon(
-                                painter = rememberVectorPainter(Icons.AutoMirrored.Filled.ArrowBack),
-                                contentDescription = stringResource(
-                                    NekoRes.string.nav_content_description_go_back
-                                )
-                            )
-                        }
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        if (entry != null) {
-            Column(modifier = Modifier.padding(paddingValues)) {
-                Text("Test")
             }
         }
     }
