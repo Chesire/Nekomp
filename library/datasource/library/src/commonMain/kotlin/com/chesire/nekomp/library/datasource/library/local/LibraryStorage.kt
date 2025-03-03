@@ -42,6 +42,13 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                         large = entry.posterImageLarge,
                         original = entry.posterImageOriginal,
                     ),
+                    coverImage = Image(
+                        tiny = entry.coverImageTiny,
+                        small = entry.coverImageSmall,
+                        medium = entry.coverImageMedium,
+                        large = entry.coverImageLarge,
+                        original = entry.coverImageOriginal,
+                    ),
                     startDate = entry.startDate,
                     endDate = entry.endDate
                 )
@@ -72,6 +79,11 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
                 posterImageMedium = entry.posterImage.medium,
                 posterImageLarge = entry.posterImage.large,
                 posterImageOriginal = entry.posterImage.original,
+                coverImageTiny = entry.coverImage.tiny,
+                coverImageSmall = entry.coverImage.small,
+                coverImageMedium = entry.coverImage.medium,
+                coverImageLarge = entry.coverImage.large,
+                coverImageOriginal = entry.coverImage.original,
                 startDate = entry.startDate,
                 endDate = entry.endDate
             )
@@ -102,6 +114,11 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
             posterImageMedium = entry.posterImage.medium,
             posterImageLarge = entry.posterImage.large,
             posterImageOriginal = entry.posterImage.original,
+            coverImageTiny = entry.coverImage.tiny,
+            coverImageSmall = entry.coverImage.small,
+            coverImageMedium = entry.coverImage.medium,
+            coverImageLarge = entry.coverImage.large,
+            coverImageOriginal = entry.coverImage.original,
             startDate = entry.startDate,
             endDate = entry.endDate
         )

@@ -98,6 +98,8 @@ data class IncludedDto(
         val status: String, // enum
         @SerialName("posterImage")
         val posterImage: ImagesDto?,
+        @SerialName("coverImage")
+        val coverImage: ImagesDto?,
         @SerialName("chapterCount")
         val chapterCount: Int?,
         @SerialName("episodeCount")

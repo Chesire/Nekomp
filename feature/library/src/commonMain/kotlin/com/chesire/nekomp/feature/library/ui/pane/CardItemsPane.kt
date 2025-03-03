@@ -25,7 +25,8 @@ import kotlinx.collections.immutable.ImmutableList
 internal fun CardItemsPane(
     entries: ImmutableList<Entry>,
     modifier: Modifier = Modifier,
-    onEntryClick: (Entry) -> Unit
+    onEntryClick: (Entry) -> Unit,
+    onPlusOneClick: (Entry) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -62,7 +63,7 @@ private fun CardItem(
     ) {
         Row {
             AsyncImage(
-                model = entry.image,
+                model = entry.posterImage,
                 contentDescription = null,
                 modifier = Modifier.requiredHeight(200.dp)
             )

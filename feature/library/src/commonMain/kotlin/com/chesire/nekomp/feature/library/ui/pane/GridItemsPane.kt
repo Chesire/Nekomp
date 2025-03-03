@@ -29,7 +29,8 @@ import kotlinx.collections.immutable.ImmutableList
 internal fun GridItemsPane(
     entries: ImmutableList<Entry>,
     modifier: Modifier = Modifier,
-    onEntryClick: (Entry) -> Unit
+    onEntryClick: (Entry) -> Unit,
+    onPlusOneClick: (Entry) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(128.dp),
@@ -65,7 +66,7 @@ private fun GridItem(
     ) {
         Box(modifier = Modifier.wrapContentSize()) {
             AsyncImage(
-                model = entry.image,
+                model = entry.posterImage,
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight,
                 alpha = 0.3f

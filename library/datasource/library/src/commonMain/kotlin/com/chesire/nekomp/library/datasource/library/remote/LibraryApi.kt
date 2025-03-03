@@ -12,7 +12,7 @@ import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 
 private const val FIELDS =
-    "slug,titles,canonicalTitle,startDate,endDate,subtype,status,posterImage"
+    "slug,titles,canonicalTitle,startDate,endDate,subtype,status,posterImage,coverImage"
 
 interface LibraryApi {
 

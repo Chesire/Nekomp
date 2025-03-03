@@ -27,6 +27,11 @@ data class LibraryEntryEntity(
     val posterImageMedium: String,
     val posterImageLarge: String,
     val posterImageOriginal: String,
+    val coverImageTiny: String,
+    val coverImageSmall: String,
+    val coverImageMedium: String,
+    val coverImageLarge: String,
+    val coverImageOriginal: String,
     val startDate: String,
     val endDate: String
 )

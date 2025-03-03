@@ -22,5 +22,6 @@ sealed interface LibraryBottomSheet {
 data class Entry(
     val id: Int,
     val title: String,
-    val image: String
+    val posterImage: String,
+    val coverImage: String
 )

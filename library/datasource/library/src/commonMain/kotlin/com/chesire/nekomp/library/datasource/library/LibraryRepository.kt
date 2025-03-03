@@ -211,6 +211,7 @@ class LibraryRepository(
                     ?: 0,
                 rating = data.attributes.rating ?: 0,
                 posterImage = included.attributes.posterImage.toImage(),
+                coverImage = included.attributes.coverImage.toImage(),
                 startDate = included.attributes.startDate ?: "",
                 endDate = included.attributes.endDate ?: ""
             )

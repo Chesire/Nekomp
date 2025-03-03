@@ -45,7 +45,8 @@ class LibraryViewModel(
                                 Entry(
                                     id = it.id,
                                     title = it.titles.toChosenLanguage(titleLanguage),
-                                    image = it.posterImage.toBestImage(imageQuality)
+                                    posterImage = it.posterImage.toBestImage(imageQuality),
+                                    coverImage = it.coverImage.toBestImage(imageQuality)
                                 )
                             }
                             .toImmutableList()
