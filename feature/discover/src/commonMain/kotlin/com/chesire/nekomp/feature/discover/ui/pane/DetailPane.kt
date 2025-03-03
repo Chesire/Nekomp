@@ -16,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.discover.ui.DetailState
 import com.chesire.nekomp.feature.discover.ui.DiscoverItem
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun DetailPane(
@@ -69,4 +71,26 @@ internal fun DetailPane(
             Text("No entry selected")
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    val state = DetailState(
+        currentItem = DiscoverItem(
+            id = 1,
+            title = "Item",
+            type = Type.Anime,
+            coverImage = "",
+            posterImage = "",
+            isTracked = false,
+            isPendingTrack = false,
+        )
+    )
+    DetailPane(
+        detailState = state,
+        showBack = true,
+        trackItem = {},
+        goBack = {}
+    )
 }

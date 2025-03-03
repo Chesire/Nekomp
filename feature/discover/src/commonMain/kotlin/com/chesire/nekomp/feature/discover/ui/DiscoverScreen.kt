@@ -35,7 +35,9 @@ import androidx.compose.ui.backhandler.BackHandler
 import com.chesire.nekomp.feature.discover.ui.pane.DetailPane
 import com.chesire.nekomp.feature.discover.ui.pane.ListPane
 import com.chesire.nekomp.feature.discover.ui.pane.ListPaneType
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -133,4 +135,20 @@ private fun Render(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    val state = UIState(
+        searchTerm = "",
+        recentSearches = persistentListOf(),
+        trendingState = TrendingState(),
+        resultsState = ResultsState(),
+        detailState = DetailState()
+    )
+    Render(
+        state = state,
+        execute = {}
+    )
 }

@@ -216,7 +216,9 @@ private fun DetailContent(
 @Preview
 private fun Preview() {
     val state = UIState(
-        entries = persistentListOf<Entry>()
+        entries = persistentListOf<Entry>(
+            Entry(0, "Title1", "")
+        )
     )
     Render(
         state = state,

@@ -26,8 +26,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.discover.ui.DiscoverItem
 import com.chesire.nekomp.feature.discover.ui.ResultsState
+import kotlinx.collections.immutable.persistentListOf
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun ResultsPane(
@@ -96,4 +99,26 @@ private fun SearchDisplay(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    val state = ResultsState(
+        searchResults = persistentListOf(
+            DiscoverItem(
+                id = 1,
+                title = "Item",
+                type = Type.Anime,
+                coverImage = "",
+                posterImage = "",
+                isTracked = false,
+                isPendingTrack = false,
+            )
+        )
+    )
+    ResultsPane(
+        resultsState = state,
+        onItemClick = {}
+    )
 }

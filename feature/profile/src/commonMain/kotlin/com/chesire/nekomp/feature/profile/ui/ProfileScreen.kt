@@ -36,6 +36,7 @@ import kotlin.math.absoluteValue
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_content_description_settings
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -194,4 +195,16 @@ private fun Render(
             Text("Dummy data1")
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    val state = UIState()
+    Render(
+        state = state,
+        goBack = {},
+        navigateToSettings = {},
+        execute = {}
+    )
 }

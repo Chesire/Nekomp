@@ -8,6 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun SearchPane(
@@ -26,4 +28,13 @@ internal fun SearchPane(
             )
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    SearchPane(
+        recentSearches = persistentListOf("Search1", "Search2"),
+        onRecentClicked = {}
+    )
 }
