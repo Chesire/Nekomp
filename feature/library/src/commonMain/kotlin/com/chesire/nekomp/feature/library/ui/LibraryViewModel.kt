@@ -9,7 +9,10 @@ import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.library.core.ObserveLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.core.RefreshLibraryEntriesUseCase
+import com.chesire.nekomp.feature.library.data.LibrarySettings
+import com.chesire.nekomp.feature.library.data.ViewType
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +23,8 @@ import kotlinx.coroutines.launch
 class LibraryViewModel(
     private val refreshLibraryEntries: RefreshLibraryEntriesUseCase,
     private val observeLibraryEntries: ObserveLibraryEntriesUseCase,
-    private val applicationSettings: ApplicationSettings
+    private val applicationSettings: ApplicationSettings,
+    private val librarySettings: LibrarySettings
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
@@ -49,11 +53,41 @@ class LibraryViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            librarySettings.viewType.collect { viewType ->
+                _uiState.update { state ->
+                    state.copy(viewType = viewType)
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
         when (action) {
+            ViewAction.ViewTypeClick -> onViewTypeClick()
+            is ViewAction.ViewTypeChosen -> onViewTypeChosen(action.newType)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
+        }
+    }
+
+    private fun onViewTypeClick() = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = LibraryBottomSheet.ViewTypeBottomSheet(
+                    types = ViewType.entries.toPersistentList(),
+                    selectedType = librarySettings.viewType.first()
+                )
+            )
+        }
+    }
+
+    private fun onViewTypeChosen(newViewType: ViewType?) = viewModelScope.launch {
+        if (newViewType != null) {
+            librarySettings.updateViewType(newViewType)
+        }
+
+        _uiState.update { state ->
+            state.copy(bottomSheet = null)
         }
     }
 

@@ -28,8 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.chesire.nekomp.feature.library.data.LibraryViewType
+import com.chesire.nekomp.feature.library.data.ViewType
 import com.chesire.nekomp.feature.library.ui.Entry
+import com.chesire.nekomp.feature.library.ui.ViewAction
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -37,7 +38,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun ListPane(
     entries: ImmutableList<Entry>,
-    currentViewType: LibraryViewType,
+    currentViewType: ViewType,
+    execute: (ViewAction) -> Unit,
     onEntryClick: (Entry) -> Unit
 ) {
     Scaffold(
@@ -47,7 +49,7 @@ fun ListPane(
                     Text("Anime")
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { execute(ViewAction.ViewTypeClick) }) {
                         Icon(
                             imageVector = currentViewType.icon,
                             contentDescription = "Change view"
@@ -70,19 +72,19 @@ fun ListPane(
         }
     ) { paddingValues ->
         when (currentViewType) {
-            LibraryViewType.List -> ListView(
+            ViewType.List -> ListView(
                 entries = entries,
                 modifier = Modifier.padding(paddingValues),
                 onEntryClick = onEntryClick
             )
 
-            LibraryViewType.Card -> ListView(
+            ViewType.Card -> CardView(
                 entries = entries,
                 modifier = Modifier.padding(paddingValues),
                 onEntryClick = onEntryClick
             )
 
-            LibraryViewType.Grid -> ListView(
+            ViewType.Grid -> GridView(
                 entries = entries,
                 modifier = Modifier.padding(paddingValues),
                 onEntryClick = onEntryClick
@@ -97,6 +99,7 @@ private fun ListView(
     modifier: Modifier = Modifier,
     onEntryClick: (Entry) -> Unit
 ) {
+
 }
 
 @Composable
@@ -170,7 +173,8 @@ private fun Preview() {
         entries = persistentListOf<Entry>(
             Entry(0, "Title1", "")
         ),
-        currentViewType = LibraryViewType.Card,
+        currentViewType = ViewType.Card,
+        execute = {},
         onEntryClick = {}
     )
 }

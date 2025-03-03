@@ -1,7 +1,7 @@
 @file:OptIn(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
-    ExperimentalSharedTransitionApi::class
+    ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class
 )
 
 package com.chesire.nekomp.feature.library.ui
@@ -9,61 +9,34 @@ package com.chesire.nekomp.feature.library.ui
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Sort
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleFloatingActionButtonDefaults.animateIcon
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.core.ui.component.SettingSheet
 import com.chesire.nekomp.feature.library.ui.pane.DetailPane
 import com.chesire.nekomp.feature.library.ui.pane.ListPane
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
-import nekomp.core.resources.generated.resources.nav_content_description_go_back
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -120,6 +93,8 @@ private fun Render(
                         AnimatedPane {
                             ListPane(
                                 entries = state.entries,
+                                currentViewType = state.viewType,
+                                execute = execute,
                                 onEntryClick = { entry ->
                                     scope.launch {
                                         navigator.navigateTo(
@@ -147,6 +122,46 @@ private fun Render(
                 )
             }
         }
+
+        BottomSheetEventHandler(
+            bottomSheet = state.bottomSheet,
+            execute = execute
+        )
+    }
+}
+
+@Composable
+private fun BottomSheetEventHandler(
+    bottomSheet: LibraryBottomSheet?,
+    execute: (ViewAction) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val coroutineScope = rememberCoroutineScope()
+    var rememberedSheet by remember { mutableStateOf(bottomSheet) }
+    if (bottomSheet != null) {
+        rememberedSheet = bottomSheet
+    }
+
+    LaunchedEffect(bottomSheet) {
+        if (bottomSheet == null) {
+            coroutineScope.launch {
+                sheetState.hide()
+            }.invokeOnCompletion {
+                rememberedSheet = null
+            }
+        }
+    }
+
+    when (val sheet = rememberedSheet) {
+        is LibraryBottomSheet.ViewTypeBottomSheet -> SettingSheet(
+            sheetState = sheetState,
+            title = "View type",
+            entries = sheet.types,
+            selectedEntry = sheet.selectedType,
+            execute = { execute(ViewAction.ViewTypeChosen(it)) }
+        )
+
+        null -> Unit
     }
 }
 

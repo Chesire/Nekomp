@@ -41,6 +41,7 @@ kotlin {
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.core.resources)
+            implementation(projects.core.ui)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.user)

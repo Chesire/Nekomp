@@ -44,6 +44,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.ui)
+            implementation(libs.kotlinx.collections.immutable)
         }
     }
 }
