@@ -161,6 +161,14 @@ private fun BottomSheetEventHandler(
             execute = { execute(ViewAction.ViewTypeChosen(it)) }
         )
 
+        is LibraryBottomSheet.SortBottomSheet -> SettingSheet(
+            sheetState = sheetState,
+            title = "Sort by",
+            entries = sheet.options,
+            selectedEntry = sheet.selectedOption,
+            execute = { execute(ViewAction.SortChosen(it)) }
+        )
+
         null -> Unit
     }
 }

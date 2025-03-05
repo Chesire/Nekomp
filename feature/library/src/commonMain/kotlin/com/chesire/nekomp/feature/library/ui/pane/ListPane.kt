@@ -47,7 +47,7 @@ fun ListPane(
                             contentDescription = "Filter"
                         )
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { execute(ViewAction.SortClick) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Sort,
                             contentDescription = "Sort"

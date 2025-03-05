@@ -10,6 +10,7 @@ import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.library.core.ObserveLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.core.RefreshLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.data.LibrarySettings
+import com.chesire.nekomp.feature.library.data.SortChoice
 import com.chesire.nekomp.feature.library.data.ViewType
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
@@ -20,6 +21,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,17 +42,31 @@ class LibraryViewModel(
             refreshLibraryEntries()
         }
         viewModelScope.launch {
-            observeLibraryEntries().collect { entries ->
-                val imageQuality = applicationSettings.imageQuality.first()
-                val titleLanguage = applicationSettings.titleLanguage.first()
-                _uiState.update { state ->
-                    state.copy(
-                        entries = entries
-                            .map { it.toEntry(imageQuality, titleLanguage) }
-                            .toImmutableList()
-                    )
+            val imageQuality = applicationSettings.imageQuality.first()
+            val titleLanguage = applicationSettings.titleLanguage.first()
+            val libraryEntriesFlow = observeLibraryEntries()
+            val sortFlow = librarySettings.sortChoice
+            libraryEntriesFlow
+                .combine(sortFlow) { entries, sort ->
+                    entries.sortedBy { entry ->
+                        when (sort) {
+                            SortChoice.Default -> entry.entryId.toString()
+                            SortChoice.Title -> entry.titles.toChosenLanguage(titleLanguage)
+                            SortChoice.StartDate -> entry.startDate
+                            SortChoice.EndDate -> entry.endDate
+                            SortChoice.Rating -> entry.rating.toString()
+                        }
+                    }
                 }
-            }
+                .collect { entries ->
+                    _uiState.update { state ->
+                        state.copy(
+                            entries = entries
+                                .map { it.toEntry(imageQuality, titleLanguage) }
+                                .toImmutableList()
+                        )
+                    }
+                }
         }
         viewModelScope.launch {
             librarySettings.viewType.collect { viewType ->
@@ -65,7 +81,16 @@ class LibraryViewModel(
         when (action) {
             ViewAction.ViewTypeClick -> onViewTypeClick()
             is ViewAction.ViewTypeChosen -> onViewTypeChosen(action.newType)
+
+            ViewAction.FilterClick -> TODO()
+            is ViewAction.FilterChosen -> TODO()
+
+            ViewAction.SortClick -> onSortChoiceClick()
+            is ViewAction.SortChosen -> onSortChoiceChosen(action.newSortChoice)
+
+
             is ViewAction.ItemPlusOneClick -> onItemPlusOneClick(action.entry)
+
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
@@ -84,6 +109,27 @@ class LibraryViewModel(
     private fun onViewTypeChosen(newViewType: ViewType?) = viewModelScope.launch {
         if (newViewType != null) {
             librarySettings.updateViewType(newViewType)
+        }
+
+        _uiState.update { state ->
+            state.copy(bottomSheet = null)
+        }
+    }
+
+    private fun onSortChoiceClick() = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = LibraryBottomSheet.SortBottomSheet(
+                    options = SortChoice.entries.toPersistentList(),
+                    selectedOption = librarySettings.sortChoice.first()
+                )
+            )
+        }
+    }
+
+    private fun onSortChoiceChosen(newSortChoice: SortChoice?) = viewModelScope.launch {
+        if (newSortChoice != null) {
+            librarySettings.updateSortChoice(newSortChoice)
         }
 
         _uiState.update { state ->
