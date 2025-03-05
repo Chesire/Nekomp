@@ -146,7 +146,7 @@ private fun Preview() {
         typeFilters = persistentMapOf(),
         statusFilters = persistentMapOf(),
         entries = persistentListOf<Entry>(
-            Entry(0, "Title1", "", "", 0f, 0)
+            Entry(0, "Title1", "", "", 0f, "", 0)
         ),
         currentViewType = ViewType.Card,
         execute = {},

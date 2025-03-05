@@ -217,6 +217,7 @@ class LibraryViewModel(
             } else {
                 (progress.toFloat() / totalLength.toFloat())
             },
+            displayProgress = "$progress / ${totalLength.takeIf { it != 0 } ?: "ongoing"}",
             progress = progress
         )
     }
