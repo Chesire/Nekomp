@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.chesire.nekomp.feature.library.ui.pane
 
@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
@@ -85,11 +84,7 @@ fun ListPane(
                                     ElevatedFilterChip(
                                         selected = statusFilter.value,
                                         onClick = {
-                                            execute(
-                                                ViewAction.StatusFilterClick(
-                                                    statusFilter.key
-                                                )
-                                            )
+                                            execute(ViewAction.StatusFilterClick(statusFilter.key))
                                         },
                                         label = { Text(text = statusFilter.key.name) }
                                     )
