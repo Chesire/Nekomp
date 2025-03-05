@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Titles
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.TitleLanguage
@@ -16,6 +17,7 @@ import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,8 +47,14 @@ class LibraryViewModel(
             val imageQuality = applicationSettings.imageQuality.first()
             val titleLanguage = applicationSettings.titleLanguage.first()
             val libraryEntriesFlow = observeLibraryEntries()
+            val typeFilterFlow = librarySettings.typeFilter
             val sortFlow = librarySettings.sortChoice
             libraryEntriesFlow
+                .combine(typeFilterFlow) { entries, filter ->
+                    entries.filter { entry ->
+                        filter.getOrElse(entry.type) { true }
+                    }
+                }
                 .combine(sortFlow) { entries, sort ->
                     entries.sortedBy { entry ->
                         when (sort) {
@@ -75,6 +83,13 @@ class LibraryViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            librarySettings.typeFilter.collect { displayTypeFilter ->
+                _uiState.update { state ->
+                    state.copy(typeFilters = displayTypeFilter.toPersistentMap())
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
@@ -82,12 +97,10 @@ class LibraryViewModel(
             ViewAction.ViewTypeClick -> onViewTypeClick()
             is ViewAction.ViewTypeChosen -> onViewTypeChosen(action.newType)
 
-            ViewAction.FilterClick -> TODO()
-            is ViewAction.FilterChosen -> TODO()
-
             ViewAction.SortClick -> onSortChoiceClick()
             is ViewAction.SortChosen -> onSortChoiceChosen(action.newSortChoice)
 
+            is ViewAction.TypeFilterClick -> onTypeFilterClick(action.selectedType)
 
             is ViewAction.ItemPlusOneClick -> onItemPlusOneClick(action.entry)
 
@@ -135,6 +148,18 @@ class LibraryViewModel(
         _uiState.update { state ->
             state.copy(bottomSheet = null)
         }
+    }
+
+    private fun onTypeFilterClick(selectedType: Type) = viewModelScope.launch {
+        val newMap = _uiState.value.typeFilters.map {
+            if (it.key == selectedType) {
+                it.key to !it.value
+            } else {
+                it.key to it.value
+            }
+        }.toMap()
+
+        librarySettings.updateTypeFilter(newMap)
     }
 
     private fun onItemPlusOneClick(entry: Entry) = viewModelScope.launch(Dispatchers.IO) {

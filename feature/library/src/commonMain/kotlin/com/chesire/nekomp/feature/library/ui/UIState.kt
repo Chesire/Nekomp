@@ -1,21 +1,23 @@
 package com.chesire.nekomp.feature.library.ui
 
 import androidx.compose.runtime.Stable
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.library.data.SortChoice
 import com.chesire.nekomp.feature.library.data.ViewType
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 
 data class UIState(
     val entries: ImmutableList<Entry> = persistentListOf(),
     val viewType: ViewType = ViewType.Card,
+    val typeFilters: ImmutableMap<Type, Boolean> = persistentMapOf(),
     val bottomSheet: LibraryBottomSheet? = null,
     val viewEvent: ViewEvent? = null,
 )
 
 sealed interface LibraryBottomSheet {
-
-    // TODO: Filter
 
     data class ViewTypeBottomSheet(
         val types: ImmutableList<ViewType>,

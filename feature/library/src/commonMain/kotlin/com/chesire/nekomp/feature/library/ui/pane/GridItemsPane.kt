@@ -1,6 +1,5 @@
 package com.chesire.nekomp.feature.library.ui.pane
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,8 +49,7 @@ internal fun GridItemsPane(
     LazyVerticalGrid(
         columns = GridCells.Adaptive(128.dp),
         modifier = modifier
-            .padding(horizontal = 16.dp)
-            .animateContentSize(),
+            .padding(horizontal = 16.dp),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -63,7 +61,7 @@ internal fun GridItemsPane(
             GridItem(
                 entry = it,
                 onEntryClick = onEntryClick,
-                modifier = Modifier,
+                modifier = Modifier.animateItem(),
                 onPlusOneClick = onPlusOneClick
             )
         }
