@@ -2,6 +2,7 @@ package com.chesire.nekomp.feature.library.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
@@ -48,11 +49,17 @@ class LibraryViewModel(
             val titleLanguage = applicationSettings.titleLanguage.first()
             val libraryEntriesFlow = observeLibraryEntries()
             val typeFilterFlow = librarySettings.typeFilter
+            val statusFilterFlow = librarySettings.statusFilter
             val sortFlow = librarySettings.sortChoice
             libraryEntriesFlow
                 .combine(typeFilterFlow) { entries, filter ->
                     entries.filter { entry ->
                         filter.getOrElse(entry.type) { true }
+                    }
+                }
+                .combine(statusFilterFlow) { entries, filter ->
+                    entries.filter { entry ->
+                        filter.getOrElse(entry.entryStatus) { true }
                     }
                 }
                 .combine(sortFlow) { entries, sort ->
@@ -84,9 +91,16 @@ class LibraryViewModel(
             }
         }
         viewModelScope.launch {
-            librarySettings.typeFilter.collect { displayTypeFilter ->
+            librarySettings.typeFilter.collect { typeFilter ->
                 _uiState.update { state ->
-                    state.copy(typeFilters = displayTypeFilter.toPersistentMap())
+                    state.copy(typeFilters = typeFilter.toPersistentMap())
+                }
+            }
+        }
+        viewModelScope.launch {
+            librarySettings.statusFilter.collect { statusFilter ->
+                _uiState.update { state ->
+                    state.copy(statusFilters = statusFilter.toPersistentMap())
                 }
             }
         }
@@ -101,6 +115,7 @@ class LibraryViewModel(
             is ViewAction.SortChosen -> onSortChoiceChosen(action.newSortChoice)
 
             is ViewAction.TypeFilterClick -> onTypeFilterClick(action.selectedType)
+            is ViewAction.StatusFilterClick -> onStatusFilterClick(action.selectedStatus)
 
             is ViewAction.ItemPlusOneClick -> onItemPlusOneClick(action.entry)
 
@@ -160,6 +175,18 @@ class LibraryViewModel(
         }.toMap()
 
         librarySettings.updateTypeFilter(newMap)
+    }
+
+    private fun onStatusFilterClick(selectedStatus: EntryStatus) = viewModelScope.launch {
+        val newMap = _uiState.value.statusFilters.map {
+            if (it.key == selectedStatus) {
+                it.key to !it.value
+            } else {
+                it.key to it.value
+            }
+        }.toMap()
+
+        librarySettings.updateStatusFilter(newMap)
     }
 
     private fun onItemPlusOneClick(entry: Entry) = viewModelScope.launch(Dispatchers.IO) {

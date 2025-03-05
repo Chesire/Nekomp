@@ -2,11 +2,15 @@
 
 package com.chesire.nekomp.feature.library.ui.pane
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.ElevatedFilterChip
@@ -16,10 +20,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.library.data.ViewType
 import com.chesire.nekomp.feature.library.ui.Entry
@@ -33,6 +39,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun ListPane(
     typeFilters: ImmutableMap<Type, Boolean>,
+    statusFilters: ImmutableMap<EntryStatus, Boolean>,
     entries: ImmutableList<Entry>,
     currentViewType: ViewType,
     execute: (ViewAction) -> Unit,
@@ -63,13 +70,25 @@ fun ListPane(
             // TODO: Hide on scroll down
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+                    .padding(horizontal = 16.dp)
+                    .horizontalScroll(rememberScrollState())
             ) {
                 typeFilters.entries.forEach { typeFilter ->
                     ElevatedFilterChip(
                         selected = typeFilter.value,
                         onClick = { execute(ViewAction.TypeFilterClick(typeFilter.key)) },
                         label = { Text(text = typeFilter.key.name) }
+                    )
+                }
+                VerticalDivider()
+                statusFilters.entries.forEach { statusFilter ->
+                    ElevatedFilterChip(
+                        selected = statusFilter.value,
+                        onClick = { execute(ViewAction.StatusFilterClick(statusFilter.key)) },
+                        label = { Text(text = statusFilter.key.name) }
                     )
                 }
             }
@@ -101,6 +120,7 @@ fun ListPane(
 private fun Preview() {
     ListPane(
         typeFilters = persistentMapOf(),
+        statusFilters = persistentMapOf(),
         entries = persistentListOf<Entry>(
             Entry(0, "Title1", "", "", 0f, 0)
         ),

@@ -93,6 +93,7 @@ private fun Render(
                         AnimatedPane {
                             ListPane(
                                 typeFilters = state.typeFilters,
+                                statusFilters = state.statusFilters,
                                 entries = state.entries,
                                 currentViewType = state.viewType,
                                 execute = execute,

@@ -1,6 +1,7 @@
 package com.chesire.nekomp.feature.library.ui
 
 import androidx.compose.runtime.Stable
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.feature.library.data.SortChoice
 import com.chesire.nekomp.feature.library.data.ViewType
@@ -13,6 +14,7 @@ data class UIState(
     val entries: ImmutableList<Entry> = persistentListOf(),
     val viewType: ViewType = ViewType.Card,
     val typeFilters: ImmutableMap<Type, Boolean> = persistentMapOf(),
+    val statusFilters: ImmutableMap<EntryStatus, Boolean> = persistentMapOf(),
     val bottomSheet: LibraryBottomSheet? = null,
     val viewEvent: ViewEvent? = null,
 )
