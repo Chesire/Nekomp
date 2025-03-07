@@ -48,8 +48,7 @@ internal fun GridItemsPane(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(128.dp),
-        modifier = modifier
-            .padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)

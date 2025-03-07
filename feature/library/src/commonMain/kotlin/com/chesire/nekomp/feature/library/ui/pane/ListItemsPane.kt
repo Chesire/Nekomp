@@ -1,6 +1,5 @@
 package com.chesire.nekomp.feature.library.ui.pane
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,9 +33,7 @@ internal fun ListItemsPane(
     onPlusOneClick: (Entry) -> Unit
 ) {
     LazyColumn(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .animateContentSize(),
+        modifier = modifier.padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.Start,
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
