@@ -1,11 +1,11 @@
 package com.chesire.nekomp.core.model
 
 enum class EntryStatus {
-    Completed,
     Current,
-    Dropped,
     OnHold,
-    Planned;
+    Planned,
+    Completed,
+    Dropped;
 
     companion object {
 

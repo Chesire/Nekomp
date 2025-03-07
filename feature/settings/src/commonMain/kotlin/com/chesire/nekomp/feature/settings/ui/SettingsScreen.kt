@@ -20,10 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -42,7 +39,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.resources.NekoRes
-import kotlinx.collections.immutable.ImmutableList
+import com.chesire.nekomp.core.ui.component.SettingSheet
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_settings
@@ -238,7 +235,7 @@ private fun BottomSheetEventHandler(
     }
 
     when (val sheet = rememberedSheet) {
-        is SettingsBottomSheet.ThemeBottomSheet -> SettingsSheet(
+        is SettingsBottomSheet.ThemeBottomSheet -> SettingSheet(
             sheetState = sheetState,
             title = stringResource(NekoRes.string.settings_theme_title),
             entries = sheet.themes,
@@ -246,7 +243,7 @@ private fun BottomSheetEventHandler(
             execute = { execute(ViewAction.ThemeChosen(it)) }
         )
 
-        is SettingsBottomSheet.TitleLanguageBottomSheet -> SettingsSheet(
+        is SettingsBottomSheet.TitleLanguageBottomSheet -> SettingSheet(
             sheetState = sheetState,
             title = stringResource(NekoRes.string.settings_title_language_title),
             entries = sheet.languages,
@@ -254,7 +251,7 @@ private fun BottomSheetEventHandler(
             execute = { execute(ViewAction.TitleLanguageChosen(it)) }
         )
 
-        is SettingsBottomSheet.ImageQualityBottomSheet -> SettingsSheet(
+        is SettingsBottomSheet.ImageQualityBottomSheet -> SettingSheet(
             sheetState = sheetState,
             title = stringResource(NekoRes.string.settings_image_quality_title),
             entries = sheet.qualities,
@@ -264,52 +261,6 @@ private fun BottomSheetEventHandler(
 
         null -> Unit
     }
-}
-
-@Composable
-private fun <T : Enum<T>> SettingsSheet(
-    sheetState: SheetState,
-    title: String,
-    entries: ImmutableList<T>,
-    selectedEntry: T,
-    execute: (T?) -> Unit
-) {
-    ModalBottomSheet(
-        onDismissRequest = { execute(null) },
-        content = {
-            Column(
-                modifier = Modifier.padding(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    text = title,
-                    modifier = Modifier.padding(16.dp)
-                )
-                entries.forEach { entry ->
-                    Row(
-                        modifier = Modifier
-                            .clickable(
-                                enabled = true,
-                                onClick = { execute(entry) }
-                            )
-                            .padding(vertical = 8.dp, horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = entry.name,
-                            modifier = Modifier.weight(1f)
-                        )
-                        RadioButton(
-                            selected = entry == selectedEntry,
-                            onClick = null
-                        )
-                    }
-                }
-            }
-        },
-        sheetState = sheetState
-    )
 }
 
 @Composable

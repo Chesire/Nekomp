@@ -23,6 +23,7 @@ data class LibraryEntry(
     val totalLength: Int,
     val rating: Int,
     val posterImage: Image,
+    val coverImage: Image,
     val startDate: String,
     val endDate: String
 )

@@ -134,9 +134,9 @@ class HomeViewModel(
             progressPercent = if (totalLength == 0) {
                 0f
             } else {
-                (this@toWatchItem.progress.toFloat() / totalLength.toFloat())
+                (progress.toFloat() / totalLength.toFloat())
             },
-            progress = this@toWatchItem.progress
+            progress = progress
         )
     }
 
