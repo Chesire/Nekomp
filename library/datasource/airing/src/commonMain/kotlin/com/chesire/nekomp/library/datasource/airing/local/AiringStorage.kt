@@ -37,12 +37,16 @@ class AiringStorage(private val airingDao: AiringDao) {
                     airing = entry.airing,
                     season = Season.fromString(entry.season),
                     year = entry.year,
-                    airingTime = if (entry.airingHour == -1) null else AiringTime(
-                        dayOfWeek = DayOfWeek(entry.airingDayOfWeek),
-                        hour = entry.airingHour,
-                        minute = entry.airingMinute,
-                        timeZone = entry.airingTimeZone
-                    )
+                    airingTime = if (entry.airingHour == -1) {
+                        null
+                    } else {
+                        AiringTime(
+                            dayOfWeek = DayOfWeek(entry.airingDayOfWeek),
+                            hour = entry.airingHour,
+                            minute = entry.airingMinute,
+                            timeZone = entry.airingTimeZone
+                        )
+                    }
                 )
             }
         }

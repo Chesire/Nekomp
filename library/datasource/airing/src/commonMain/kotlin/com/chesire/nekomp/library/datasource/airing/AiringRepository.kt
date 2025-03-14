@@ -19,6 +19,10 @@ import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DayOfWeekNames
 import kotlinx.datetime.format.char
 
+private const val MAX_RETRIES = 5
+private const val REQUEST_FAILED_DELAY_MILLIS = 500L
+private const val REQUEST_TIME_MILLIS = 600L
+
 class AiringRepository(
     private val airingStorage: AiringStorage,
     private val airingApi: AiringApi
@@ -56,13 +60,13 @@ class AiringRepository(
                     if (apiError?.code == HttpStatusCode.TooManyRequests.value) {
                         Logger.d("AiringRepository") { "Got rate limited, waiting then trying again" }
                         retries++
-                        if (retries == 5) {
+                        if (retries == MAX_RETRIES) {
                             Logger.d("AiringRepository") { "Retries too high, exiting" }
                             // We tried too many times, something is wrong
                             return Err(Unit)
                         } else {
                             // Rate limited, delay briefly then try again
-                            delay(500)
+                            delay(REQUEST_FAILED_DELAY_MILLIS)
                         }
                     } else {
                         // Unexpected error case, exit out
@@ -74,9 +78,9 @@ class AiringRepository(
             val diff = end - start
             Logger.v("AiringRepository") { "Request completed in ${diff.inWholeMilliseconds} milliseconds" }
             // Rate limited to 3 requests per second, so need to make sure we delay between calls
-            if (diff.inWholeMilliseconds < 600) {
+            if (diff.inWholeMilliseconds < REQUEST_TIME_MILLIS) {
                 // Genius
-                val waitTime = 600 - diff.inWholeMilliseconds
+                val waitTime = REQUEST_TIME_MILLIS - diff.inWholeMilliseconds
                 Logger.v("AiringRepository") { "Need to wait as too fast, so waiting for $waitTime millis" }
                 delay(waitTime)
             }
@@ -88,6 +92,7 @@ class AiringRepository(
         return if (isSuccess) Ok(entries) else Err(Unit)
     }
 
+    @Suppress("SwallowedException")
     private fun buildAiringEntries(body: SeasonResponseDto): List<AiringAnime> {
         val timeFormat = DateTimeComponents.Format {
             dayOfWeek(
@@ -144,6 +149,7 @@ class AiringRepository(
                             timeZone = timeZone
                         )
                     } catch (ex: IllegalArgumentException) {
+                        Logger.e("AiringRepository") { "Failed to parse the time - $input" }
                         null
                     }
                 }
