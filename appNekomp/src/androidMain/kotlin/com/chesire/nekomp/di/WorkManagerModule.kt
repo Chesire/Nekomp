@@ -2,6 +2,7 @@ package com.chesire.nekomp.di
 
 import android.content.Context
 import androidx.work.WorkManager
+import com.chesire.nekomp.workers.RefreshAiringWorker
 import com.chesire.nekomp.workers.RefreshLibraryWorker
 import com.chesire.nekomp.workers.RefreshTrendingDataWorker
 import com.chesire.nekomp.workers.RefreshUserWorker
@@ -15,6 +16,7 @@ val workManagerModule = module {
         WorkManager.getInstance(get<Context>())
     }
     singleOf(::WorkerQueue)
+    workerOf(::RefreshAiringWorker)
     workerOf(::RefreshLibraryWorker)
     workerOf(::RefreshTrendingDataWorker)
     workerOf(::RefreshUserWorker)

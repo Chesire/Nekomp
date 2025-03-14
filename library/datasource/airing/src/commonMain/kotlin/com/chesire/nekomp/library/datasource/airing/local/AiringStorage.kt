@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 
 class AiringStorage(private val airingDao: AiringDao) {
 
-    // TODO: Need to clear this out every now and then
+    // TODO: Need to clear out any entries which have airing == false every now and then
 
     val airingEntries = airingDao
         .entries()

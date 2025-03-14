@@ -28,6 +28,7 @@ class NekompApp : Application() {
 
     private fun startWorkers() {
         get<WorkerQueue>().apply {
+            enqueueAiringRefresh()
             enqueueLibraryRefresh()
             enqueueTrendingRefresh()
             enqueueUserRefresh()
