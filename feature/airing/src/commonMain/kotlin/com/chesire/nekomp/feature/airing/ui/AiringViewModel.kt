@@ -19,10 +19,13 @@ class AiringViewModel(private val airingRepository: AiringRepository) : ViewMode
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val currentAiring = airingRepository.currentAiring()
-
-
-            Logger.d("AiringViewModel") { "Current airing - $currentAiring" }
+            airingRepository.currentAiring.collect {
+                Logger.d("AiringViewModel") { "Got new airing list - $it" }
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            // Put this somewhere else so we can do it on app start
+            airingRepository.syncCurrentAiring()
         }
     }
 
