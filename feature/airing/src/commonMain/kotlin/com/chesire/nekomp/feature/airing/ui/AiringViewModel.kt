@@ -23,10 +23,6 @@ class AiringViewModel(private val airingRepository: AiringRepository) : ViewMode
                 Logger.d("AiringViewModel") { "Got new airing list - $it" }
             }
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            // Put this somewhere else so we can do it on app start
-            airingRepository.syncCurrentAiring()
-        }
     }
 
     fun execute(action: ViewAction) {
