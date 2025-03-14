@@ -6,6 +6,7 @@ import com.chesire.nekomp.core.coroutines.coroutinesModule
 import com.chesire.nekomp.core.database.databaseModule
 import com.chesire.nekomp.core.preferences.preferencesModule
 import com.chesire.nekomp.di.logoutModule
+import com.chesire.nekomp.feature.airing.featureAiringModule
 import com.chesire.nekomp.feature.discover.featureDiscoverModule
 import com.chesire.nekomp.feature.home.featureHomeModule
 import com.chesire.nekomp.feature.library.featureLibraryModule
@@ -35,6 +36,7 @@ fun initKoin(
             platformModules + listOf(
                 coroutinesModule,
                 databaseModule,
+                featureAiringModule,
                 featureDiscoverModule,
                 featureHomeModule,
                 featureLibraryModule,

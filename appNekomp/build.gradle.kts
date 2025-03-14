@@ -48,6 +48,7 @@ kotlin {
             implementation(projects.core.preferences)
             implementation(projects.core.resources)
             implementation(projects.core.ui)
+            implementation(projects.feature.airing)
             implementation(projects.feature.discover)
             implementation(projects.feature.home)
             implementation(projects.feature.library)
