@@ -42,7 +42,7 @@ kotlin {
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.core.resources)
-            implementation(projects.library.datasource.user)
+            implementation(projects.library.datasource.airing)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)

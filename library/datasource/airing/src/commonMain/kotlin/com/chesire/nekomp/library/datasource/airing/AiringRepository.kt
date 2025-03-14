@@ -2,11 +2,13 @@ package com.chesire.nekomp.library.datasource.airing
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.model.Titles
+import com.chesire.nekomp.core.network.NetworkError
 import com.chesire.nekomp.library.datasource.airing.remote.AiringApi
 import com.chesire.nekomp.library.datasource.airing.remote.model.SeasonResponseDto
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 
@@ -45,14 +47,26 @@ class AiringRepository(private val airingApi: AiringApi) {
                     entries.addAll(it)
                 }
                 .onFailure {
-                    return Err(Unit)
+                    val apiError = it as? NetworkError.Api
+                    if (apiError?.code == HttpStatusCode.TooManyRequests.value) {
+                        Logger.d("AiringRepository") { "Got rate limited, waiting then trying again" }
+                        // Rate limited, delay briefly then try again
+                        delay(500)
+                    } else {
+                        // Unexpected error case, exit out
+                        return Err(Unit)
+                    }
                 }
+
             val end = Clock.System.now()
             val diff = end - start
+            Logger.v("AiringRepository") { "Request completed in ${diff.inWholeMilliseconds} milliseconds" }
             // Rate limited to 3 requests per second, so need to make sure we delay between calls
-            if (diff.inWholeMilliseconds < 500) {
+            if (diff.inWholeMilliseconds < 600) {
                 // Genius
-                delay(500 - diff.inWholeMilliseconds)
+                val waitTime = 600 - diff.inWholeMilliseconds
+                Logger.v("AiringRepository") { "Need to wait as too fast, so waiting for $waitTime millis" }
+                delay(waitTime)
             }
         } while (hasNextPage)
 

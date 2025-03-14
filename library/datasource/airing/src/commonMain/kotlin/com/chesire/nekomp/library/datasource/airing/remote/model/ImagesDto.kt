@@ -6,16 +6,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ImagesDto(
     @SerialName("jpg")
-    val jpg: ImagesDataDto,
+    val jpg: ImagesDataDto?,
     @SerialName("webp")
-    val webp: ImagesDataDto
+    val webp: ImagesDataDto?
 ) {
 
     @Serializable
     data class ImagesDataDto(
         @SerialName("image_url")
-        val defaultImage: String,
+        val defaultImage: String?,
         @SerialName("large_image_url")
-        val largeImage: String
+        val largeImage: String?
     )
 }

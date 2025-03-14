@@ -21,7 +21,7 @@ data class SeasonResponseDto(
         @SerialName("url")
         val url: String,
         @SerialName("images")
-        val images: ImagesDto,
+        val images: ImagesDto?,
         /**
          * In other areas of the app this is known as the canonical title.
          */
@@ -34,15 +34,15 @@ data class SeasonResponseDto(
         @SerialName("episodes")
         val episodes: Int?,
         @SerialName("status")
-        val status: String,
+        val status: String?,
         @SerialName("airing")
         val airing: Boolean,
         @SerialName("season")
-        val season: String,
+        val season: String?,
         @SerialName("year")
-        val year: Int,
+        val year: Int?,
         @SerialName("broadcast")
-        val broadcastDto: BroadcastDto
+        val broadcastDto: BroadcastDto?
     ) {
 
         @Serializable

@@ -33,7 +33,6 @@ enum class DashboardDestination(
         icon = Icons.Default.CollectionsBookmark
     ),
     Airing(
-        // TODO: Show when shows are airing each season
         label = NekoRes.string.nav_airing,
         contentDescription = NekoRes.string.nav_content_description_airing,
         icon = Icons.Default.DateRange

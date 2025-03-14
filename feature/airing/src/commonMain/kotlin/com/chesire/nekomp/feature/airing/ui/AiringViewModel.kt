@@ -1,15 +1,30 @@
 package com.chesire.nekomp.feature.airing.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
+import com.chesire.nekomp.library.datasource.airing.AiringRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class AiringViewModel : ViewModel() {
+class AiringViewModel(private val airingRepository: AiringRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentAiring = airingRepository.currentAiring()
+
+
+            Logger.d("AiringViewModel") { "Current airing - $currentAiring" }
+        }
+    }
 
     fun execute(action: ViewAction) {
         when (action) {
