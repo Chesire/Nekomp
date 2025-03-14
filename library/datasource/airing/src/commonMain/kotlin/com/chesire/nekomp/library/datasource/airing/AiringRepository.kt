@@ -81,7 +81,3 @@ class AiringRepository(private val airingApi: AiringApi) {
         }
     }
 }
-
-data class AiringAnime(
-    val titles: Titles
-)
