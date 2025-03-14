@@ -1,6 +1,8 @@
 package com.chesire.nekomp.library.datasource.airing
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.model.Season
 import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.network.NetworkError
 import com.chesire.nekomp.library.datasource.airing.local.AiringStorage
@@ -13,6 +15,9 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.format.DayOfWeekNames
+import kotlinx.datetime.format.char
 
 class AiringRepository(
     private val airingStorage: AiringStorage,
@@ -84,6 +89,26 @@ class AiringRepository(
     }
 
     private fun buildAiringEntries(body: SeasonResponseDto): List<AiringAnime> {
+        val timeFormat = DateTimeComponents.Format {
+            dayOfWeek(
+                DayOfWeekNames(
+                    monday = "Mondays",
+                    tuesday = "Tuesdays",
+                    wednesday = "Wednesdays",
+                    thursday = "Thursdays",
+                    friday = "Fridays",
+                    saturday = "Saturdays",
+                    sunday = "Sundays"
+                )
+            )
+            char(' ')
+            hour()
+            char(':')
+            minute()
+            char(' ')
+            timeZoneId()
+        }
+
         return body.data.map {
             AiringAnime(
                 malId = it.malId,
@@ -92,7 +117,36 @@ class AiringRepository(
                     english = it.titleEnglish ?: "",
                     romaji = "", // No romaji title so just leave blank
                     cjk = it.titleJapanese ?: ""
-                )
+                ),
+                posterImage = Image(
+                    tiny = "",
+                    small = "",
+                    medium = it.images?.webp?.defaultImage ?: it.images?.jpg?.defaultImage ?: "",
+                    large = it.images?.webp?.largeImage ?: it.images?.jpg?.largeImage ?: "",
+                    original = ""
+                ),
+                airing = it.airing,
+                season = Season.fromString(it.season),
+                year = it.year ?: -1,
+                airingTime = it.broadcast?.let { broadcast ->
+                    val input = "${broadcast.day} ${broadcast.time} ${broadcast.timezone}"
+
+                    try {
+                        val parsed = timeFormat.parse(input)
+                        val dayOfWeek = requireNotNull(parsed.dayOfWeek)
+                        val hour = requireNotNull(parsed.hour)
+                        val minute = requireNotNull(parsed.minute)
+                        val timeZone = requireNotNull(parsed.timeZoneId)
+                        AiringTime(
+                            dayOfWeek = dayOfWeek,
+                            hour = hour,
+                            minute = minute,
+                            timeZone = timeZone
+                        )
+                    } catch (ex: IllegalArgumentException) {
+                        null
+                    }
+                }
             )
         }
     }

@@ -42,7 +42,7 @@ data class SeasonResponseDto(
         @SerialName("year")
         val year: Int?,
         @SerialName("broadcast")
-        val broadcastDto: BroadcastDto?
+        val broadcast: BroadcastDto?
     ) {
 
         @Serializable

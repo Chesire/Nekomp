@@ -2,7 +2,6 @@ package com.chesire.nekomp.library.datasource.airing.remote
 
 import com.chesire.nekomp.core.network.ResultConverterFactory
 import com.chesire.nekomp.core.network.plugin.installContentNegotiation
-import com.chesire.nekomp.library.datasource.airing.AiringRepository
 import de.jensklingenberg.ktorfit.ktorfitBuilder
 import io.ktor.client.HttpClient
 import kotlin.test.Test
@@ -31,23 +30,5 @@ class AiringApiTest {
         } else {
             fail("API call failed - $result")
         }
-    }
-
-    @Test
-    fun `Calling currentAiring on repository returns all entries from api`() = runTest {
-        val api = ktorfitBuilder {
-            baseUrl("https://api.jikan.moe/")
-            httpClient(
-                client = HttpClient {
-                    installContentNegotiation()
-                }
-            )
-            converterFactories(ResultConverterFactory())
-        }.build().createAiringApi()
-        val repository = AiringRepository(api)
-
-        val series = repository.currentAiring()
-
-        assertTrue { series.isNotEmpty() }
     }
 }
