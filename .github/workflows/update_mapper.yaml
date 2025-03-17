@@ -21,7 +21,7 @@ jobs:
         uses: actions/github-script@v7
         env:
           INPUT_FILE: ${{ runner.temp }}/json/anime-list-mini.json
-          OUTPUT_FILE: ./core/resources/src/commonMain/composeResources/raw/anime-list-mini.json
+          OUTPUT_FILE: ./core/resources/src/commonMain/composeResources/files/anime-list-mini.json
         with:
           script: |
             const { INPUT_FILE, OUTPUT_FILE } = process.env
