@@ -29,6 +29,7 @@ import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.Theme
 import com.chesire.nekomp.core.ui.NekompTheme
+import com.chesire.nekomp.feature.airing.ui.AiringScreen
 import com.chesire.nekomp.feature.discover.ui.DiscoverScreen
 import com.chesire.nekomp.feature.home.ui.HomeScreen
 import com.chesire.nekomp.feature.library.ui.LibraryScreen
@@ -185,7 +186,7 @@ private fun NavGraphBuilder.addDashboard(appNavController: NavController) {
                     LibraryScreen()
                 }
                 composable(route = DashboardDestination.Airing.name) {
-                    LibraryScreen()
+                    AiringScreen()
                 }
                 composable(route = DashboardDestination.Discover.name) {
                     DiscoverScreen()
