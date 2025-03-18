@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "989b2a71d55aa333c9dab6cebf6e281a",
+    "identityHash": "9a75c0cd3223a5a9640a47e1ae757bd6",
     "entities": [
       {
         "tableName": "AiringEntity",
@@ -299,6 +299,34 @@
         }
       },
       {
+        "tableName": "MappingEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `malId` INTEGER, `kitsuId` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "malId",
+            "columnName": "malId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "kitsuId",
+            "columnName": "kitsuId",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
         "tableName": "TrendingEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `type` TEXT NOT NULL, `synopsis` TEXT NOT NULL, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `subtype` TEXT NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `coverImageTiny` TEXT NOT NULL, `coverImageSmall` TEXT NOT NULL, `coverImageMedium` TEXT NOT NULL, `coverImageLarge` TEXT NOT NULL, `coverImageOriginal` TEXT NOT NULL, `averageRating` TEXT NOT NULL, `ratingRank` INTEGER NOT NULL, `popularityRank` INTEGER NOT NULL, `trendingRank` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
@@ -528,7 +556,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '989b2a71d55aa333c9dab6cebf6e281a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9a75c0cd3223a5a9640a47e1ae757bd6')"
     ]
   }
 }
