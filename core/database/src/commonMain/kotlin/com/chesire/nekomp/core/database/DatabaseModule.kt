@@ -16,6 +16,7 @@ private const val DB_NAME = "nekomp.db"
 val databaseModule = module {
     single<AppDatabase> {
         roomBuilder(DB_NAME)
+            .fallbackToDestructiveMigration(true)
             .fallbackToDestructiveMigrationOnDowngrade(true)
             .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
