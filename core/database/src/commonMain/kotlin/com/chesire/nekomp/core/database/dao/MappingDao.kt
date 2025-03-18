@@ -11,12 +11,15 @@ interface MappingDao {
     @Query("DELETE FROM MappingEntity")
     suspend fun delete(): Int
 
-    @Upsert(entity = MappingEntity::class)
-    suspend fun upsert(mappings: List<MappingEntity>)
-
     @Query("SELECT * FROM MappingEntity WHERE malId == :malId LIMIT 1")
     suspend fun entityFromMalId(malId: Int): MappingEntity?
 
     @Query("SELECT * FROM MappingEntity WHERE malId == :kitsuId LIMIT 1")
     suspend fun entityFromKitsuId(kitsuId: Int): MappingEntity?
+
+    @Query("SELECT EXISTS(SELECT * FROM MappingEntity)")
+    suspend fun exists(): Boolean
+
+    @Upsert(entity = MappingEntity::class)
+    suspend fun upsert(mappings: List<MappingEntity>)
 }
