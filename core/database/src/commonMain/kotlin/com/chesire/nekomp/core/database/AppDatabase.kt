@@ -6,10 +6,12 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import com.chesire.nekomp.core.database.dao.AiringDao
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
+import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.database.dao.TrendingDao
 import com.chesire.nekomp.core.database.dao.UserDao
 import com.chesire.nekomp.core.database.entity.AiringEntity
 import com.chesire.nekomp.core.database.entity.LibraryEntryEntity
+import com.chesire.nekomp.core.database.entity.MappingEntity
 import com.chesire.nekomp.core.database.entity.TrendingEntity
 import com.chesire.nekomp.core.database.entity.UserEntity
 
@@ -17,6 +19,7 @@ import com.chesire.nekomp.core.database.entity.UserEntity
     entities = [
         AiringEntity::class,
         LibraryEntryEntity::class,
+        MappingEntity::class,
         TrendingEntity::class,
         UserEntity::class
     ],
@@ -26,6 +29,7 @@ import com.chesire.nekomp.core.database.entity.UserEntity
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getAiringDao(): AiringDao
     abstract fun getLibraryEntryDao(): LibraryEntryDao
+    abstract fun getMappingDao(): MappingDao
     abstract fun getTrendingDao(): TrendingDao
     abstract fun getUserDao(): UserDao
 }
