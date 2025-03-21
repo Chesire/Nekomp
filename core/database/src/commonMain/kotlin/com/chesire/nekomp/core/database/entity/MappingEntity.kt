@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class MappingEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     val malId: Int?,
     val kitsuId: Int?
 )
