@@ -10,8 +10,13 @@ import org.koin.compose.koinInject
 fun main() {
     initKoin { }
     application {
+        val initializers = koinInject<Initializers>()
         val airing = koinInject<AiringRepository>()
         val trending = koinInject<TrendingRepository>()
+        LaunchedEffect(Unit) {
+            // Build up initial DB files
+            initializers.prepopulateDb()
+        }
         LaunchedEffect(Unit) {
             // Perform full sync of airing data on start
             airing.syncCurrentAiring()

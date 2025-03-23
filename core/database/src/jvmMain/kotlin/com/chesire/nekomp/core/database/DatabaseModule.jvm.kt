@@ -9,6 +9,6 @@ actual fun roomBuilder(dbName: String): RoomDatabase.Builder<AppDatabase> {
     val dbFile = File(System.getProperty("java.io.tmpdir"), dbName)
     Logger.d { "Database file set to ${dbFile.absolutePath}" }
     return Room.databaseBuilder<AppDatabase>(
-        name = dbFile.absolutePath,
+        name = dbFile.absolutePath
     )
 }
