@@ -7,6 +7,7 @@ import kotlinx.collections.immutable.persistentListOf
 data class UIState(
     val username: String = "",
     val watchList: ImmutableList<WatchItem> = persistentListOf(),
+    val airing: ImmutableList<AiringItem> = persistentListOf(),
     val trendingAll: ImmutableList<TrendItem> = persistentListOf(),
     val trendingAnime: ImmutableList<TrendItem> = persistentListOf(),
     val trendingManga: ImmutableList<TrendItem> = persistentListOf(),
@@ -20,6 +21,15 @@ data class WatchItem(
     val posterImage: String,
     val progressPercent: Float,
     val progress: Int
+)
+
+@Stable
+data class AiringItem(
+    val entryId: Int,
+    val title: String,
+    val posterImage: String,
+    val airingAt: String,
+    val minutesTillAir: Long
 )
 
 @Stable

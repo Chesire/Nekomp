@@ -1,0 +1,92 @@
+package com.chesire.nekomp.feature.home.core
+
+import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Type
+import com.chesire.nekomp.core.preferences.ApplicationSettings
+import com.chesire.nekomp.feature.home.toBestImage
+import com.chesire.nekomp.feature.home.toChosenLanguage
+import com.chesire.nekomp.feature.home.ui.AiringItem
+import com.chesire.nekomp.library.datasource.airing.AiringAnime
+import com.chesire.nekomp.library.datasource.airing.AiringRepository
+import com.chesire.nekomp.library.datasource.airing.AiringTime
+import com.chesire.nekomp.library.datasource.library.LibraryEntry
+import com.chesire.nekomp.library.datasource.library.LibraryRepository
+import kotlin.time.Duration
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+
+// This is doing more than it should, but i'm lazy
+class ShowAiringSeriesUseCase(
+    private val libraryRepository: LibraryRepository,
+    private val airingRepository: AiringRepository,
+    private val applicationSettings: ApplicationSettings
+) {
+
+    operator fun invoke(): Flow<List<AiringItem>> {
+        return airingRepository
+            .currentAiring
+            .combine(libraryRepository.libraryEntries) { airing, libraryEntries ->
+                val imageQuality = applicationSettings.imageQuality.first()
+                val titleLanguage = applicationSettings.titleLanguage.first()
+                airing
+                    .filter { it.airingTime != null }
+                    .filter { it.isTrackedSeries(libraryEntries) }
+                    .map { airingItem ->
+                        Logger.d("HomeViewModel") { "Got airing series in lib - $airingItem" }
+                        val entry = libraryEntries
+                            .filter { it.type == Type.Anime }
+                            .find { it.id == airingItem.kitsuId }!!
+                        val timeFrame = airingItem.airingTime!!.timeTillShowing()
+                        AiringItem(
+                            entryId = entry.entryId,
+                            title = entry.titles.toChosenLanguage(titleLanguage),
+                            posterImage = airingItem.posterImage.toBestImage(imageQuality),
+                            airingAt = parseForAiringAt(timeFrame),
+                            minutesTillAir = timeFrame.inWholeMinutes,
+                        )
+                    }
+            }
+    }
+
+    private fun AiringAnime.isTrackedSeries(libraryEntries: List<LibraryEntry>): Boolean {
+        return libraryEntries
+            .filter { it.type == Type.Anime }
+            .any { it.id == this.kitsuId }
+    }
+
+    private fun AiringTime.timeTillShowing(): Duration {
+        val nowInAiringTimeZone = Clock.System.now().toLocalDateTime(TimeZone.of(timeZone))
+        val nextDayShowing = nowInAiringTimeZone.date.nextDateWithWeekDay(dayOfWeek)
+        val nextAirTime = nextDayShowing.atTime(LocalTime(hour, minute))
+        val fromNow = nextAirTime.toInstant(TimeZone.of(timeZone))
+            .minus(nowInAiringTimeZone.toInstant(TimeZone.of(timeZone)))
+        return fromNow
+    }
+
+    private fun parseForAiringAt(timeTillShowing: Duration): String {
+        return when {
+            timeTillShowing.inWholeDays > 0 -> "In ${timeTillShowing.inWholeDays} days"
+            else -> {
+                val at = Clock.System.now().plus(timeTillShowing)
+                val result = at.toLocalDateTime(TimeZone.currentSystemDefault())
+                "at ${result.hour}:${result.minute}"
+            }
+        }
+    }
+
+    private fun LocalDate.nextDateWithWeekDay(newDayOfWeek: DayOfWeek): LocalDate =
+        plus((newDayOfWeek.isoDayNumber - dayOfWeek.isoDayNumber).mod(7), DateTimeUnit.DAY)
+
+}

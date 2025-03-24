@@ -2,15 +2,14 @@ package com.chesire.nekomp.feature.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
-import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.model.EntryStatus
-import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.feature.home.core.ShowAiringSeriesUseCase
+import com.chesire.nekomp.feature.home.toBestImage
+import com.chesire.nekomp.feature.home.toChosenLanguage
 import com.chesire.nekomp.library.datasource.airing.AiringRepository
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
@@ -23,8 +22,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -35,8 +32,8 @@ class HomeViewModel(
     private val userRepository: UserRepository,
     private val libraryRepository: LibraryRepository,
     private val trendingRepository: TrendingRepository,
+    private val showAiringSeries: ShowAiringSeriesUseCase,
     private val airingRepository: AiringRepository,
-    private val mappingDao: MappingDao,
     private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
@@ -94,19 +91,13 @@ class HomeViewModel(
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            airingRepository
-                .currentAiring
-                .combine(libraryRepository.libraryEntries) { airing, libraryEntries ->
-                    val filtered = airing.filter { airingItem ->
-                        libraryEntries
-                            .filter { it.type == Type.Anime }
-                            .any { it.id == airingItem.kitsuId }
-                    }
-                    filtered.map {
-                        Logger.d("HomeViewModel") { "Got filtered series - $it" }
-                    }
+            showAiringSeries().collect { airingItems ->
+                _uiState.update { state ->
+                    state.copy(
+                        airing = airingItems.toPersistentList()
+                    )
                 }
-                .collect()
+            }
         }
     }
 
@@ -173,27 +164,5 @@ class HomeViewModel(
             title = titles.toChosenLanguage(titleLanguage),
             posterImage = posterImage.toBestImage(imageQuality)
         )
-    }
-
-    // TODO: Move these with the other implementations somewhere
-    // TODO: Find way to do this in compose. Listen in the app class to the flows and then recompose
-    //       when they change? Or set in the composition local?
-    private fun Titles.toChosenLanguage(titleLanguage: TitleLanguage): String {
-        return when (titleLanguage) {
-            TitleLanguage.Canonical -> canonical
-            TitleLanguage.English -> english.ifBlank { canonical }
-            TitleLanguage.Romaji -> romaji.ifBlank { canonical }
-            TitleLanguage.CJK -> cjk.ifBlank { canonical }
-        }
-    }
-
-    private fun Image.toBestImage(imageQuality: ImageQuality): String {
-        return when (imageQuality) {
-            ImageQuality.Lowest -> lowest
-            ImageQuality.Low -> low
-            ImageQuality.Medium -> middle
-            ImageQuality.High -> high
-            ImageQuality.Highest -> highest
-        }
     }
 }
