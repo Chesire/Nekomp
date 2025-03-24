@@ -21,6 +21,7 @@ class AiringStorage(private val airingDao: AiringDao) {
             entries.map { entry ->
                 AiringAnime(
                     malId = entry.malId,
+                    kitsuId = entry.kitsuId,
                     titles = Titles(
                         canonical = entry.canonicalTitle,
                         english = entry.englishTitle,
@@ -55,6 +56,7 @@ class AiringStorage(private val airingDao: AiringDao) {
         val newEntries = entries.map { entry ->
             AiringEntity(
                 malId = entry.malId,
+                kitsuId = entry.kitsuId,
                 canonicalTitle = entry.titles.canonical,
                 englishTitle = entry.titles.english,
                 romajiTitle = entry.titles.romaji,

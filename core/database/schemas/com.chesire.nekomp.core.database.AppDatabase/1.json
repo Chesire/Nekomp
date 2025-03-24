@@ -2,17 +2,22 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9a75c0cd3223a5a9640a47e1ae757bd6",
+    "identityHash": "de198887436df0e087fe89054d11233d",
     "entities": [
       {
         "tableName": "AiringEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`malId` INTEGER NOT NULL, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `airing` INTEGER NOT NULL, `season` TEXT NOT NULL, `year` INTEGER NOT NULL, `airingDayOfWeek` INTEGER NOT NULL, `airingHour` INTEGER NOT NULL, `airingMinute` INTEGER NOT NULL, `airingTimeZone` TEXT NOT NULL, PRIMARY KEY(`malId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`malId` INTEGER NOT NULL, `kitsuId` INTEGER, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `airing` INTEGER NOT NULL, `season` TEXT NOT NULL, `year` INTEGER NOT NULL, `airingDayOfWeek` INTEGER NOT NULL, `airingHour` INTEGER NOT NULL, `airingMinute` INTEGER NOT NULL, `airingTimeZone` TEXT NOT NULL, PRIMARY KEY(`malId`))",
         "fields": [
           {
             "fieldPath": "malId",
             "columnName": "malId",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "kitsuId",
+            "columnName": "kitsuId",
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "canonicalTitle",
@@ -556,7 +561,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9a75c0cd3223a5a9640a47e1ae757bd6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'de198887436df0e087fe89054d11233d')"
     ]
   }
 }

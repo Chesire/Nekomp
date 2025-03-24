@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.airing
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Season
 import com.chesire.nekomp.core.model.Titles
@@ -25,7 +26,8 @@ private const val REQUEST_TIME_MILLIS = 600L
 
 class AiringRepository(
     private val airingStorage: AiringStorage,
-    private val airingApi: AiringApi
+    private val airingApi: AiringApi,
+    private val mappingDao: MappingDao
 ) {
 
     val currentAiring: Flow<List<AiringAnime>> = airingStorage.airingEntries
@@ -93,7 +95,7 @@ class AiringRepository(
     }
 
     @Suppress("SwallowedException")
-    private fun buildAiringEntries(body: SeasonResponseDto): List<AiringAnime> {
+    private suspend fun buildAiringEntries(body: SeasonResponseDto): List<AiringAnime> {
         val timeFormat = DateTimeComponents.Format {
             dayOfWeek(
                 DayOfWeekNames(
@@ -117,6 +119,7 @@ class AiringRepository(
         return body.data.map {
             AiringAnime(
                 malId = it.malId,
+                kitsuId = mappingDao.entityFromMalId(it.malId)?.kitsuId,
                 titles = Titles(
                     canonical = it.title,
                     english = it.titleEnglish ?: "",
