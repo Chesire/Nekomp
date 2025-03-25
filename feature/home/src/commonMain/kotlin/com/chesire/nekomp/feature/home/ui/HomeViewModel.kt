@@ -10,7 +10,6 @@ import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.home.core.ShowAiringSeriesUseCase
 import com.chesire.nekomp.feature.home.toBestImage
 import com.chesire.nekomp.feature.home.toChosenLanguage
-import com.chesire.nekomp.library.datasource.airing.AiringRepository
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
@@ -22,6 +21,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,7 +33,6 @@ class HomeViewModel(
     private val libraryRepository: LibraryRepository,
     private val trendingRepository: TrendingRepository,
     private val showAiringSeries: ShowAiringSeriesUseCase,
-    private val airingRepository: AiringRepository,
     private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
@@ -91,7 +90,7 @@ class HomeViewModel(
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            showAiringSeries().collect { airingItems ->
+            showAiringSeries().collectLatest { airingItems ->
                 _uiState.update { state ->
                     state.copy(
                         airing = airingItems.toPersistentList()
@@ -105,6 +104,7 @@ class HomeViewModel(
         when (action) {
             is ViewAction.WatchItemClick -> onWatchItemClick(action.watchItem)
             is ViewAction.WatchItemPlusOneClick -> onWatchItemPlusOneClick(action.watchItem)
+            is ViewAction.AiringItemClick -> onAiringItemClick(action.airingItem)
             is ViewAction.TrendItemClick -> onTrendItemClick(action.trendItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -124,6 +124,12 @@ class HomeViewModel(
                 newProgress = watchItem.progress + 1
             )
         }
+    }
+
+    private fun onAiringItemClick(airingItem: AiringItem) {
+        // TODO
+        // Set as the selected item
+        // UI needs to navigate to a detail view
     }
 
     private fun onTrendItemClick(trendItem: TrendItem) {
