@@ -39,11 +39,12 @@ class ShowAiringSeriesUseCase(
             .combine(libraryRepository.libraryEntries) { airing, libraryEntries ->
                 val imageQuality = applicationSettings.imageQuality.first()
                 val titleLanguage = applicationSettings.titleLanguage.first()
+                Logger.d("ShowAiringSeriesUseCase") { "Got new list of airing series - $airing" }
+
                 airing
                     .filter { it.airingTime != null }
                     .filter { it.isTrackedSeries(libraryEntries) }
                     .map { airingItem ->
-                        Logger.d("HomeViewModel") { "Got airing series in lib - $airingItem" }
                         val entry = libraryEntries
                             .filter { it.type == Type.Anime }
                             .find { it.id == airingItem.kitsuId }!!
@@ -80,8 +81,9 @@ class ShowAiringSeriesUseCase(
     @Suppress("MagicNumber")
     private fun parseForAiringAt(timeTillShowing: Duration): String {
         return when {
-            timeTillShowing.inWholeDays > 0 ->
+            timeTillShowing.inWholeDays > 0 -> {
                 "In ${timeTillShowing.inWholeDays} days, ${timeTillShowing.inWholeHours % 24} hours"
+            }
 
             else -> buildString {
                 append("In ")
