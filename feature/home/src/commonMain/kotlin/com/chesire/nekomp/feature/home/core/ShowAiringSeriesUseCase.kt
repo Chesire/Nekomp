@@ -24,7 +24,6 @@ import kotlinx.datetime.atTime
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 
 // This is doing more than it should, but i'm lazy
@@ -81,10 +80,12 @@ class ShowAiringSeriesUseCase(
     private fun parseForAiringAt(timeTillShowing: Duration): String {
         return when {
             timeTillShowing.inWholeDays > 0 -> "In ${timeTillShowing.inWholeDays} days, ${timeTillShowing.inWholeHours % 24} hours"
-            else -> {
-                val at = Clock.System.now().plus(timeTillShowing)
-                val result = at.toLocalDateTime(TimeZone.currentSystemDefault())
-                "at ${result.hour}:${result.minute}"
+            else -> buildString {
+                append("In ")
+                if (timeTillShowing.inWholeHours > 0) {
+                    append("${timeTillShowing.inWholeHours} hours, ")
+                }
+                append("${timeTillShowing.inWholeMinutes % 60} mins")
             }
         }
     }
