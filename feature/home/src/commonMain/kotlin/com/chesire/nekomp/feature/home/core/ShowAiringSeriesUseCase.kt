@@ -1,6 +1,7 @@
 package com.chesire.nekomp.feature.home.core
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.coroutines.emitLatestPeriodically
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.feature.home.toBestImage
@@ -12,6 +13,8 @@ import com.chesire.nekomp.library.datasource.airing.AiringTime
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -36,6 +39,7 @@ class ShowAiringSeriesUseCase(
     operator fun invoke(): Flow<List<AiringItem>> {
         return airingRepository
             .currentAiring
+            .emitLatestPeriodically(1.toDuration(DurationUnit.MINUTES)) // For the time
             .combine(libraryRepository.libraryEntries) { airing, libraryEntries ->
                 val imageQuality = applicationSettings.imageQuality.first()
                 val titleLanguage = applicationSettings.titleLanguage.first()
