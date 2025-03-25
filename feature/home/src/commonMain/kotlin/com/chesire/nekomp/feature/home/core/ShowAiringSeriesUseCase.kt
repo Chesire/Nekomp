@@ -77,9 +77,12 @@ class ShowAiringSeriesUseCase(
         return nextAirTimeInstant.minus(Clock.System.now())
     }
 
+    @Suppress("MagicNumber")
     private fun parseForAiringAt(timeTillShowing: Duration): String {
         return when {
-            timeTillShowing.inWholeDays > 0 -> "In ${timeTillShowing.inWholeDays} days, ${timeTillShowing.inWholeHours % 24} hours"
+            timeTillShowing.inWholeDays > 0 ->
+                "In ${timeTillShowing.inWholeDays} days, ${timeTillShowing.inWholeHours % 24} hours"
+
             else -> buildString {
                 append("In ")
                 if (timeTillShowing.inWholeHours > 0) {
@@ -90,6 +93,7 @@ class ShowAiringSeriesUseCase(
         }
     }
 
+    @Suppress("MagicNumber")
     private fun LocalDate.nextDateWithWeekDay(newDayOfWeek: DayOfWeek): LocalDate =
         plus((newDayOfWeek.isoDayNumber - dayOfWeek.isoDayNumber).mod(7), DateTimeUnit.DAY)
 }
