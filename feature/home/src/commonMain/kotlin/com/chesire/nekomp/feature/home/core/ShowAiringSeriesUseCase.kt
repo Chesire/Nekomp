@@ -19,13 +19,13 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 
 // This is doing more than it should, but i'm lazy
 class ShowAiringSeriesUseCase(
@@ -52,11 +52,12 @@ class ShowAiringSeriesUseCase(
                         AiringItem(
                             entryId = entry.entryId,
                             title = entry.titles.toChosenLanguage(titleLanguage),
-                            posterImage = airingItem.posterImage.toBestImage(imageQuality),
+                            posterImage = entry.coverImage.toBestImage(imageQuality),
                             airingAt = parseForAiringAt(timeFrame),
                             minutesTillAir = timeFrame.inWholeMinutes,
                         )
                     }
+                    .sortedBy { it.minutesTillAir }
             }
     }
 
@@ -67,17 +68,19 @@ class ShowAiringSeriesUseCase(
     }
 
     private fun AiringTime.timeTillShowing(): Duration {
-        val nowInAiringTimeZone = Clock.System.now().toLocalDateTime(TimeZone.of(timeZone))
-        val nextDayShowing = nowInAiringTimeZone.date.nextDateWithWeekDay(dayOfWeek)
-        val nextAirTime = nextDayShowing.atTime(LocalTime(hour, minute))
-        val fromNow = nextAirTime.toInstant(TimeZone.of(timeZone))
-            .minus(nowInAiringTimeZone.toInstant(TimeZone.of(timeZone)))
-        return fromNow
+        val airingTimeZone = TimeZone.of(timeZone)
+
+        val nowInAiringTimeZone = Clock.System.todayIn(airingTimeZone)
+        val nextAirDay = nowInAiringTimeZone.nextDateWithWeekDay(dayOfWeek)
+        val nextAirTime = nextAirDay.atTime(hour = hour, minute = minute)
+        val nextAirTimeInstant = nextAirTime.toInstant(airingTimeZone)
+
+        return nextAirTimeInstant.minus(Clock.System.now())
     }
 
     private fun parseForAiringAt(timeTillShowing: Duration): String {
         return when {
-            timeTillShowing.inWholeDays > 0 -> "In ${timeTillShowing.inWholeDays} days"
+            timeTillShowing.inWholeDays > 0 -> "In ${timeTillShowing.inWholeDays} days, ${timeTillShowing.inWholeHours % 24} hours"
             else -> {
                 val at = Clock.System.now().plus(timeTillShowing)
                 val result = at.toLocalDateTime(TimeZone.currentSystemDefault())
@@ -88,5 +91,4 @@ class ShowAiringSeriesUseCase(
 
     private fun LocalDate.nextDateWithWeekDay(newDayOfWeek: DayOfWeek): LocalDate =
         plus((newDayOfWeek.isoDayNumber - dayOfWeek.isoDayNumber).mod(7), DateTimeUnit.DAY)
-
 }
