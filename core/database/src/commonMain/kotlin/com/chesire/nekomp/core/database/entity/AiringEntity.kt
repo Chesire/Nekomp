@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class AiringEntity(
     @PrimaryKey
     val malId: Int,
+    val kitsuId: Int?,
     val canonicalTitle: String,
     val englishTitle: String,
     val romajiTitle: String,

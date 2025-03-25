@@ -7,6 +7,7 @@ import kotlinx.datetime.DayOfWeek
 
 data class AiringAnime(
     val malId: Int,
+    val kitsuId: Int?,
     val titles: Titles,
     val posterImage: Image,
     val airing: Boolean,

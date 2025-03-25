@@ -16,8 +16,6 @@ fun main() {
         LaunchedEffect(Unit) {
             // Build up initial DB files
             initializers.prepopulateDb()
-        }
-        LaunchedEffect(Unit) {
             // Perform full sync of airing data on start
             airing.syncCurrentAiring()
         }

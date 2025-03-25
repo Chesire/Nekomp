@@ -3,12 +3,13 @@ package com.chesire.nekomp.feature.home.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.model.EntryStatus
-import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.feature.home.core.ShowAiringSeriesUseCase
+import com.chesire.nekomp.feature.home.toBestImage
+import com.chesire.nekomp.feature.home.toChosenLanguage
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
@@ -20,6 +21,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,6 +32,7 @@ class HomeViewModel(
     private val userRepository: UserRepository,
     private val libraryRepository: LibraryRepository,
     private val trendingRepository: TrendingRepository,
+    private val showAiringSeries: ShowAiringSeriesUseCase,
     private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
@@ -51,12 +54,14 @@ class HomeViewModel(
                 _uiState.update { state ->
                     state.copy(
                         watchList = libraryEntries
+                            .asSequence()
                             .filter { it.type == Type.Anime }
                             .filter { it.entryStatus != EntryStatus.Completed }
                             .filter { it.progress != it.totalLength }
                             .sortedByDescending { it.updatedAt }
                             .take(WATCH_LIST_LIMIT)
                             .map { it.toWatchItem(imageQuality, titleLanguage) }
+                            .toList()
                             .toPersistentList()
                     )
                 }
@@ -84,12 +89,22 @@ class HomeViewModel(
                 )
             }
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            showAiringSeries().collectLatest { airingItems ->
+                _uiState.update { state ->
+                    state.copy(
+                        airing = airingItems.toPersistentList()
+                    )
+                }
+            }
+        }
     }
 
     fun execute(action: ViewAction) {
         when (action) {
             is ViewAction.WatchItemClick -> onWatchItemClick(action.watchItem)
             is ViewAction.WatchItemPlusOneClick -> onWatchItemPlusOneClick(action.watchItem)
+            is ViewAction.AiringItemClick -> onAiringItemClick(action.airingItem)
             is ViewAction.TrendItemClick -> onTrendItemClick(action.trendItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -109,6 +124,12 @@ class HomeViewModel(
                 newProgress = watchItem.progress + 1
             )
         }
+    }
+
+    private fun onAiringItemClick(airingItem: AiringItem) {
+        // TODO
+        // Set as the selected item
+        // UI needs to navigate to a detail view
     }
 
     private fun onTrendItemClick(trendItem: TrendItem) {
@@ -149,27 +170,5 @@ class HomeViewModel(
             title = titles.toChosenLanguage(titleLanguage),
             posterImage = posterImage.toBestImage(imageQuality)
         )
-    }
-
-    // TODO: Move these with the other implementations somewhere
-    // TODO: Find way to do this in compose. Listen in the app class to the flows and then recompose
-    //       when they change? Or set in the composition local?
-    private fun Titles.toChosenLanguage(titleLanguage: TitleLanguage): String {
-        return when (titleLanguage) {
-            TitleLanguage.Canonical -> canonical
-            TitleLanguage.English -> english.ifBlank { canonical }
-            TitleLanguage.Romaji -> romaji.ifBlank { canonical }
-            TitleLanguage.CJK -> cjk.ifBlank { canonical }
-        }
-    }
-
-    private fun Image.toBestImage(imageQuality: ImageQuality): String {
-        return when (imageQuality) {
-            ImageQuality.Lowest -> lowest
-            ImageQuality.Low -> low
-            ImageQuality.Medium -> middle
-            ImageQuality.High -> high
-            ImageQuality.Highest -> highest
-        }
     }
 }
