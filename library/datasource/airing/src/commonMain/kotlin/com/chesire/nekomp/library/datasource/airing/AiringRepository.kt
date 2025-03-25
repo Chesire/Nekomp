@@ -116,47 +116,51 @@ class AiringRepository(
             timeZoneId()
         }
 
-        return body.data.map {
-            AiringAnime(
-                malId = it.malId,
-                kitsuId = mappingDao.entityFromMalId(it.malId)?.kitsuId,
-                titles = Titles(
-                    canonical = it.title,
-                    english = it.titleEnglish ?: "",
-                    romaji = "", // No romaji title so just leave blank
-                    cjk = it.titleJapanese ?: ""
-                ),
-                posterImage = Image(
-                    tiny = "",
-                    small = "",
-                    medium = it.images?.webp?.defaultImage ?: it.images?.jpg?.defaultImage ?: "",
-                    large = it.images?.webp?.largeImage ?: it.images?.jpg?.largeImage ?: "",
-                    original = ""
-                ),
-                airing = it.airing,
-                season = Season.fromString(it.season),
-                year = it.year ?: -1,
-                airingTime = it.broadcast?.let { broadcast ->
-                    val input = "${broadcast.day} ${broadcast.time} ${broadcast.timezone}"
+        return body
+            .data
+            .filterNot { it.broadcast?.day == null }
+            .map {
+                AiringAnime(
+                    malId = it.malId,
+                    kitsuId = mappingDao.entityFromMalId(it.malId)?.kitsuId,
+                    titles = Titles(
+                        canonical = it.title,
+                        english = it.titleEnglish ?: "",
+                        romaji = "", // No romaji title so just leave blank
+                        cjk = it.titleJapanese ?: ""
+                    ),
+                    posterImage = Image(
+                        tiny = "",
+                        small = "",
+                        medium = it.images?.webp?.defaultImage ?: it.images?.jpg?.defaultImage
+                        ?: "",
+                        large = it.images?.webp?.largeImage ?: it.images?.jpg?.largeImage ?: "",
+                        original = ""
+                    ),
+                    airing = it.airing,
+                    season = Season.fromString(it.season),
+                    year = it.year ?: -1,
+                    airingTime = it.broadcast?.let { broadcast ->
+                        val input = "${broadcast.day} ${broadcast.time} ${broadcast.timezone}"
 
-                    try {
-                        val parsed = timeFormat.parse(input)
-                        val dayOfWeek = requireNotNull(parsed.dayOfWeek)
-                        val hour = requireNotNull(parsed.hour)
-                        val minute = requireNotNull(parsed.minute)
-                        val timeZone = requireNotNull(parsed.timeZoneId)
-                        AiringTime(
-                            dayOfWeek = dayOfWeek,
-                            hour = hour,
-                            minute = minute,
-                            timeZone = timeZone
-                        )
-                    } catch (ex: IllegalArgumentException) {
-                        Logger.e("AiringRepository") { "Failed to parse the time - $input" }
-                        null
+                        try {
+                            val parsed = timeFormat.parse(input)
+                            val dayOfWeek = requireNotNull(parsed.dayOfWeek)
+                            val hour = requireNotNull(parsed.hour)
+                            val minute = requireNotNull(parsed.minute)
+                            val timeZone = requireNotNull(parsed.timeZoneId)
+                            AiringTime(
+                                dayOfWeek = dayOfWeek,
+                                hour = hour,
+                                minute = minute,
+                                timeZone = timeZone
+                            )
+                        } catch (ex: IllegalArgumentException) {
+                            Logger.e("AiringRepository") { "Failed to parse the time - $input" }
+                            null
+                        }
                     }
-                }
-            )
-        }
+                )
+            }
     }
 }
