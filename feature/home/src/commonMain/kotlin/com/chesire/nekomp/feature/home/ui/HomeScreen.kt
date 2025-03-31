@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.feature.home.ui.components.AiringListComponent
 import com.chesire.nekomp.feature.home.ui.components.TrendingListComponent
 import com.chesire.nekomp.feature.home.ui.components.WatchListComponent
 import kotlinx.collections.immutable.persistentListOf
@@ -83,7 +84,12 @@ private fun Render(
                 onWatchItemClick = { execute(ViewAction.WatchItemClick(it)) },
                 onPlusOneClick = { execute(ViewAction.WatchItemPlusOneClick(it)) }
             )
-            // AiringListComponent() TODO
+            if (state.airing.isNotEmpty()) {
+                AiringListComponent(
+                    airingItems = state.airing,
+                    onAiringItemClick = { execute(ViewAction.AiringItemClick(it)) }
+                )
+            }
             if (state.trendingAll.isNotEmpty()) {
                 TrendingListComponent(
                     trendingAll = state.trendingAll,

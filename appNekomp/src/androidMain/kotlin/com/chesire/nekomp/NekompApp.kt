@@ -1,6 +1,7 @@
 package com.chesire.nekomp
 
 import android.app.Application
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.di.workManagerModule
 import com.chesire.nekomp.workers.WorkerQueue
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,6 @@ class NekompApp : Application() {
 
         initDi()
         callInitializers()
-        startWorkers()
     }
 
     private fun initDi() {
@@ -34,11 +34,15 @@ class NekompApp : Application() {
         get<Initializers>().apply {
             MainScope().launch(Dispatchers.IO) {
                 prepopulateDb()
+            }.invokeOnCompletion {
+                // Start workers after so we have the pre-populated DB straight away
+                startWorkers()
             }
         }
     }
 
     private fun startWorkers() {
+        Logger.d("NekompApp") { "Starting the background workers" }
         get<WorkerQueue>().apply {
             enqueueAiringRefresh()
             enqueueLibraryRefresh()

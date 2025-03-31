@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.airing
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Season
 import com.chesire.nekomp.core.model.Titles
@@ -25,7 +26,8 @@ private const val REQUEST_TIME_MILLIS = 600L
 
 class AiringRepository(
     private val airingStorage: AiringStorage,
-    private val airingApi: AiringApi
+    private val airingApi: AiringApi,
+    private val mappingDao: MappingDao
 ) {
 
     val currentAiring: Flow<List<AiringAnime>> = airingStorage.airingEntries
@@ -93,7 +95,7 @@ class AiringRepository(
     }
 
     @Suppress("SwallowedException")
-    private fun buildAiringEntries(body: SeasonResponseDto): List<AiringAnime> {
+    private suspend fun buildAiringEntries(body: SeasonResponseDto): List<AiringAnime> {
         val timeFormat = DateTimeComponents.Format {
             dayOfWeek(
                 DayOfWeekNames(
@@ -114,46 +116,51 @@ class AiringRepository(
             timeZoneId()
         }
 
-        return body.data.map {
-            AiringAnime(
-                malId = it.malId,
-                titles = Titles(
-                    canonical = it.title,
-                    english = it.titleEnglish ?: "",
-                    romaji = "", // No romaji title so just leave blank
-                    cjk = it.titleJapanese ?: ""
-                ),
-                posterImage = Image(
-                    tiny = "",
-                    small = "",
-                    medium = it.images?.webp?.defaultImage ?: it.images?.jpg?.defaultImage ?: "",
-                    large = it.images?.webp?.largeImage ?: it.images?.jpg?.largeImage ?: "",
-                    original = ""
-                ),
-                airing = it.airing,
-                season = Season.fromString(it.season),
-                year = it.year ?: -1,
-                airingTime = it.broadcast?.let { broadcast ->
-                    val input = "${broadcast.day} ${broadcast.time} ${broadcast.timezone}"
+        return body
+            .data
+            .filterNot { it.broadcast?.day == null }
+            .map {
+                AiringAnime(
+                    malId = it.malId,
+                    kitsuId = mappingDao.entityFromMalId(it.malId)?.kitsuId,
+                    titles = Titles(
+                        canonical = it.title,
+                        english = it.titleEnglish ?: "",
+                        romaji = "", // No romaji title so just leave blank
+                        cjk = it.titleJapanese ?: ""
+                    ),
+                    posterImage = Image(
+                        tiny = "",
+                        small = "",
+                        medium = it.images?.webp?.defaultImage ?: it.images?.jpg?.defaultImage
+                        ?: "",
+                        large = it.images?.webp?.largeImage ?: it.images?.jpg?.largeImage ?: "",
+                        original = ""
+                    ),
+                    airing = it.airing,
+                    season = Season.fromString(it.season),
+                    year = it.year ?: -1,
+                    airingTime = it.broadcast?.let { broadcast ->
+                        val input = "${broadcast.day} ${broadcast.time} ${broadcast.timezone}"
 
-                    try {
-                        val parsed = timeFormat.parse(input)
-                        val dayOfWeek = requireNotNull(parsed.dayOfWeek)
-                        val hour = requireNotNull(parsed.hour)
-                        val minute = requireNotNull(parsed.minute)
-                        val timeZone = requireNotNull(parsed.timeZoneId)
-                        AiringTime(
-                            dayOfWeek = dayOfWeek,
-                            hour = hour,
-                            minute = minute,
-                            timeZone = timeZone
-                        )
-                    } catch (ex: IllegalArgumentException) {
-                        Logger.e("AiringRepository") { "Failed to parse the time - $input" }
-                        null
+                        try {
+                            val parsed = timeFormat.parse(input)
+                            val dayOfWeek = requireNotNull(parsed.dayOfWeek)
+                            val hour = requireNotNull(parsed.hour)
+                            val minute = requireNotNull(parsed.minute)
+                            val timeZone = requireNotNull(parsed.timeZoneId)
+                            AiringTime(
+                                dayOfWeek = dayOfWeek,
+                                hour = hour,
+                                minute = minute,
+                                timeZone = timeZone
+                            )
+                        } catch (ex: IllegalArgumentException) {
+                            Logger.e("AiringRepository") { "Failed to parse the time - $input" }
+                            null
+                        }
                     }
-                }
-            )
-        }
+                )
+            }
     }
 }
