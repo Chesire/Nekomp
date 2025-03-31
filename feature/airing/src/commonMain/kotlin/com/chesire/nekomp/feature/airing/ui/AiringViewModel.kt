@@ -52,13 +52,20 @@ class AiringViewModel(
                     val airingTime = item.airingTime?.airingAt() ?: return@mapNotNull null
                     item.toAiringItem(airingTime, imageQuality, titleLanguage)
                 }
+                // TODO: This will show series that are coming out in weeks in the future, we should fix that
+                // So it will show all shows that it knows about on Mondays (even in 4 weeks time).
                 _uiState.update { state ->
                     state.copy(
                         airingSeries = airingItems
                             .groupBy { it.airingTime.dayOfWeek }
                             .entries
+                            .sortedBy { it.key.isoDayNumber }
                             .associate {
-                                it.key to it.value.toPersistentList()
+                                val values = it
+                                    .value
+                                    .sortedBy { it.airingTime.time }
+                                    .toPersistentList()
+                                it.key to values
                             }
                             .toPersistentMap()
                     )
