@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -67,21 +69,21 @@ private fun Render(
             )
         }
     ) { innerPadding ->
-        Surface(
-            modifier = Modifier.padding(innerPadding)
-        ) {
+        Surface(modifier = Modifier.padding(innerPadding)) {
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 state.airingSeries.forEach { airingSeries ->
                     LazyColumn(
                         modifier = Modifier.width(200.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         stickyHeader {
                             Text(
                                 text = airingSeries.key.name,
+                                textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(MaterialTheme.colorScheme.background)
@@ -102,6 +104,27 @@ private fun Render(
                                         style = MaterialTheme.typography.headlineSmallEmphasized,
                                         color = Color.White,
                                         textAlign = TextAlign.Center,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .align(Alignment.TopCenter)
+                                            .background(
+                                                brush = Brush.horizontalGradient(
+                                                    listOf(Color.Black, Color.Black)
+                                                ),
+                                                shape = RectangleShape,
+                                                alpha = 0.6f
+                                            )
+                                            .padding(8.dp)
+                                    )
+                                    Text(
+                                        text = airingItem.title,
+                                        style = MaterialTheme.typography.titleSmall,
+                                        color = Color.White,
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .align(Alignment.BottomCenter)
@@ -110,7 +133,7 @@ private fun Render(
                                                     listOf(Color.Black, Color.Black)
                                                 ),
                                                 shape = RectangleShape,
-                                                alpha = 0.7f
+                                                alpha = 0.6f
                                             )
                                             .padding(8.dp)
                                     )
