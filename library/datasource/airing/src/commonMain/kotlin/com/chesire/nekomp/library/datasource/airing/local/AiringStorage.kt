@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.airing.local
 
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.dao.AiringDao
 import com.chesire.nekomp.core.database.entity.AiringEntity
 import com.chesire.nekomp.core.model.Image
@@ -75,6 +76,21 @@ class AiringStorage(private val airingDao: AiringDao) {
                 airingTimeZone = entry.airingTime?.timeZone ?: "",
             )
         }
+
         airingDao.upsert(newEntries)
+    }
+
+    suspend fun clearOld(newEntries: List<AiringAnime>) {
+        val currentAiring = airingDao.entriesSync().map { it.malId }
+        val newAiring = newEntries.map { it.malId }
+        val deleteIds = currentAiring.subtract(newAiring).toList()
+        Logger.d("AiringStorage") {
+            "Checking to delete old entries::\n" +
+                "Current series - [${currentAiring.joinToString()}]\n" +
+                "New series     - [${newAiring.joinToString()}]\n" +
+                "Removing ids   - [${deleteIds.joinToString()}]"
+        }
+        val deleted = airingDao.delete(deleteIds)
+        Logger.d("AiringStorage") { "Deleted $deleted old entries" }
     }
 }
