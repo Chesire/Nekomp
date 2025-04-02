@@ -17,4 +17,10 @@ interface AiringDao {
 
     @Query("SELECT * FROM AiringEntity")
     fun entries(): Flow<List<AiringEntity>>
+
+    @Query("SELECT * FROM AiringEntity")
+    suspend fun entriesSync(): List<AiringEntity>
+
+    @Query("DELETE FROM AiringEntity WHERE malId in (:entries)")
+    suspend fun delete(entries: List<Int>): Int
 }
