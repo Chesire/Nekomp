@@ -124,7 +124,6 @@ class AiringRepository(
         return body
             .data
             .filterNot { it.broadcast?.day == null }
-            .filter { it.airing }
             .map {
                 AiringAnime(
                     malId = it.malId,
