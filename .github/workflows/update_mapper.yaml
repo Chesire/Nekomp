@@ -28,9 +28,18 @@ jobs:
             const fs = require('fs')
             let input = require(INPUT_FILE)
             let stringified = JSON.stringify(input, ["mal_id", "kitsu_id"]) 
-            fs.writeFileSync(OUTPUT_FILE, stringified) 
+            fs.writeFileSync(OUTPUT_FILE, stringified)
 
       - name: Create pull request
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: peter-evans/create-pull-request@v7
         with:
-          commit_message: Updating mapper json file
+          branch: chore/update-mapper-file
+          commit-message: Updating mapper file to latest
+          title: "[Chore] Update mapper file"
+          body: |
+            Updating the mapper file to the latest.
+            This pull request has been generated automatically.
+          labels: review
+          reviewers: chesire
+          draft: false
+          delete-branch: true
