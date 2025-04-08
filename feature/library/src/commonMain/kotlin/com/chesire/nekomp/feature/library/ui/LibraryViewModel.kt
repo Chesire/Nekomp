@@ -117,6 +117,7 @@ class LibraryViewModel(
             is ViewAction.TypeFilterClick -> onTypeFilterClick(action.selectedType)
             is ViewAction.StatusFilterClick -> onStatusFilterClick(action.selectedStatus)
 
+            is ViewAction.ItemSelect -> onItemSelect(action.entry)
             is ViewAction.ItemPlusOneClick -> onItemPlusOneClick(action.entry)
 
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
@@ -187,6 +188,12 @@ class LibraryViewModel(
         }.toMap()
 
         librarySettings.updateStatusFilter(newMap)
+    }
+
+    private fun onItemSelect(entry: Entry) {
+        _uiState.update { state ->
+            state.copy(selectedEntry = entry)
+        }
     }
 
     private fun onItemPlusOneClick(entry: Entry) = viewModelScope.launch(Dispatchers.IO) {

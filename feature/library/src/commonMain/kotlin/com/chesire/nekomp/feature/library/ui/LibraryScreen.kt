@@ -99,10 +99,8 @@ private fun Render(
                                 execute = execute,
                                 onEntryClick = { entry ->
                                     scope.launch {
-                                        navigator.navigateTo(
-                                            ListDetailPaneScaffoldRole.Detail,
-                                            entry
-                                        )
+                                        execute(ViewAction.ItemSelect(entry))
+                                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                     }
                                 }
                             )
@@ -111,7 +109,7 @@ private fun Render(
                     detailPane = {
                         AnimatedPane {
                             DetailPane(
-                                entry = navigator.currentDestination?.contentKey,
+                                entry = state.selectedEntry,
                                 showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
                                 goBack = {
                                     scope.launch {
