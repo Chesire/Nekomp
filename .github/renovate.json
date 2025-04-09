@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "assignees": [
+    "Chesire"
+  ],
+  "branchPrefix": "deps/",
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "labels": [
+    "dependencies"
+  ],
+  "bundler": {
+    "rangeStrategy": "update-lockfile"
+  }
+}
