@@ -20,11 +20,11 @@ import com.chesire.nekomp.library.datasource.library.libraryLibraryModule
 import com.chesire.nekomp.library.datasource.search.librarySearchModule
 import com.chesire.nekomp.library.datasource.trending.libraryTrendingModule
 import com.chesire.nekomp.library.datasource.user.libraryUserModule
-import kotlin.experimental.ExperimentalObjCRefinement
-import kotlin.native.HiddenFromObjC
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
+import kotlin.experimental.ExperimentalObjCRefinement
+import kotlin.native.HiddenFromObjC
 
 @HiddenFromObjC
 fun initKoin(
@@ -34,26 +34,28 @@ fun initKoin(
     startKoin {
         appDeclaration()
         modules(
-            platformModules + listOf(
-                coroutinesModule,
-                databaseModule,
-                featureAiringModule,
-                featureDiscoverModule,
-                featureHomeModule,
-                featureLibraryModule,
-                featureLoginModule,
-                featureProfileModule,
-                featureSettingsModule,
-                initializersModule,
-                libraryAiringModule,
-                libraryAuthModule,
-                libraryLibraryModule,
-                librarySearchModule,
-                libraryTrendingModule,
-                libraryUserModule,
-                logoutModule,
-                preferencesModule
-            )
+            platformModules + koinModules
         )
     }
 }
+
+val koinModules = listOf(
+    coroutinesModule,
+    databaseModule,
+    featureAiringModule,
+    featureDiscoverModule,
+    featureHomeModule,
+    featureLibraryModule,
+    featureLoginModule,
+    featureProfileModule,
+    featureSettingsModule,
+    initializersModule,
+    libraryAiringModule,
+    libraryAuthModule,
+    libraryLibraryModule,
+    librarySearchModule,
+    libraryTrendingModule,
+    libraryUserModule,
+    logoutModule,
+    preferencesModule
+)

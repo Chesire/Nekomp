@@ -11,6 +11,7 @@ coroutines = "1.10.2"
 datastore = "1.1.4"
 detekt = "1.23.8"
 koin = "4.0.4"
+kotest = "5.9.1"
 kotlin = "2.1.20"
 ktor = "3.1.2"
 ktorfit = "2.5.0"
@@ -44,6 +45,11 @@ koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
+kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotlin-result = { module = "com.michael-bull.kotlin-result:kotlin-result", version = "2.0.1" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version = "0.3.8" }
@@ -70,6 +76,7 @@ androidx-room = { id = "androidx.room", version.ref = "room" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -77,3 +84,11 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.1" }
 ksp = { id = "com.google.devtools.ksp", version = "2.1.20-1.0.31" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
+
+[bundles]
+kotest = [
+    "kotest-assertions-core",
+    "kotest-framework-datatest",
+    "kotest-framework-engine",
+    "kotest-runner-junit5"
+]
