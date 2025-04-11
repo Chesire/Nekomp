@@ -2,7 +2,7 @@ package com.chesire.nekomp
 
 import android.app.Application
 import co.touchlab.kermit.Logger
-import com.chesire.nekomp.di.workManagerModule
+import com.chesire.nekomp.di.koinAndroidModules
 import com.chesire.nekomp.workers.WorkerQueue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -23,7 +23,7 @@ class NekompApp : Application() {
     }
 
     private fun initDi() {
-        initKoin(platformModules = listOf(workManagerModule)) {
+        initKoin(platformModules = koinAndroidModules) {
             androidContext(this@NekompApp)
             androidLogger(Level.INFO)
             workManagerFactory()

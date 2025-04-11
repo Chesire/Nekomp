@@ -34,26 +34,28 @@ fun initKoin(
     startKoin {
         appDeclaration()
         modules(
-            platformModules + listOf(
-                coroutinesModule,
-                databaseModule,
-                featureAiringModule,
-                featureDiscoverModule,
-                featureHomeModule,
-                featureLibraryModule,
-                featureLoginModule,
-                featureProfileModule,
-                featureSettingsModule,
-                initializersModule,
-                libraryAiringModule,
-                libraryAuthModule,
-                libraryLibraryModule,
-                librarySearchModule,
-                libraryTrendingModule,
-                libraryUserModule,
-                logoutModule,
-                preferencesModule
-            )
+            platformModules + koinModules
         )
     }
 }
+
+val koinModules = listOf(
+    coroutinesModule,
+    databaseModule,
+    featureAiringModule,
+    featureDiscoverModule,
+    featureHomeModule,
+    featureLibraryModule,
+    featureLoginModule,
+    featureProfileModule,
+    featureSettingsModule,
+    initializersModule,
+    libraryAiringModule,
+    libraryAuthModule,
+    libraryLibraryModule,
+    librarySearchModule,
+    libraryTrendingModule,
+    libraryUserModule,
+    logoutModule,
+    preferencesModule
+)

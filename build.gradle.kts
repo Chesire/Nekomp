@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.compose.compiler).apply(false)
     alias(libs.plugins.compose.multiplatform).apply(false)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.kotest.multiplatform).apply(false)
     alias(libs.plugins.kotlin.android).apply(false)
     alias(libs.plugins.kotlin.multiplatform).apply(false)
     alias(libs.plugins.kotlin.serialization).apply(false)
@@ -55,8 +56,13 @@ dependencies {
 subprojects {
     if (!excludeProjects.contains(path)) {
         afterEvaluate {
-            if (plugins.hasPlugin("android") || plugins.hasPlugin("android-library")) {
+            if (
+                plugins.hasPlugin("android") ||
+                plugins.hasPlugin("android-library") ||
+                plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")
+            ) {
                 pluginManager.apply(libs.plugins.kover.get().pluginId)
+
                 configure<KoverProjectExtension> {
                     currentProject {
                         createVariant("merged") {
@@ -67,7 +73,8 @@ subprojects {
                         }
                     }
                 }
-
+            }
+            if (plugins.hasPlugin("android") || plugins.hasPlugin("android-library")) {
                 configure<com.android.build.gradle.BaseExtension> {
                     compileOptions {
                         sourceCompatibility = JavaVersion.VERSION_21
@@ -77,8 +84,27 @@ subprojects {
                         unitTests {
                             all {
                                 it.ignoreFailures = true
+                                it.useJUnitPlatform()
                             }
                         }
+                    }
+                }
+            }
+            if (plugins.hasPlugin("io.kotest.multiplatform")) {
+                tasks.named<Test>("jvmTest") {
+                    useJUnitPlatform()
+                    filter {
+                        isFailOnNoMatchingTests = false
+                    }
+                    testLogging {
+                        showExceptions = true
+                        showStandardStreams = true
+                        events = setOf(
+                            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+                        )
+                        exceptionFormat =
+                            org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
                     }
                 }
             }

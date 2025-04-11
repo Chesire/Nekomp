@@ -16,6 +16,7 @@ sealed interface ViewAction {
     data class TypeFilterClick(val selectedType: Type) : ViewAction
     data class StatusFilterClick(val selectedStatus: EntryStatus) : ViewAction
 
+    data class ItemSelect(val entry: Entry) : ViewAction
     data class ItemPlusOneClick(val entry: Entry) : ViewAction
 
     data object ObservedViewEvent : ViewAction

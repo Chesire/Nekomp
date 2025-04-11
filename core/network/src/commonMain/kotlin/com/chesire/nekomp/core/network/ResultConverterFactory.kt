@@ -10,6 +10,7 @@ import de.jensklingenberg.ktorfit.converter.TypeData
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.isSuccess
 
 class ResultConverterFactory : Converter.Factory {
 
@@ -23,7 +24,7 @@ class ResultConverterFactory : Converter.Factory {
                     return when (result) {
                         is KtorfitResult.Success -> {
                             val response = result.response
-                            return if (response.status.value >= 200 && response.status.value <= 299) {
+                            return if (response.status.isSuccess()) {
                                 try {
                                     val convertedBody = ktorfit
                                         .nextSuspendResponseConverter(

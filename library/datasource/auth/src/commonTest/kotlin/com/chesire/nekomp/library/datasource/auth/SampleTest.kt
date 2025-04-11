@@ -1,14 +1,13 @@
 package com.chesire.nekomp.library.datasource.auth
 
 import com.chesire.nekomp.library.datasource.auth.remote.model.LoginRequestDto
-import kotlin.test.Test
+import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertTrue
 
-class SampleTest {
+class SampleTest : FunSpec({
 
-    @Test
-    fun `Sample test remove later`() {
+    test("Sample test remove later") {
         val a = LoginRequestDto("Username", "Password", "GrantType")
         assertTrue { a.username == "Username" }
     }
-}
+})

@@ -15,6 +15,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.text.style.TextOverflow
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.library.ui.Entry
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
@@ -30,7 +31,11 @@ fun DetailPane(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = entry?.title ?: "")
+                    Text(
+                        text = entry?.title ?: "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 navigationIcon = {
                     if (showBack) {
