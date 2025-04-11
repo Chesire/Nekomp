@@ -9,6 +9,7 @@
   "semanticCommits": "enabled",
   "semanticCommitType": "chore",
   "semanticCommitScope": "deps",
+  "prConcurrentLimit": 2,
   "labels": [
     "dependencies"
   ],
