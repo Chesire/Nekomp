@@ -89,6 +89,5 @@ ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 kotest = [
     "kotest-assertions-core",
     "kotest-framework-datatest",
-    "kotest-framework-engine",
-    "kotest-runner-junit5"
+    "kotest-framework-engine"
 ]

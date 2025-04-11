@@ -43,6 +43,9 @@ kotlin {
             implementation(libs.koin.androidx.workmanager)
             implementation(libs.kotlinx.coroutines.android)
         }
+        androidUnitTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
+        }
         commonMain.dependencies {
             implementation(projects.core.coroutines)
             implementation(projects.core.database)
@@ -94,6 +97,9 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+        }
+        jvmTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
         }
     }
 }
