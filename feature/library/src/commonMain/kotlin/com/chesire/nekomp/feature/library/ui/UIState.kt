@@ -12,6 +12,7 @@ import kotlinx.collections.immutable.persistentMapOf
 
 data class UIState(
     val entries: ImmutableList<Entry> = persistentListOf(),
+    val selectedEntry: Entry? = null,
     val viewType: ViewType = ViewType.Card,
     val typeFilters: ImmutableMap<Type, Boolean> = persistentMapOf(),
     val statusFilters: ImmutableMap<EntryStatus, Boolean> = persistentMapOf(),

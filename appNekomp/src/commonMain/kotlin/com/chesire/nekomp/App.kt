@@ -10,7 +10,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +28,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.Theme
@@ -142,6 +147,19 @@ private fun NavGraphBuilder.addDashboard(appNavController: NavController) {
         val navBackStackEntry by dashboardNavController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 
+        // TODO: This should be removed in the future when they fix the behaviour of having a big
+        // navigation bar for a landscape phone.
+        val adaptiveInfo = currentWindowAdaptiveInfo()
+        val customNavSuiteType = with(adaptiveInfo.windowSizeClass) {
+            if (windowWidthSizeClass != WindowWidthSizeClass.COMPACT &&
+                windowHeightSizeClass == WindowHeightSizeClass.COMPACT
+            ) {
+                NavigationSuiteType.NavigationRail
+            } else {
+                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
+            }
+        }
+
         NavigationSuiteScaffold(
             navigationSuiteItems = {
                 DashboardDestination.entries.forEach { destination ->
@@ -169,7 +187,8 @@ private fun NavGraphBuilder.addDashboard(appNavController: NavController) {
                         }
                     )
                 }
-            }
+            },
+            layoutType = customNavSuiteType,
         ) {
             NavHost(
                 navController = dashboardNavController,
