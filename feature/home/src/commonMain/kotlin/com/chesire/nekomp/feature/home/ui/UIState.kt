@@ -27,7 +27,7 @@ data class WatchItem(
 data class AiringItem(
     val entryId: Int,
     val title: String,
-    val posterImage: String,
+    val coverImage: String,
     val airingAt: String,
     val minutesTillAir: Long
 )

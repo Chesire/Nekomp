@@ -56,7 +56,14 @@ class ShowAiringSeriesUseCase(
                         AiringItem(
                             entryId = entry.entryId,
                             title = entry.titles.toChosenLanguage(titleLanguage),
-                            posterImage = entry.coverImage.toBestImage(imageQuality),
+                            coverImage = entry
+                                .coverImage
+                                .toBestImage(imageQuality)
+                                .ifBlank {
+                                    airingItem
+                                        .posterImage
+                                        .toBestImage(imageQuality)
+                                },
                             airingAt = parseForAiringAt(timeFrame),
                             minutesTillAir = timeFrame.inWholeMinutes,
                         )

@@ -62,10 +62,10 @@ private fun AiringItemComponent(
     ) {
         Box {
             AsyncImage(
-                model = airingItem.posterImage,
+                model = airingItem.coverImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
             Box(
                 modifier = Modifier
