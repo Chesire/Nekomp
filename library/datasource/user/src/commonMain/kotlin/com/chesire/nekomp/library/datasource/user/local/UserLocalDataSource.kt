@@ -4,43 +4,45 @@ import com.chesire.nekomp.core.database.dao.UserDao
 import com.chesire.nekomp.core.database.entity.UserEntity
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.library.datasource.user.User
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 internal class UserLocalDataSource(private val userDao: UserDao) : UserStorage {
 
-    override val user = userDao
-        .user()
-        .map {
-            if (it == null) {
-                User(
-                    id = -1,
-                    name = "",
-                    avatar = Image.empty,
-                    coverImage = Image.empty,
-                    isAuthenticated = false
-                )
-            } else {
-                User(
-                    id = it.id,
-                    name = it.name,
-                    avatar = Image(
-                        tiny = it.avatarTiny,
-                        small = it.avatarSmall,
-                        medium = it.avatarMedium,
-                        large = it.avatarLarge,
-                        original = it.avatarOriginal
-                    ),
-                    coverImage = Image(
-                        tiny = it.coverImageTiny,
-                        small = it.coverImageSmall,
-                        medium = it.coverImageMedium,
-                        large = it.coverImageLarge,
-                        original = it.coverImageOriginal
-                    ),
-                    isAuthenticated = true
-                )
+    override val user: Flow<User>
+        get() = userDao
+            .user()
+            .map {
+                if (it == null) {
+                    User(
+                        id = -1,
+                        name = "",
+                        avatar = Image.empty,
+                        coverImage = Image.empty,
+                        isAuthenticated = false
+                    )
+                } else {
+                    User(
+                        id = it.id,
+                        name = it.name,
+                        avatar = Image(
+                            tiny = it.avatarTiny,
+                            small = it.avatarSmall,
+                            medium = it.avatarMedium,
+                            large = it.avatarLarge,
+                            original = it.avatarOriginal
+                        ),
+                        coverImage = Image(
+                            tiny = it.coverImageTiny,
+                            small = it.coverImageSmall,
+                            medium = it.coverImageMedium,
+                            large = it.coverImageLarge,
+                            original = it.coverImageOriginal
+                        ),
+                        isAuthenticated = true
+                    )
+                }
             }
-        }
 
     override suspend fun updateUser(user: User) {
         val entity = UserEntity(
