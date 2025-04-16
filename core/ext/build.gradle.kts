@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotest.multiplatform)
     alias(libs.plugins.kotlin.multiplatform)
 }
 
@@ -30,11 +31,21 @@ kotlin {
     jvm()
 
     sourceSets {
+        androidUnitTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
+        }
         commonMain.dependencies {
             implementation(projects.core.model)
             implementation(projects.core.preferences)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
+        }
+        commonTest.dependencies {
+            implementation(libs.bundles.kotest)
+            implementation(libs.koin.test)
+        }
+        jvmTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
         }
     }
 }
