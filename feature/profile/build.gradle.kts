@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
+            implementation(projects.core.ext)
             implementation(projects.core.model)
             implementation(projects.core.network)
             implementation(projects.core.preferences)

@@ -3,11 +3,11 @@ package com.chesire.nekomp.feature.airing.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.ext.toBestImage
+import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.TitleLanguage
-import com.chesire.nekomp.feature.airing.toBestImage
-import com.chesire.nekomp.feature.airing.toChosenLanguage
 import com.chesire.nekomp.library.datasource.airing.AiringAnime
 import com.chesire.nekomp.library.datasource.airing.AiringRepository
 import com.chesire.nekomp.library.datasource.airing.AiringTime

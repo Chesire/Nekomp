@@ -2,9 +2,8 @@ package com.chesire.nekomp.feature.profile.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chesire.nekomp.core.model.Image
+import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
-import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.library.datasource.user.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -43,16 +42,6 @@ class ProfileViewModel(
     private fun onObservedViewEvent() {
         _uiState.update { state ->
             state.copy(viewEvent = null)
-        }
-    }
-
-    private fun Image.toBestImage(imageQuality: ImageQuality): String {
-        return when (imageQuality) {
-            ImageQuality.Lowest -> lowest
-            ImageQuality.Low -> low
-            ImageQuality.Medium -> middle
-            ImageQuality.High -> high
-            ImageQuality.Highest -> highest
         }
     }
 }

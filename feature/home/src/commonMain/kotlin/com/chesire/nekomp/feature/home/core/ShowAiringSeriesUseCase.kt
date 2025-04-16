@@ -2,10 +2,10 @@ package com.chesire.nekomp.feature.home.core
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.coroutines.emitLatestPeriodically
+import com.chesire.nekomp.core.ext.toBestImage
+import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
-import com.chesire.nekomp.feature.home.toBestImage
-import com.chesire.nekomp.feature.home.toChosenLanguage
 import com.chesire.nekomp.feature.home.ui.AiringItem
 import com.chesire.nekomp.library.datasource.airing.AiringAnime
 import com.chesire.nekomp.library.datasource.airing.AiringRepository
