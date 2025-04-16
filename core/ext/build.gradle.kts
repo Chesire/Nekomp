@@ -42,7 +42,6 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.bundles.kotest)
-            implementation(libs.koin.test)
         }
         jvmTest.dependencies {
             implementation(libs.kotest.runner.junit5)

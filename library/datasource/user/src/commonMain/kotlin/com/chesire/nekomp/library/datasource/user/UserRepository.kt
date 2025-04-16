@@ -14,7 +14,7 @@ class UserRepository(
     private val userStorage: UserStorage
 ) {
 
-    val user: Flow<User> = userStorage.user
+    val user: Flow<User> get() = userStorage.user
 
     suspend fun retrieve(): Result<User, Unit> {
         return userApi.retrieveUser()
