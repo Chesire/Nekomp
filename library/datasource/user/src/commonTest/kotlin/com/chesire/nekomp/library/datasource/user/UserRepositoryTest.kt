@@ -4,6 +4,7 @@ import com.chesire.nekomp.library.datasource.user.local.UserStorage
 import com.chesire.nekomp.library.datasource.user.remote.UserApi
 import com.chesire.nekomp.library.datasource.user.remote.model.UserItemDto
 import com.chesire.nekomp.library.datasource.user.remote.model.UserResponseDto
+import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -14,7 +15,6 @@ import dev.mokkery.resetCalls
 import dev.mokkery.verifySuspend
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.types.shouldBeTypeOf
-import kotlin.Result as KResult
 
 class UserRepositoryTest : FunSpec({
 
@@ -45,7 +45,7 @@ class UserRepositoryTest : FunSpec({
     test("Given retrieveUser succeeds, When retrieve, Then storage is updated") {
         everySuspend {
             userApi.retrieveUser()
-        } returns KResult.success(userResponseFake)
+        } returns Ok(userResponseFake)
         everySuspend { userStorage.updateUser(any()) } returns Unit
 
         repository.retrieve()
@@ -56,7 +56,7 @@ class UserRepositoryTest : FunSpec({
     test("Given retrieveUser succeeds, When retrieve, Then Ok is returned") {
         everySuspend {
             userApi.retrieveUser()
-        } returns KResult.success(userResponseFake)
+        } returns Ok(userResponseFake)
         everySuspend { userStorage.updateUser(any()) } returns Unit
 
         val result = repository.retrieve()
@@ -67,7 +67,7 @@ class UserRepositoryTest : FunSpec({
     test("Given retrieveUser fails, When retrieve, Then Err is returned") {
         everySuspend {
             userApi.retrieveUser()
-        } returns KResult.success(userResponseFake)
+        } returns Ok(userResponseFake)
         everySuspend { userStorage.updateUser(any()) } returns Unit
 
         val result = repository.retrieve()

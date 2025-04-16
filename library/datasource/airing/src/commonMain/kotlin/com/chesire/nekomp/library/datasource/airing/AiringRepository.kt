@@ -12,6 +12,9 @@ import com.chesire.nekomp.library.datasource.airing.remote.model.SeasonResponseD
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +61,7 @@ class AiringRepository(
                     airingStorage.updateEntries(it)
                 }
                 .onFailure {
-                    val apiError = it as? NetworkError.Api
+                    val apiError = it as? NetworkError.ApiError
                     if (apiError?.code == HttpStatusCode.TooManyRequests.value) {
                         Logger.d("AiringRepository") { "Got rate limited, waiting then trying again" }
                         retries++
@@ -160,7 +163,7 @@ class AiringRepository(
                                 minute = minute,
                                 timeZone = timeZone
                             )
-                        } catch (ex: IllegalArgumentException) {
+                        } catch (_: IllegalArgumentException) {
                             Logger.e("AiringRepository") { "Failed to parse the time - $input" }
                             null
                         }

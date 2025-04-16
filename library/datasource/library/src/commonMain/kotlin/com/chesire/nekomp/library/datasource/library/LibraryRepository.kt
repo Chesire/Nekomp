@@ -3,6 +3,7 @@ package com.chesire.nekomp.library.datasource.library
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
+import com.chesire.nekomp.core.network.NetworkError
 import com.chesire.nekomp.library.datasource.kitsumodels.toImage
 import com.chesire.nekomp.library.datasource.kitsumodels.toTitles
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
@@ -16,7 +17,10 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.anyOk
-import kotlin.Result as KResult
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapBoth
+import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -56,7 +60,7 @@ class LibraryRepository(
 
     private suspend fun retrieve(
         userId: Int,
-        apiCall: suspend (userId: Int, offset: Int, limit: Int) -> KResult<RetrieveResponseDto>
+        apiCall: suspend (userId: Int, offset: Int, limit: Int) -> Result<RetrieveResponseDto, NetworkError>
     ): Result<List<LibraryEntry>, Unit> {
         var isSuccess = false
         val entries = mutableListOf<LibraryEntry>()
@@ -144,9 +148,9 @@ class LibraryRepository(
             .onSuccess {
                 libraryStorage.updateEntry(it)
             }
-            .fold(
-                onSuccess = { Ok(it) },
-                onFailure = { Err(Unit) }
+            .mapBoth(
+                success = { Ok(it) },
+                failure = { Err(Unit) }
             )
     }
 
@@ -178,9 +182,9 @@ class LibraryRepository(
             .onSuccess {
                 libraryStorage.updateEntry(it)
             }
-            .fold(
-                onSuccess = { Ok(it) },
-                onFailure = { Err(Unit) }
+            .mapBoth(
+                success = { Ok(it) },
+                failure = { Err(Unit) }
             )
     }
 

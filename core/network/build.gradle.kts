@@ -33,9 +33,8 @@ kotlin {
     jvm()
 
     sourceSets {
-        androidMain.dependencies {
-        }
         commonMain.dependencies {
+            implementation(libs.kotlin.result)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.auth)
@@ -50,8 +49,6 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
-        }
-        iosMain.dependencies {
         }
     }
 }
