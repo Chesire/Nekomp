@@ -39,6 +39,7 @@ kotlin {
             implementation(projects.core.preferences)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.bundles.kotest)

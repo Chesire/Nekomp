@@ -3,11 +3,11 @@ package com.chesire.nekomp.library.datasource.airing.local
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.dao.AiringDao
 import com.chesire.nekomp.core.database.entity.AiringEntity
+import com.chesire.nekomp.core.model.AiringTime
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Season
 import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.library.datasource.airing.AiringAnime
-import com.chesire.nekomp.library.datasource.airing.AiringTime
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.isoDayNumber

@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.airing
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.dao.MappingDao
+import com.chesire.nekomp.core.model.AiringTime
 import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.model.Season
 import com.chesire.nekomp.core.model.Titles
