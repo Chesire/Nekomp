@@ -106,9 +106,9 @@ private fun WatchItemComponent(
                         .background(
                             brush = Brush.verticalGradient(
                                 .5F to Color.Transparent,
-                                .7f to Color.Black.copy(alpha = 0.5f),
-                                .8f to Color.Black.copy(alpha = 0.9f),
-                                1F to Color.Black.copy(alpha = 1f)
+                                .7f to MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+                                .8f to MaterialTheme.colorScheme.background.copy(alpha = 0.9f),
+                                1F to MaterialTheme.colorScheme.background.copy(alpha = 1f)
                             )
                         )
                 )

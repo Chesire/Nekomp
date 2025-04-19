@@ -11,6 +11,8 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.get
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapBoth
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -59,9 +61,9 @@ class TrendingRepository(
             jobs
                 .map { jobs ->
                     // Map to a list of success/failure
-                    jobs.fold(
-                        onSuccess = { Ok(it) },
-                        onFailure = { Err(Unit) }
+                    jobs.mapBoth(
+                        success = { Ok(it) },
+                        failure = { Err(Unit) }
                     )
                 }
                 .apply {

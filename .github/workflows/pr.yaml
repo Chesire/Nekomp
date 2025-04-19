@@ -66,6 +66,7 @@ jobs:
       - uses: codecov/codecov-action@v4
         with:
           files: ./build/reports/kover/reportMerged.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v2
@@ -164,7 +165,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Assemble android app
-        run: ./gradlew :appNekomp:assemble
+        run: ./gradlew :appNekomp:assembleDebug
 
       - name: Assemble jvm app
         run: ./gradlew :appNekomp:jvmJar

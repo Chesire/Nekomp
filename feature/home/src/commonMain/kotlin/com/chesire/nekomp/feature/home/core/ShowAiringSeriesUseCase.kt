@@ -2,14 +2,15 @@ package com.chesire.nekomp.feature.home.core
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.coroutines.emitLatestPeriodically
+import com.chesire.nekomp.core.ext.airingAt
+import com.chesire.nekomp.core.ext.toBestImage
+import com.chesire.nekomp.core.ext.toChosenLanguage
+import com.chesire.nekomp.core.model.AiringTime
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
-import com.chesire.nekomp.feature.home.toBestImage
-import com.chesire.nekomp.feature.home.toChosenLanguage
 import com.chesire.nekomp.feature.home.ui.AiringItem
 import com.chesire.nekomp.library.datasource.airing.AiringAnime
 import com.chesire.nekomp.library.datasource.airing.AiringRepository
-import com.chesire.nekomp.library.datasource.airing.AiringTime
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import kotlin.time.Duration
@@ -19,15 +20,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atTime
-import kotlinx.datetime.isoDayNumber
-import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
-import kotlinx.datetime.todayIn
 
 // This is doing more than it should, but i'm lazy
 class ShowAiringSeriesUseCase(
@@ -56,7 +50,14 @@ class ShowAiringSeriesUseCase(
                         AiringItem(
                             entryId = entry.entryId,
                             title = entry.titles.toChosenLanguage(titleLanguage),
-                            posterImage = entry.coverImage.toBestImage(imageQuality),
+                            coverImage = entry
+                                .coverImage
+                                .toBestImage(imageQuality)
+                                .ifBlank {
+                                    airingItem
+                                        .posterImage
+                                        .toBestImage(imageQuality)
+                                },
                             airingAt = parseForAiringAt(timeFrame),
                             minutesTillAir = timeFrame.inWholeMinutes,
                         )
@@ -72,14 +73,8 @@ class ShowAiringSeriesUseCase(
     }
 
     private fun AiringTime.timeTillShowing(): Duration {
-        val airingTimeZone = TimeZone.of(timeZone)
-
-        val nowInAiringTimeZone = Clock.System.todayIn(airingTimeZone)
-        val nextAirDay = nowInAiringTimeZone.nextDateWithWeekDay(dayOfWeek)
-        val nextAirTime = nextAirDay.atTime(hour = hour, minute = minute)
-        val nextAirTimeInstant = nextAirTime.toInstant(airingTimeZone)
-
-        return nextAirTimeInstant.minus(Clock.System.now())
+        val instant = airingAt().toInstant(TimeZone.of(timeZone))
+        return instant.minus(Clock.System.now())
     }
 
     @Suppress("MagicNumber")
@@ -98,8 +93,4 @@ class ShowAiringSeriesUseCase(
             }
         }
     }
-
-    @Suppress("MagicNumber")
-    private fun LocalDate.nextDateWithWeekDay(newDayOfWeek: DayOfWeek): LocalDate =
-        plus((newDayOfWeek.isoDayNumber - dayOfWeek.isoDayNumber).mod(7), DateTimeUnit.DAY)
 }

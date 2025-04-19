@@ -2,9 +2,9 @@ package com.chesire.nekomp.feature.library.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.ext.toBestImage
+import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.model.EntryStatus
-import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Titles
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
@@ -227,24 +227,5 @@ class LibraryViewModel(
             displayProgress = "$progress / ${totalLength.takeIf { it != 0 } ?: "ongoing"}",
             progress = progress
         )
-    }
-
-    private fun Titles.toChosenLanguage(titleLanguage: TitleLanguage): String {
-        return when (titleLanguage) {
-            TitleLanguage.Canonical -> canonical
-            TitleLanguage.English -> english.ifBlank { canonical }
-            TitleLanguage.Romaji -> romaji.ifBlank { canonical }
-            TitleLanguage.CJK -> cjk.ifBlank { canonical }
-        }
-    }
-
-    private fun Image.toBestImage(imageQuality: ImageQuality): String {
-        return when (imageQuality) {
-            ImageQuality.Lowest -> lowest
-            ImageQuality.Low -> low
-            ImageQuality.Medium -> middle
-            ImageQuality.High -> high
-            ImageQuality.Highest -> highest
-        }
     }
 }

@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.airing.remote
 
 import com.chesire.nekomp.core.network.ResultConverterFactory
 import com.chesire.nekomp.core.network.plugin.installContentNegotiation
+import com.github.michaelbull.result.get
 import de.jensklingenberg.ktorfit.ktorfitBuilder
 import io.ktor.client.HttpClient
 import kotlin.test.Ignore
@@ -26,9 +27,9 @@ class AiringApiTest {
         }.build().createAiringApi()
 
         val result = api.retrieveSeasonNow(1)
-        if (result.isSuccess) {
-            val data = result.getOrThrow()
-            assertTrue { data.data.isNotEmpty() }
+        if (result.isOk) {
+            val data = result.get()
+            assertTrue { data!!.data.isNotEmpty() }
         } else {
             fail("API call failed - $result")
         }

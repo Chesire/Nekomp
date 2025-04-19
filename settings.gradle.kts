@@ -18,6 +18,7 @@ rootProject.name = "Nekomp"
 include(":appNekomp")
 include(":core:coroutines")
 include(":core:database")
+include(":core:ext")
 include(":core:model")
 include(":core:network")
 include(":core:preferences")

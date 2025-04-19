@@ -2,11 +2,9 @@ package com.chesire.nekomp.feature.discover.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.model.Titles
+import com.chesire.nekomp.core.ext.toBestImage
+import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
-import com.chesire.nekomp.core.preferences.ImageQuality
-import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
@@ -231,24 +229,5 @@ class DiscoverViewModel(
             posterImage = posterImage.toBestImage(imageQuality),
             isTracked = isTracked
         )
-    }
-
-    private fun Titles.toChosenLanguage(titleLanguage: TitleLanguage): String {
-        return when (titleLanguage) {
-            TitleLanguage.Canonical -> canonical
-            TitleLanguage.English -> english.ifBlank { canonical }
-            TitleLanguage.Romaji -> romaji.ifBlank { canonical }
-            TitleLanguage.CJK -> cjk.ifBlank { canonical }
-        }
-    }
-
-    private fun Image.toBestImage(imageQuality: ImageQuality): String {
-        return when (imageQuality) {
-            ImageQuality.Lowest -> lowest
-            ImageQuality.Low -> low
-            ImageQuality.Medium -> middle
-            ImageQuality.High -> high
-            ImageQuality.Highest -> highest
-        }
     }
 }

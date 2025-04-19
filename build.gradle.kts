@@ -2,19 +2,20 @@ import io.gitlab.arturbosch.detekt.Detekt
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 
 plugins {
-    alias(libs.plugins.android.application).apply(false)
-    alias(libs.plugins.android.library).apply(false)
-    alias(libs.plugins.androidx.room).apply(false)
-    alias(libs.plugins.compose.compiler).apply(false)
-    alias(libs.plugins.compose.multiplatform).apply(false)
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.androidx.room) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.compose.multiplatform) apply false
     alias(libs.plugins.detekt)
-    alias(libs.plugins.kotest.multiplatform).apply(false)
-    alias(libs.plugins.kotlin.android).apply(false)
-    alias(libs.plugins.kotlin.multiplatform).apply(false)
-    alias(libs.plugins.kotlin.serialization).apply(false)
+    alias(libs.plugins.kotest.multiplatform) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kover)
-    alias(libs.plugins.ksp).apply(false)
-    alias(libs.plugins.ktorfit).apply(false)
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.ktorfit) apply false
+    alias(libs.plugins.mockkery) apply false
 }
 
 tasks.register<Detekt>("detektCheck") {

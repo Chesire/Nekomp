@@ -3,14 +3,14 @@ package com.chesire.nekomp.feature.airing.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.ext.airingAt
+import com.chesire.nekomp.core.ext.toBestImage
+import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.TitleLanguage
-import com.chesire.nekomp.feature.airing.toBestImage
-import com.chesire.nekomp.feature.airing.toChosenLanguage
 import com.chesire.nekomp.library.datasource.airing.AiringAnime
 import com.chesire.nekomp.library.datasource.airing.AiringRepository
-import com.chesire.nekomp.library.datasource.airing.AiringTime
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.Dispatchers
@@ -21,18 +21,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atTime
 import kotlinx.datetime.isoDayNumber
-import kotlinx.datetime.plus
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.todayIn
 
 class AiringViewModel(
     private val airingRepository: AiringRepository,
@@ -97,20 +87,4 @@ class AiringViewModel(
             airingTime = airingTime
         )
     }
-
-    // TODO: Move all of this shared logic somewhere
-    private fun AiringTime.airingAt(): LocalDateTime {
-        val airingTimeZone = TimeZone.of(timeZone)
-
-        val nowInAiringTimeZone = Clock.System.todayIn(airingTimeZone)
-        val nextAirDay = nowInAiringTimeZone.nextDateWithWeekDay(dayOfWeek)
-        val nextAirTime = nextAirDay.atTime(hour = hour, minute = minute)
-        val nextAirTimeInstant = nextAirTime.toInstant(airingTimeZone)
-
-        return nextAirTimeInstant.toLocalDateTime(TimeZone.currentSystemDefault())
-    }
-
-    @Suppress("MagicNumber")
-    private fun LocalDate.nextDateWithWeekDay(newDayOfWeek: DayOfWeek): LocalDate =
-        plus((newDayOfWeek.isoDayNumber - dayOfWeek.isoDayNumber).mod(7), DateTimeUnit.DAY)
 }

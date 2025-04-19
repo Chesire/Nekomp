@@ -2,10 +2,12 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotest.multiplatform)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktorfit)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -33,7 +35,8 @@ kotlin {
     jvm()
 
     sourceSets {
-        androidMain.dependencies {
+        androidUnitTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
         }
         commonMain.dependencies {
             implementation(projects.core.database)
@@ -55,10 +58,12 @@ kotlin {
             implementation(libs.touchlab.kermit)
         }
         commonTest.dependencies {
+            implementation(libs.bundles.kotest)
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
         }
-        iosMain.dependencies {
+        jvmTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
         }
     }
 }

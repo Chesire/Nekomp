@@ -4,6 +4,7 @@ import com.chesire.nekomp.core.network.ResultConverterFactory
 import com.chesire.nekomp.core.network.plugin.installContentNegotiation
 import com.chesire.nekomp.library.datasource.auth.remote.createAuthApi
 import com.chesire.nekomp.library.datasource.auth.remote.model.LoginRequestDto
+import com.github.michaelbull.result.get
 import de.jensklingenberg.ktorfit.ktorfitBuilder
 import io.ktor.client.HttpClient
 import kotlin.test.Ignore
@@ -32,9 +33,9 @@ class AuthApiTest {
         }.build().createAuthApi()
 
         val result = api.login(body)
-        if (result.isSuccess) {
-            val data = result.getOrThrow()
-            val token = data.accessToken
+        if (result.isOk) {
+            val data = result.get()
+            val token = data!!.accessToken
             assertTrue { token.isNotBlank() }
         } else {
             fail("API call failed - $result")

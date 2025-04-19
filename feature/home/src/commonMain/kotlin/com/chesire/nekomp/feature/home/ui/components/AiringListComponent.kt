@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -61,10 +62,10 @@ private fun AiringItemComponent(
     ) {
         Box {
             AsyncImage(
-                model = airingItem.posterImage,
+                model = airingItem.coverImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
             Box(
                 modifier = Modifier
@@ -72,9 +73,9 @@ private fun AiringItemComponent(
                     .background(
                         brush = Brush.verticalGradient(
                             .5F to Color.Transparent,
-                            .7f to Color.Black.copy(alpha = 0.5f),
-                            .8f to Color.Black.copy(alpha = 0.9f),
-                            1F to Color.Black.copy(alpha = 1f)
+                            .7f to MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+                            .8f to MaterialTheme.colorScheme.background.copy(alpha = 0.9f),
+                            1F to MaterialTheme.colorScheme.background.copy(alpha = 1f)
                         )
                     )
             )

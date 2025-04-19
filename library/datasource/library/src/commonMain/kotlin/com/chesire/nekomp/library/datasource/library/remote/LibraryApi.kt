@@ -1,8 +1,10 @@
 package com.chesire.nekomp.library.datasource.library.remote
 
+import com.chesire.nekomp.core.network.NetworkError
 import com.chesire.nekomp.library.datasource.library.remote.model.EntryRequestDto
 import com.chesire.nekomp.library.datasource.library.remote.model.EntryResponseDto
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
+import com.github.michaelbull.result.Result
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
@@ -32,7 +34,7 @@ interface LibraryApi {
         @Path("userId") userId: Int,
         @Query("page[offset]") offset: Int,
         @Query("page[limit]") limit: Int
-    ): Result<RetrieveResponseDto>
+    ): Result<RetrieveResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -50,7 +52,7 @@ interface LibraryApi {
         @Path("userId") userId: Int,
         @Query("page[offset]") offset: Int,
         @Query("page[limit]") limit: Int
-    ): Result<RetrieveResponseDto>
+    ): Result<RetrieveResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -61,7 +63,7 @@ interface LibraryApi {
             "?include=anime" +
             "&fields[anime]=$FIELDS,episodeCount"
     )
-    suspend fun addAnime(@Body data: EntryRequestDto): Result<EntryResponseDto>
+    suspend fun addAnime(@Body data: EntryRequestDto): Result<EntryResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -72,7 +74,7 @@ interface LibraryApi {
             "?include=manga" +
             "&fields[manga]=$FIELDS,chapterCount"
     )
-    suspend fun addManga(@Body data: EntryRequestDto): Result<EntryResponseDto>
+    suspend fun addManga(@Body data: EntryRequestDto): Result<EntryResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -87,5 +89,5 @@ interface LibraryApi {
     suspend fun updateItem(
         @Path("id") entryId: Int,
         @Body data: EntryRequestDto
-    ): Result<EntryResponseDto>
+    ): Result<EntryResponseDto, NetworkError>
 }

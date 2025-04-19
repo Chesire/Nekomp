@@ -11,6 +11,8 @@ import com.chesire.nekomp.library.datasource.auth.remote.model.RefreshRequestDto
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.mapBoth
+import com.github.michaelbull.result.onSuccess
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 
@@ -36,17 +38,16 @@ class AuthRepository(
         return authApi
             .login(LoginRequestDto(username, password, GRANT_TYPE_PASSWORD))
             .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
-            .fold(
-                onSuccess = { Ok(it.accessToken) },
-                onFailure = {
-                    val error = it as NetworkError
-                    val type = when (error) {
-                        is NetworkError.Api -> when (error.code) {
+            .mapBoth(
+                success = { Ok(it.accessToken) },
+                failure = {
+                    val type = when (it) {
+                        is NetworkError.ApiError -> when (it.code) {
                             HttpStatusCode.Unauthorized.value -> AuthFailure.InvalidCredentials
                             else -> AuthFailure.BadRequest
                         }
 
-                        is NetworkError.Generic -> AuthFailure.BadRequest
+                        is NetworkError.GenericError -> AuthFailure.BadRequest
                     }
                     Err(type)
                 }
@@ -57,17 +58,16 @@ class AuthRepository(
         return authApi
             .refresh(RefreshRequestDto(refreshToken() ?: "", GRANT_TYPE_REFRESH))
             .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
-            .fold(
-                onSuccess = { Ok(it.accessToken) },
-                onFailure = {
-                    val error = it as NetworkError
-                    val type = when (error) {
-                        is NetworkError.Api -> when (error.code) {
+            .mapBoth(
+                success = { Ok(it.accessToken) },
+                failure = {
+                    val type = when (it) {
+                        is NetworkError.ApiError -> when (it.code) {
                             HttpStatusCode.Unauthorized.value -> AuthFailure.InvalidCredentials
                             else -> AuthFailure.BadRequest
                         }
 
-                        is NetworkError.Generic -> AuthFailure.BadRequest
+                        is NetworkError.GenericError -> AuthFailure.BadRequest
                     }
                     Err(type)
                 }
