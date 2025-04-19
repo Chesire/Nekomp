@@ -165,7 +165,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Assemble android app
-        run: ./gradlew :appNekomp:assemble
+        run: ./gradlew :appNekomp:assembleDebug
 
       - name: Assemble jvm app
         run: ./gradlew :appNekomp:jvmJar
