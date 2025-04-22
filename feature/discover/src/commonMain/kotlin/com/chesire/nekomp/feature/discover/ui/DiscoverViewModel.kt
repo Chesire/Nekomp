@@ -128,7 +128,7 @@ class DiscoverViewModel(
         viewModelScope.launch {
             _lastSearch = searchTerm
             recentSearches.addRecentSearch(searchTerm)
-            searchFor(searchTerm)
+            searchFor(title = searchTerm)
                 .onSuccess { searchItems ->
                     _uiState.update { state ->
                         state.copy(
