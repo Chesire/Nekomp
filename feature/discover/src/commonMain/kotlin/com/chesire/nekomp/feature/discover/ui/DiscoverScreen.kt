@@ -85,7 +85,7 @@ private fun Render(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        SharedTransitionLayout(modifier = Modifier.padding(paddingValues)) {
+        SharedTransitionLayout {
             AnimatedContent(
                 targetState = isListAndDetailVisible,
                 label = "listDetailAnimatedContent"
@@ -102,6 +102,7 @@ private fun Render(
                                 recentSearches = state.recentSearches,
                                 trendingState = state.trendingState,
                                 resultsState = state.resultsState,
+                                modifier = Modifier.padding(paddingValues),
                                 execute = execute,
                                 onItemClick = { item ->
                                     execute(ViewAction.ItemSelect(item))
