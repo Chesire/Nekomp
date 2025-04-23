@@ -107,20 +107,11 @@ internal fun DetailPane(
         ) {
             if (detailState.currentItem != null) {
                 Row {
-                    ElevatedSuggestionChip(
-                        onClick = {},
-                        label = {
-                            Text(text = detailState.currentItem.type.name)
-                        },
-                        colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = NekompTheme.colors.green
-                        ),
-                        shape = RoundedCornerShape(32.dp),
-                        interactionSource = NoRippleInteractionSource()
+                    InfoChip(
+                        text = detailState.currentItem.type.name,
+                        color = NekompTheme.colors.green
                     )
                 }
-                // Do small chips for different parts
-                // Chip for Anime/Manga
                 // Chip for type (ova, series etc)
                 // Synopsis below
                 if (!detailState.currentItem.isTracked) {
@@ -140,6 +131,21 @@ internal fun DetailPane(
             }
         }
     }
+}
+
+@Composable
+private fun InfoChip(text: String, color: Color) {
+    ElevatedSuggestionChip(
+        onClick = {},
+        label = {
+            Text(text = text)
+        },
+        colors = SuggestionChipDefaults.suggestionChipColors(
+            containerColor = color
+        ),
+        shape = RoundedCornerShape(32.dp),
+        interactionSource = NoRippleInteractionSource()
+    )
 }
 
 @Composable
