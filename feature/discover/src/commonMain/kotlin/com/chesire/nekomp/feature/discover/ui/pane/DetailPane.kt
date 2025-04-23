@@ -2,7 +2,6 @@
 
 package com.chesire.nekomp.feature.discover.ui.pane
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,12 +17,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -39,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.core.ui.NekompTheme
+import com.chesire.nekomp.core.ui.util.NoRippleInteractionSource
 import com.chesire.nekomp.feature.discover.ui.DetailState
 import com.chesire.nekomp.feature.discover.ui.DiscoverItem
 import kotlin.math.absoluteValue
@@ -106,22 +107,16 @@ internal fun DetailPane(
         ) {
             if (detailState.currentItem != null) {
                 Row {
-                    SuggestionChip(
+                    ElevatedSuggestionChip(
                         onClick = {},
                         label = {
                             Text(text = detailState.currentItem.type.name)
                         },
-                        modifier = Modifier
-                            .clickable(
-                                interactionSource = null,
-                                indication = null,
-                                enabled = false,
-                                onClick = {}
-                            ),
                         colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = Color(0xFF66CC00)
+                            containerColor = NekompTheme.colors.green
                         ),
-                        shape = RoundedCornerShape(32.dp)
+                        shape = RoundedCornerShape(32.dp),
+                        interactionSource = NoRippleInteractionSource()
                     )
                 }
                 // Do small chips for different parts

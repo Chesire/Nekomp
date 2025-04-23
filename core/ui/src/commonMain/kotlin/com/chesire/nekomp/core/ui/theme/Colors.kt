@@ -4,6 +4,8 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 // Theming from https://material-foundation.github.io/material-theme-builder/
@@ -155,6 +157,35 @@ val darkScheme = darkColorScheme(
     surfaceContainerHigh = surfaceContainerHighDark,
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
+
+@Immutable
+interface NekompExtendedColorScheme {
+    val red: Color
+    val green: Color
+    val blue: Color
+}
+
+@Immutable
+internal object NekompExtendedLightColors : NekompExtendedColorScheme {
+    override val red = Color(0xFFFFCDD2)
+    override val green = Color(0xFFB2DFDB)
+    override val blue = Color(0xFFBBDEFB)
+}
+
+@Immutable
+internal object NekompExtendedDarkColors : NekompExtendedColorScheme {
+    override val red = Color(0xFFD32F2F)
+    override val green = Color(0xFF00796B)
+    override val blue = Color(0xFF1976D2)
+}
+
+internal val LocalExtendedColors = staticCompositionLocalOf<NekompExtendedColorScheme> {
+    object : NekompExtendedColorScheme {
+        override val red: Color = Color.Unspecified
+        override val green: Color = Color.Unspecified
+        override val blue: Color = Color.Unspecified
+    }
+}
 
 @Composable
 expect fun getColorScheme(darkTheme: Boolean, dynamicColor: Boolean): ColorScheme
