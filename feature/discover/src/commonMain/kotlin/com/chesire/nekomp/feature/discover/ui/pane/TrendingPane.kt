@@ -149,6 +149,8 @@ private fun Preview() {
         id = 1,
         title = "Item",
         type = Type.Anime,
+        subType = "OVA",
+        synopsis = "",
         coverImage = "",
         posterImage = "",
         isTracked = false,

@@ -2,6 +2,7 @@
 
 package com.chesire.nekomp.feature.discover.ui.pane
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -106,10 +107,14 @@ internal fun DetailPane(
                 .verticalScroll(rememberScrollState())
         ) {
             if (detailState.currentItem != null) {
-                Row {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     InfoChip(
                         text = detailState.currentItem.type.name,
                         color = NekompTheme.colors.green
+                    )
+                    InfoChip(
+                        text = detailState.currentItem.subType,
+                        color = NekompTheme.colors.blue
                     )
                 }
                 // Chip for type (ova, series etc)
@@ -156,6 +161,8 @@ private fun Preview() {
             id = 1,
             title = "Item",
             type = Type.Anime,
+            subType = "OVA",
+            synopsis = "This is a synopsis of an anime series",
             coverImage = "",
             posterImage = "",
             isTracked = false,

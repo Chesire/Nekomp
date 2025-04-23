@@ -212,6 +212,8 @@ class DiscoverViewModel(
             id = id,
             title = titles.toChosenLanguage(titleLanguage),
             type = type,
+            subType = subtype,
+            synopsis = synopsis,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
             isTracked = isTracked
@@ -225,6 +227,8 @@ class DiscoverViewModel(
             id = id,
             title = titles.toChosenLanguage(titleLanguage),
             type = type,
+            subType = subtype,
+            synopsis = synopsis,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
             isTracked = isTracked

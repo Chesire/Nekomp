@@ -40,6 +40,8 @@ data class DiscoverItem(
     val id: Int,
     val title: String,
     val type: Type,
+    val subType: String,
+    val synopsis: String,
     val coverImage: String,
     val posterImage: String,
     val isTracked: Boolean = false,
