@@ -2,14 +2,17 @@
 
 package com.chesire.nekomp.feature.discover.ui.pane
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,6 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -96,10 +101,29 @@ internal fun DetailPane(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             if (detailState.currentItem != null) {
+                Row {
+                    SuggestionChip(
+                        onClick = {},
+                        label = {
+                            Text(text = detailState.currentItem.type.name)
+                        },
+                        modifier = Modifier
+                            .clickable(
+                                interactionSource = null,
+                                indication = null,
+                                enabled = false,
+                                onClick = {}
+                            ),
+                        colors = SuggestionChipDefaults.suggestionChipColors(
+                            containerColor = Color(0xFF66CC00)
+                        ),
+                        shape = RoundedCornerShape(32.dp)
+                    )
+                }
                 // Do small chips for different parts
                 // Chip for Anime/Manga
                 // Chip for type (ova, series etc)
