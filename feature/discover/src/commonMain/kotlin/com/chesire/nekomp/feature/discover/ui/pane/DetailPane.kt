@@ -20,8 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -141,18 +141,17 @@ internal fun DetailPane(
                     }
 
                     Synopsis(detailState.currentItem.synopsis)
-                    //Spacer(modifier = Modifier.weight(1f).padding(bottom = 32.dp))
                 }
-                ElevatedButton(
+                Button(
                     onClick = {
                         if (!detailState.currentItem.isTracked) {
                             trackItem(detailState.currentItem)
                         }
                     },
                     modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp),
-                    enabled = !detailState.currentItem.isTracked &&
-                        !detailState.currentItem.isPendingTrack
+                    enabled = !detailState.currentItem.isTracked && !detailState.currentItem.isPendingTrack
                 ) {
+
                     if (detailState.currentItem.isPendingTrack) {
                         CircularProgressIndicator()
                     } else {
