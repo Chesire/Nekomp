@@ -163,6 +163,7 @@ interface NekompExtendedColorScheme {
     val red: Color
     val green: Color
     val blue: Color
+    val yellow: Color
 }
 
 @Immutable
@@ -170,6 +171,7 @@ internal object NekompExtendedLightColors : NekompExtendedColorScheme {
     override val red = Color(0xFFFFCDD2)
     override val green = Color(0xFFB2DFDB)
     override val blue = Color(0xFFBBDEFB)
+    override val yellow = Color(0xFFFFECB3)
 }
 
 @Immutable
@@ -177,6 +179,7 @@ internal object NekompExtendedDarkColors : NekompExtendedColorScheme {
     override val red = Color(0xFFD32F2F)
     override val green = Color(0xFF00796B)
     override val blue = Color(0xFF1976D2)
+    override val yellow = Color(0xFFFFA000)
 }
 
 internal val LocalExtendedColors = staticCompositionLocalOf<NekompExtendedColorScheme> {
@@ -184,6 +187,7 @@ internal val LocalExtendedColors = staticCompositionLocalOf<NekompExtendedColorS
         override val red: Color = Color.Unspecified
         override val green: Color = Color.Unspecified
         override val blue: Color = Color.Unspecified
+        override val yellow: Color = Color.Unspecified
     }
 }
 

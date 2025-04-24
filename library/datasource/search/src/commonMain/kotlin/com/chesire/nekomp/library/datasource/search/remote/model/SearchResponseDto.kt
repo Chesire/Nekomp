@@ -31,6 +31,8 @@ data class SearchResponseDto(
             val canonicalTitle: String,
             @SerialName("subtype")
             val subtype: String,
+            @SerialName("averageRating")
+            val averageRating: String?,
             @SerialName("posterImage")
             val posterImage: ImagesDto?,
             @SerialName("coverImage")

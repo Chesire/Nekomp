@@ -126,6 +126,12 @@ internal fun DetailPane(
                         text = detailState.currentItem.subType,
                         color = NekompTheme.colors.blue
                     )
+                    InfoChip(
+                        text = detailState.currentItem.averageRating,
+                        color = NekompTheme.colors.yellow
+                    )
+                    // series type?
+                    // series status
                 }
 
                 Synopsis(detailState.currentItem.synopsis)
@@ -227,6 +233,7 @@ private fun Preview() {
             type = Type.Anime,
             subType = "OVA",
             synopsis = "This is a synopsis of an anime series",
+            averageRating = "81.13",
             coverImage = "",
             posterImage = "",
             isTracked = false,

@@ -112,6 +112,7 @@ private fun Preview() {
                 type = Type.Anime,
                 subType = "OVA",
                 synopsis = "",
+                averageRating = "81.13",
                 coverImage = "",
                 posterImage = "",
                 isTracked = false,
