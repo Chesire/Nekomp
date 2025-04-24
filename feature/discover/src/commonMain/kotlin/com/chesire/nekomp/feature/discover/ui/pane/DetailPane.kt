@@ -199,7 +199,9 @@ private fun Synopsis(text: String) {
                 .clickable(
                     onClick = {
                         isTextExpand = !isTextExpand
-                    }
+                    },
+                    interactionSource = NoRippleInteractionSource(),
+                    indication = null
                 )
                 .animateContentSize(),
             onTextLayout = { textLayoutResult: TextLayoutResult ->
