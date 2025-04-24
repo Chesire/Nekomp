@@ -110,47 +110,53 @@ internal fun DetailPane(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
+        Box {
             if (detailState.currentItem != null) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    InfoChip(
-                        text = detailState.currentItem.type.name.capitalize(),
-                        color = NekompTheme.colors.green
-                    )
-                    InfoChip(
-                        text = detailState.currentItem.subType.capitalize(),
-                        color = NekompTheme.colors.blue
-                    )
-                    InfoChip(
-                        text = detailState.currentItem.status.capitalize(),
-                        color = NekompTheme.colors.red
-                    )
-                    InfoChip(
-                        text = detailState.currentItem.averageRating,
-                        color = NekompTheme.colors.yellow
-                    )
-                    // Start date - End date (if finished?)
-                    // Episode/Chapter count (if known?)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 16.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        InfoChip(
+                            text = detailState.currentItem.type.name.capitalize(),
+                            color = NekompTheme.colors.green
+                        )
+                        InfoChip(
+                            text = detailState.currentItem.subType.capitalize(),
+                            color = NekompTheme.colors.blue
+                        )
+                        InfoChip(
+                            text = detailState.currentItem.status.capitalize(),
+                            color = NekompTheme.colors.red
+                        )
+                        InfoChip(
+                            text = detailState.currentItem.averageRating,
+                            color = NekompTheme.colors.yellow
+                        )
+                        // Start date - End date (if finished?)
+                        // Episode/Chapter count (if known?)
+                    }
+
+                    Synopsis(detailState.currentItem.synopsis)
+                    //Spacer(modifier = Modifier.weight(1f).padding(bottom = 32.dp))
                 }
-
-                Synopsis(detailState.currentItem.synopsis)
-
-                if (!detailState.currentItem.isTracked) {
-                    ElevatedButton(
-                        onClick = { trackItem(detailState.currentItem) },
-                        enabled = !detailState.currentItem.isPendingTrack
-                    ) {
-                        if (detailState.currentItem.isPendingTrack) {
-                            CircularProgressIndicator()
-                        } else {
-                            Text("Track")
+                ElevatedButton(
+                    onClick = {
+                        if (!detailState.currentItem.isTracked) {
+                            trackItem(detailState.currentItem)
                         }
+                    },
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp),
+                    enabled = !detailState.currentItem.isTracked &&
+                        !detailState.currentItem.isPendingTrack
+                ) {
+                    if (detailState.currentItem.isPendingTrack) {
+                        CircularProgressIndicator()
+                    } else {
+                        Text(if (detailState.currentItem.isTracked) "Already tracked" else "Track")
                     }
                 }
             } else {
@@ -212,7 +218,7 @@ private fun Synopsis(text: String) {
         if (lines > 3 || didOverflowHeight) {
             IconButton(
                 onClick = { isTextExpand = !isTextExpand },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 32.dp)
             ) {
                 if (lines <= 3) {
                     Icon(
