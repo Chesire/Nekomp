@@ -32,6 +32,8 @@ data class TrendingResponseDto(
             val canonicalTitle: String,
             @SerialName("subtype")
             val subtype: String,
+            @SerialName("status")
+            val status: String,
             @SerialName("posterImage")
             val posterImage: ImagesDto?,
             @SerialName("coverImage")

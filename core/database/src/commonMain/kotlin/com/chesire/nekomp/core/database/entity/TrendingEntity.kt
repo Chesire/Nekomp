@@ -14,6 +14,7 @@ data class TrendingEntity(
     val romajiTitle: String,
     val cjkTitle: String,
     val subtype: String,
+    val status: String,
     val posterImageTiny: String,
     val posterImageSmall: String,
     val posterImageMedium: String,

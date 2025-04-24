@@ -53,6 +53,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
                 cjk = cjkTitle
             ),
             subtype = subtype,
+            status = status,
             posterImage = Image(
                 tiny = posterImageTiny,
                 small = posterImageSmall,
@@ -84,6 +85,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             romajiTitle = titles.romaji,
             cjkTitle = titles.cjk,
             subtype = subtype,
+            status = status,
             posterImageTiny = posterImage.tiny,
             posterImageSmall = posterImage.small,
             posterImageMedium = posterImage.medium,

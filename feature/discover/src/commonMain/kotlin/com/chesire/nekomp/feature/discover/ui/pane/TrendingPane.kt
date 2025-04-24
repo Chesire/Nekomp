@@ -150,6 +150,7 @@ private fun Preview() {
         title = "Item",
         type = Type.Anime,
         subType = "OVA",
+        status = "current",
         synopsis = "",
         averageRating = "81.13",
         coverImage = "",

@@ -41,6 +41,7 @@ data class DiscoverItem(
     val title: String,
     val type: Type,
     val subType: String,
+    val status: String,
     val synopsis: String,
     val averageRating: String,
     val coverImage: String,

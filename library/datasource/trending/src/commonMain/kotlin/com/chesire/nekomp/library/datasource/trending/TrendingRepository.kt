@@ -157,6 +157,7 @@ class TrendingRepository(
                 synopsis = it.attributes.synopsis,
                 titles = it.attributes.titles.toTitles(it.attributes.canonicalTitle),
                 subtype = it.attributes.subtype,
+                status = it.attributes.status,
                 posterImage = it.attributes.posterImage.toImage(),
                 coverImage = it.attributes.coverImage.toImage(),
                 averageRating = it.attributes.averageRating ?: "",

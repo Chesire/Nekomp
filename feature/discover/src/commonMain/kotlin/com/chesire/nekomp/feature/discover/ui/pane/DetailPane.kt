@@ -47,6 +47,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.chesire.nekomp.core.ext.capitalize
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
@@ -119,19 +120,23 @@ internal fun DetailPane(
             if (detailState.currentItem != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     InfoChip(
-                        text = detailState.currentItem.type.name,
+                        text = detailState.currentItem.type.name.capitalize(),
                         color = NekompTheme.colors.green
                     )
                     InfoChip(
-                        text = detailState.currentItem.subType,
+                        text = detailState.currentItem.subType.capitalize(),
                         color = NekompTheme.colors.blue
+                    )
+                    InfoChip(
+                        text = detailState.currentItem.status.capitalize(),
+                        color = NekompTheme.colors.red
                     )
                     InfoChip(
                         text = detailState.currentItem.averageRating,
                         color = NekompTheme.colors.yellow
                     )
-                    // series type?
-                    // series status
+                    // Start date - End date (if finished?)
+                    // Episode/Chapter count (if known?)
                 }
 
                 Synopsis(detailState.currentItem.synopsis)
@@ -232,12 +237,13 @@ private fun Preview() {
             title = "Item",
             type = Type.Anime,
             subType = "OVA",
+            status = "current",
             synopsis = "This is a synopsis of an anime series",
             averageRating = "81.13",
             coverImage = "",
             posterImage = "",
             isTracked = false,
-            isPendingTrack = false,
+            isPendingTrack = false
         )
     )
     DetailPane(

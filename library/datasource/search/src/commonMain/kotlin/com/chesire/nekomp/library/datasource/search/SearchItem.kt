@@ -10,6 +10,7 @@ data class SearchItem(
     val synopsis: String,
     val titles: Titles,
     val subtype: String,
+    val status: String,
     val averageRating: String,
     val posterImage: Image,
     val coverImage: Image
