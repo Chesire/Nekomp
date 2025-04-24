@@ -15,90 +15,73 @@ import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.chesire.nekomp.library.datasource.trending.TrendingRepository
 import com.chesire.nekomp.library.datasource.user.UserRepository
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val WATCH_LIST_LIMIT = 20
 
 class HomeViewModel(
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
+    showAiringSeries: ShowAiringSeriesUseCase,
     private val libraryRepository: LibraryRepository,
     private val trendingRepository: TrendingRepository,
-    private val showAiringSeries: ShowAiringSeriesUseCase,
     private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UIState())
-    val uiState: StateFlow<UIState> = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.user.collect { user ->
-                _uiState.update { state ->
-                    state.copy(username = user.name)
-                }
-            }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            libraryRepository.libraryEntries.collect { libraryEntries ->
-                val imageQuality = applicationSettings.imageQuality.first()
-                val titleLanguage = applicationSettings.titleLanguage.first()
-                _uiState.update { state ->
-                    state.copy(
-                        watchList = libraryEntries
-                            .asSequence()
-                            .filter { it.type == Type.Anime }
-                            .filter { it.entryStatus != EntryStatus.Completed }
-                            .filter { it.progress != it.totalLength }
-                            .sortedByDescending { it.updatedAt }
-                            .take(WATCH_LIST_LIMIT)
-                            .map { it.toWatchItem(imageQuality, titleLanguage) }
-                            .toList()
-                            .toPersistentList()
-                    )
-                }
-            }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            val imageQuality = applicationSettings.imageQuality.first()
-            val titleLanguage = applicationSettings.titleLanguage.first()
-            val trendingAnime = trendingRepository.getTrendingAnime()
-            val trendingManga = trendingRepository.getTrendingManga()
-            _uiState.update { state ->
-                val animeItems = trendingAnime
-                    .map { it.toTrendItem(imageQuality, titleLanguage) }
-                    .toPersistentList()
-                val mangaItems = trendingManga
-                    .map { it.toTrendItem(imageQuality, titleLanguage) }
-                    .toPersistentList()
-                state.copy(
-                    trendingAll = animeItems
-                        .zip(mangaItems)
-                        .flatMap { (first, second) -> listOf(first, second) }
-                        .toPersistentList(),
-                    trendingAnime = animeItems,
-                    trendingManga = mangaItems
-                )
-            }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            showAiringSeries().collectLatest { airingItems ->
-                _uiState.update { state ->
-                    state.copy(
-                        airing = airingItems.toPersistentList()
-                    )
-                }
-            }
-        }
+    private val _userName = userRepository.user.map { it.name }
+    private val _libraryEntries = libraryRepository.libraryEntries.map { libraryEntries ->
+        val imageQuality = applicationSettings.imageQuality.first()
+        val titleLanguage = applicationSettings.titleLanguage.first()
+        libraryEntries
+            .asSequence()
+            .filter { it.type == Type.Anime }
+            .filter { it.entryStatus != EntryStatus.Completed }
+            .filter { it.progress != it.totalLength }
+            .sortedByDescending { it.updatedAt }
+            .take(WATCH_LIST_LIMIT)
+            .map { it.toWatchItem(imageQuality, titleLanguage) }
+            .toList()
+            .toPersistentList()
     }
+    private val _airingSeries = showAiringSeries().map { it.toPersistentList() }
+    private val _viewEvent = MutableStateFlow<ViewEvent?>(null)
+    private val _trending = MutableStateFlow(Trending())
+
+    val uiState = combine(
+        _userName,
+        _libraryEntries,
+        _airingSeries,
+        _viewEvent,
+        _trending
+    ) { userName, libraryEntries, airingSeries, viewEvent, trending ->
+        UIState(
+            username = userName,
+            watchList = libraryEntries,
+            airing = airingSeries,
+            trendingAll = trending.trendingAll,
+            trendingAnime = trending.trendingAnime,
+            trendingManga = trending.trendingManga,
+            viewEvent = viewEvent
+        )
+    }.onStart {
+        getTrendingData()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = UIState()
+    )
 
     fun execute(action: ViewAction) {
         when (action) {
@@ -107,6 +90,31 @@ class HomeViewModel(
             is ViewAction.AiringItemClick -> onAiringItemClick(action.airingItem)
             is ViewAction.TrendItemClick -> onTrendItemClick(action.trendItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
+        }
+    }
+
+    private fun getTrendingData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val imageQuality = applicationSettings.imageQuality.first()
+            val titleLanguage = applicationSettings.titleLanguage.first()
+            val trendingAnime = trendingRepository.getTrendingAnime()
+            val trendingManga = trendingRepository.getTrendingManga()
+            val animeItems = trendingAnime
+                .map { it.toTrendItem(imageQuality, titleLanguage) }
+                .toPersistentList()
+            val mangaItems = trendingManga
+                .map { it.toTrendItem(imageQuality, titleLanguage) }
+                .toPersistentList()
+            _trending.update {
+                Trending(
+                    trendingAll = animeItems
+                        .zip(mangaItems)
+                        .flatMap { (first, second) -> listOf(first, second) }
+                        .toPersistentList(),
+                    trendingAnime = animeItems,
+                    trendingManga = mangaItems
+                )
+            }
         }
     }
 
@@ -139,9 +147,7 @@ class HomeViewModel(
     }
 
     private fun onObservedViewEvent() {
-        _uiState.update { state ->
-            state.copy(viewEvent = null)
-        }
+        _viewEvent.update { null }
     }
 
     private fun LibraryEntry.toWatchItem(
@@ -172,3 +178,9 @@ class HomeViewModel(
         )
     }
 }
+
+private data class Trending(
+    val trendingAnime: ImmutableList<TrendItem> = persistentListOf(),
+    val trendingManga: ImmutableList<TrendItem> = persistentListOf(),
+    val trendingAll: ImmutableList<TrendItem> = persistentListOf()
+)
