@@ -7,7 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,6 +58,8 @@ import kotlin.math.absoluteValue
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private const val BASE_SYNOPSIS_LINES = 5
 
 @Composable
 internal fun DetailPane(
@@ -119,7 +121,12 @@ internal fun DetailPane(
                         .padding(horizontal = 16.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp)
+                    ) {
+                        // add startdate-enddate (if known)
+                        // age rating?
                         InfoChip(
                             text = detailState.currentItem.type.name.capitalize(),
                             color = NekompTheme.colors.green
@@ -142,10 +149,7 @@ internal fun DetailPane(
                             text = detailState.currentItem.averageRating,
                             color = NekompTheme.colors.yellow
                         )
-                        // Start date - End date (if finished?)
-                        // Episode/Chapter count (if known?)
                     }
-
                     Synopsis(detailState.currentItem.synopsis)
                 }
                 Button(
@@ -157,7 +161,6 @@ internal fun DetailPane(
                     modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp),
                     enabled = !detailState.currentItem.isTracked && !detailState.currentItem.isPendingTrack
                 ) {
-
                     if (detailState.currentItem.isPendingTrack) {
                         CircularProgressIndicator()
                     } else {
@@ -195,14 +198,14 @@ private fun Synopsis(text: String) {
         mutableStateOf(false)
     }
     var lines by remember {
-        mutableStateOf(3)
+        mutableStateOf(BASE_SYNOPSIS_LINES)
     }
 
     Column {
         Text(
             text = text,
             maxLines = when (isTextExpand) {
-                false -> 3
+                false -> BASE_SYNOPSIS_LINES
                 else -> Int.MAX_VALUE
             },
             overflow = TextOverflow.Ellipsis,
@@ -220,12 +223,12 @@ private fun Synopsis(text: String) {
                 lines = textLayoutResult.lineCount
             }
         )
-        if (lines > 3 || didOverflowHeight) {
+        if (lines > BASE_SYNOPSIS_LINES || didOverflowHeight) {
             IconButton(
                 onClick = { isTextExpand = !isTextExpand },
                 modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 32.dp)
             ) {
-                if (lines <= 3) {
+                if (lines <= BASE_SYNOPSIS_LINES) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Show full synopsis"
