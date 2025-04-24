@@ -114,6 +114,7 @@ private fun Preview() {
                 status = "current",
                 synopsis = "",
                 averageRating = "81.13",
+                totalLength = 12,
                 coverImage = "",
                 posterImage = "",
                 isTracked = false,

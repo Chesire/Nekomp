@@ -68,6 +68,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
                 large = coverImageLarge,
                 original = coverImageOriginal
             ),
+            totalLength = totalLength,
             averageRating = averageRating,
             ratingRank = ratingRank,
             popularityRank = popularityRank,
@@ -96,6 +97,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             coverImageMedium = coverImage.medium,
             coverImageLarge = coverImage.large,
             coverImageOriginal = coverImage.original,
+            totalLength = totalLength,
             averageRating = averageRating,
             ratingRank = ratingRank,
             popularityRank = popularityRank,

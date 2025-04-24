@@ -11,6 +11,7 @@ data class SearchItem(
     val titles: Titles,
     val subtype: String,
     val status: String,
+    val totalLength: Int,
     val averageRating: String,
     val posterImage: Image,
     val coverImage: Image

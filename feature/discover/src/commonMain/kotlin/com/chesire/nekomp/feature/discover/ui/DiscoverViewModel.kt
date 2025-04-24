@@ -216,6 +216,7 @@ class DiscoverViewModel(
             status = status,
             synopsis = synopsis,
             averageRating = averageRating,
+            totalLength = totalLength,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
             isTracked = isTracked
@@ -233,6 +234,7 @@ class DiscoverViewModel(
             status = status,
             synopsis = synopsis,
             averageRating = averageRating,
+            totalLength = totalLength,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
             isTracked = isTracked

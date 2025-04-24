@@ -13,6 +13,7 @@ data class TrendingItem(
     val status: String,
     val posterImage: Image,
     val coverImage: Image,
+    val totalLength: Int,
     val averageRating: String,
     val ratingRank: Int,
     val popularityRank: Int,

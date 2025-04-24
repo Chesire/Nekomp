@@ -17,7 +17,7 @@ interface SearchApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/anime?fields[anime]=$FIELDS")
+    @GET("api/edge/anime?fields[anime]=$FIELDS,episodeCount")
     suspend fun searchForAnime(
         @Query("filter[text]") title: String
     ): Result<SearchResponseDto, NetworkError>
@@ -26,7 +26,7 @@ interface SearchApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/manga?fields[manga]=$FIELDS")
+    @GET("api/edge/manga?fields[manga]=$FIELDS,chapterCount")
     suspend fun searchForManga(
         @Query("filter[text]") title: String
     ): Result<SearchResponseDto, NetworkError>

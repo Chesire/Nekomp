@@ -25,6 +25,7 @@ data class TrendingEntity(
     val coverImageMedium: String,
     val coverImageLarge: String,
     val coverImageOriginal: String,
+    val totalLength: Int,
     val averageRating: String,
     val ratingRank: Int,
     val popularityRank: Int,

@@ -15,41 +15,41 @@ interface TrendingApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/trending/anime?fields[anime]=$FIELDS&limit=20")
+    @GET("api/edge/trending/anime?fields[anime]=$FIELDS,episodeCount&limit=20")
     suspend fun trendingAnime(): Result<TrendingResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/trending/manga?fields[manga]=$FIELDS&limit=20")
+    @GET("api/edge/trending/manga?fields[manga]=$FIELDS,chapterCount&limit=20")
     suspend fun trendingManga(): Result<TrendingResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/anime?fields[anime]=$FIELDS&sort=ratingRank&limit=20")
+    @GET("api/edge/anime?fields[anime]=$FIELDS,episodeCount&sort=ratingRank&limit=20")
     suspend fun topRatedAnime(): Result<TrendingResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/manga?fields[manga]=$FIELDS&sort=ratingRank&limit=20")
+    @GET("api/edge/manga?fields[manga]=$FIELDS,chapterCount&sort=ratingRank&limit=20")
     suspend fun topRatedManga(): Result<TrendingResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/anime?fields[anime]=$FIELDS&sort=popularityRank&limit=20")
+    @GET("api/edge/anime?fields[anime]=$FIELDS,episodeCount&sort=popularityRank&limit=20")
     suspend fun mostPopularAnime(): Result<TrendingResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/manga?fields[manga]=$FIELDS&sort=popularityRank&limit=20")
+    @GET("api/edge/manga?fields[manga]=$FIELDS,chapterCount&sort=popularityRank&limit=20")
     suspend fun mostPopularManga(): Result<TrendingResponseDto, NetworkError>
 }

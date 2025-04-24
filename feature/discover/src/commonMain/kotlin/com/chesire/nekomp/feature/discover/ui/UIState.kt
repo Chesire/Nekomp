@@ -44,6 +44,7 @@ data class DiscoverItem(
     val status: String,
     val synopsis: String,
     val averageRating: String,
+    val totalLength: Int,
     val coverImage: String,
     val posterImage: String,
     val isTracked: Boolean = false,

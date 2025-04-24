@@ -32,6 +32,7 @@ class SearchService(private val searchApi: SearchApi) {
                 titles = it.attributes.titles.toTitles(it.attributes.canonicalTitle),
                 subtype = it.attributes.subtype,
                 status = it.attributes.status,
+                totalLength = it.attributes.episodeCount ?: it.attributes.chapterCount ?: -1,
                 averageRating = it.attributes.averageRating ?: "0",
                 posterImage = it.attributes.posterImage.toImage(),
                 coverImage = it.attributes.coverImage.toImage()

@@ -33,6 +33,10 @@ data class SearchResponseDto(
             val subtype: String,
             @SerialName("status")
             val status: String,
+            @SerialName("chapterCount")
+            val chapterCount: Int?,
+            @SerialName("episodeCount")
+            val episodeCount: Int?,
             @SerialName("averageRating")
             val averageRating: String?,
             @SerialName("posterImage")

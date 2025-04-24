@@ -132,6 +132,12 @@ internal fun DetailPane(
                             text = detailState.currentItem.status.capitalize(),
                             color = NekompTheme.colors.red
                         )
+                        if (detailState.currentItem.totalLength != -1) {
+                            InfoChip(
+                                text = "${detailState.currentItem.totalLength} ${if (detailState.currentItem.type == Type.Anime) "episodes" else "chapters"}",
+                                color = NekompTheme.colors.red
+                            )
+                        }
                         InfoChip(
                             text = detailState.currentItem.averageRating,
                             color = NekompTheme.colors.yellow
@@ -247,6 +253,7 @@ private fun Preview() {
             status = "current",
             synopsis = "This is a synopsis of an anime series",
             averageRating = "81.13",
+            totalLength = 12,
             coverImage = "",
             posterImage = "",
             isTracked = false,

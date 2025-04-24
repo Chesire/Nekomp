@@ -160,6 +160,7 @@ class TrendingRepository(
                 status = it.attributes.status,
                 posterImage = it.attributes.posterImage.toImage(),
                 coverImage = it.attributes.coverImage.toImage(),
+                totalLength = it.attributes.episodeCount ?: it.attributes.chapterCount ?: -1,
                 averageRating = it.attributes.averageRating ?: "",
                 ratingRank = it.attributes.ratingRank ?: -1,
                 popularityRank = it.attributes.popularityRank ?: -1,
