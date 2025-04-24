@@ -2,6 +2,8 @@
 
 package com.chesire.nekomp.feature.discover.ui.pane
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedSuggestionChip
@@ -29,12 +33,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.model.Type
@@ -117,8 +127,9 @@ internal fun DetailPane(
                         color = NekompTheme.colors.blue
                     )
                 }
-                // Chip for type (ova, series etc)
-                // Synopsis below
+
+                Synopsis(detailState.currentItem.synopsis)
+
                 if (!detailState.currentItem.isTracked) {
                     ElevatedButton(
                         onClick = { trackItem(detailState.currentItem) },
@@ -151,6 +162,59 @@ private fun InfoChip(text: String, color: Color) {
         shape = RoundedCornerShape(32.dp),
         interactionSource = NoRippleInteractionSource()
     )
+}
+
+@Composable
+private fun Synopsis(text: String) {
+    var isTextExpand by remember {
+        mutableStateOf(false)
+    }
+    var didOverflowHeight by remember {
+        mutableStateOf(false)
+    }
+    var lines by remember {
+        mutableStateOf(3)
+    }
+
+    Column {
+        Text(
+            text = text,
+            maxLines = when (isTextExpand) {
+                false -> 3
+                else -> Int.MAX_VALUE
+            },
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .clickable(
+                    onClick = {
+                        isTextExpand = !isTextExpand
+                    }
+                )
+                .animateContentSize(),
+            onTextLayout = { textLayoutResult: TextLayoutResult ->
+                didOverflowHeight = textLayoutResult.didOverflowHeight
+                lines = textLayoutResult.lineCount
+            }
+        )
+        if (lines > 3 || didOverflowHeight) {
+            IconButton(
+                onClick = { isTextExpand = !isTextExpand },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                if (lines <= 3) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Show full synopsis"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowUp,
+                        contentDescription = "Hide full synopsis"
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
