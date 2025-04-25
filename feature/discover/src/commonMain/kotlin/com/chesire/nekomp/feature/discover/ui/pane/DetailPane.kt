@@ -10,21 +10,24 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.LibraryAdd
+import androidx.compose.material.icons.filled.LibraryAddCheck
 import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -125,7 +129,8 @@ internal fun DetailPane(
                         .fillMaxSize()
                         .padding(innerPadding)
                         .padding(horizontal = 16.dp)
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -156,22 +161,59 @@ internal fun DetailPane(
                             color = NekompTheme.colors.yellow
                         )
                     }
-                    Synopsis(detailState.currentItem.synopsis)
-                }
-                Button(
-                    onClick = {
-                        if (!detailState.currentItem.isTracked) {
-                            trackItem(detailState.currentItem)
+                    Row(
+                        modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        if (detailState.currentItem.isTracked) {
+                            ActionBlock(
+                                imageVector = Icons.Default.LibraryAdd,
+                                helperText = "In library",
+                                useColor = true,
+                                onClick = {
+                                    trackItem(detailState.currentItem)
+                                }
+                            )
+                        } else {
+                            // TODO: Handle pending track
+                            // TODO: Handle removing from library
+                            ActionBlock(
+                                imageVector = Icons.Default.LibraryAddCheck,
+                                helperText = "Add to library",
+                                useColor = false,
+                                onClick = {
+                                    trackItem(detailState.currentItem)
+                                }
+                            )
                         }
-                    },
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp),
-                    enabled = !detailState.currentItem.isTracked && !detailState.currentItem.isPendingTrack
-                ) {
-                    if (detailState.currentItem.isPendingTrack) {
-                        CircularProgressIndicator()
-                    } else {
-                        Text(if (detailState.currentItem.isTracked) "Already tracked" else "Track")
+                        ActionBlock(
+                            imageVector = Icons.Default.Image, // TODO: Get a Kitsu image,
+                            helperText = "View on Kitsu",
+                            useColor = false,
+                            onClick = {
+                                // TODO: Open webview to Kitsu
+                            }
+                        )
+                        // TODO: If we have a MAL id
+                        ActionBlock(
+                            imageVector = Icons.Default.Image, // TODO: Get a MAL image,
+                            helperText = "View on MAL",
+                            useColor = false,
+                            onClick = {
+                                // TODO: Open webview to MAL
+                            }
+                        )
+                        // TODO: If we have a AniList id
+                        ActionBlock(
+                            imageVector = Icons.Default.Image, // TODO: Get a AniList image,
+                            helperText = "View on AniList",
+                            useColor = false,
+                            onClick = {
+                                // TODO: Open webview to AniList
+                            }
+                        )
                     }
+                    Synopsis(detailState.currentItem.synopsis)
                 }
             } else {
                 Text("No entry selected")
@@ -193,6 +235,29 @@ private fun InfoChip(text: String, color: Color) {
         shape = RoundedCornerShape(32.dp),
         interactionSource = NoRippleInteractionSource()
     )
+}
+
+@Composable
+private fun ActionBlock(
+    imageVector: ImageVector,
+    helperText: String,
+    useColor: Boolean,
+    onClick: () -> Unit
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        IconButton(onClick = onClick) {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = helperText,
+                modifier = Modifier.size(32.dp),
+                tint = if (useColor) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+            )
+        }
+        Text(
+            text = helperText,
+            color = if (useColor) MaterialTheme.colorScheme.primary else Color.Unspecified
+        )
+    }
 }
 
 @Composable
