@@ -17,6 +17,9 @@ interface MappingDao {
     @Query("SELECT * FROM MappingEntity WHERE malId == :kitsuId LIMIT 1")
     suspend fun entityFromKitsuId(kitsuId: Int): MappingEntity?
 
+    @Query("SELECT * FROM MappingEntity WHERE aniListId == :aniListId LIMIT 1")
+    suspend fun entityFromAniListId(aniListId: Int): MappingEntity?
+
     @Query("SELECT EXISTS(SELECT * FROM MappingEntity)")
     suspend fun exists(): Boolean
 

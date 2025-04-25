@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "87a59cfa09d98bf5d5d47e170ae16564",
+    "identityHash": "c24a4f340f655a4767cb409ba614ef8f",
     "entities": [
       {
         "tableName": "AiringEntity",
@@ -305,7 +305,7 @@
       },
       {
         "tableName": "MappingEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `malId` INTEGER, `kitsuId` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `malId` INTEGER, `kitsuId` INTEGER, `aniListId` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -321,6 +321,11 @@
           {
             "fieldPath": "kitsuId",
             "columnName": "kitsuId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "aniListId",
+            "columnName": "aniListId",
             "affinity": "INTEGER"
           }
         ],
@@ -573,7 +578,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '87a59cfa09d98bf5d5d47e170ae16564')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c24a4f340f655a4767cb409ba614ef8f')"
     ]
   }
 }

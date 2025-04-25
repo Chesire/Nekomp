@@ -6,5 +6,11 @@ sealed interface ViewAction {
     data class RecentSearchClick(val recentSearchTerm: String) : ViewAction
     data class ItemSelect(val discoverItem: DiscoverItem) : ViewAction
     data class TrackItemClick(val discoverItem: DiscoverItem) : ViewAction
+    data class UntrackItemClick(val discoverItem: DiscoverItem) : ViewAction
+    data class WebViewClick(
+        val discoverItem: DiscoverItem,
+        val webViewType: WebViewType
+    ) : ViewAction
+
     data object ObservedViewEvent : ViewAction
 }

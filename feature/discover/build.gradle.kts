@@ -39,6 +39,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.coroutines)
+            implementation(projects.core.database)
             implementation(projects.core.ext)
             implementation(projects.core.model)
             implementation(projects.core.network)

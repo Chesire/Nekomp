@@ -66,6 +66,8 @@ import com.chesire.nekomp.core.ui.util.NoRippleInteractionSource
 import com.chesire.nekomp.core.ui.util.ifFalse
 import com.chesire.nekomp.feature.discover.ui.DetailState
 import com.chesire.nekomp.feature.discover.ui.DiscoverItem
+import com.chesire.nekomp.feature.discover.ui.ViewAction
+import com.chesire.nekomp.feature.discover.ui.WebViewType
 import kotlin.math.absoluteValue
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import org.jetbrains.compose.resources.stringResource
@@ -77,7 +79,7 @@ private const val BASE_SYNOPSIS_LINES = 5
 internal fun DetailPane(
     detailState: DetailState,
     showBack: Boolean,
-    trackItem: (DiscoverItem) -> Unit,
+    execute: (ViewAction) -> Unit,
     goBack: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -173,18 +175,16 @@ internal fun DetailPane(
                                 helperText = "In library",
                                 useColor = true,
                                 onClick = {
-                                    trackItem(detailState.currentItem)
+                                    execute(ViewAction.TrackItemClick(detailState.currentItem))
                                 }
                             )
                         } else {
-                            // TODO: Handle pending track
-                            // TODO: Handle removing from library
                             ActionBlock(
                                 imageVector = Icons.Default.LibraryAddCheck,
                                 helperText = "Add to library",
                                 useColor = false,
                                 onClick = {
-                                    trackItem(detailState.currentItem)
+                                    execute(ViewAction.UntrackItemClick(detailState.currentItem))
                                 }
                             )
                         }
@@ -193,27 +193,45 @@ internal fun DetailPane(
                             helperText = "View on Kitsu",
                             useColor = false,
                             onClick = {
-                                // TODO: Open webview to Kitsu
+                                execute(
+                                    ViewAction.WebViewClick(
+                                        detailState.currentItem,
+                                        WebViewType.Kitsu
+                                    )
+                                )
                             }
                         )
-                        // TODO: If we have a MAL id
-                        ActionBlock(
-                            imageVector = MalLogo,
-                            helperText = "View on MAL",
-                            useColor = false,
-                            onClick = {
-                                // TODO: Open webview to MAL
-                            }
-                        )
-                        // TODO: If we have a AniList id
-                        ActionBlock(
-                            imageVector = Anilist,
-                            helperText = "View on AniList",
-                            useColor = false,
-                            onClick = {
-                                // TODO: Open webview to AniList
-                            }
-                        )
+                        if (detailState.currentItem.malId != null) {
+                            ActionBlock(
+                                imageVector = MalLogo,
+                                helperText = "View on MAL",
+                                useColor = false,
+                                onClick = {
+                                    execute(
+                                        ViewAction.WebViewClick(
+                                            detailState.currentItem,
+                                            WebViewType.MyAnimeList
+                                        )
+                                    )
+                                }
+                            )
+
+                        }
+                        if (detailState.currentItem.aniListId != null) {
+                            ActionBlock(
+                                imageVector = Anilist,
+                                helperText = "View on AniList",
+                                useColor = false,
+                                onClick = {
+                                    execute(
+                                        ViewAction.WebViewClick(
+                                            detailState.currentItem,
+                                            WebViewType.AniList
+                                        )
+                                    )
+                                }
+                            )
+                        }
                     }
                     Synopsis(detailState.currentItem.synopsis)
                 }
@@ -354,7 +372,7 @@ private fun Preview() {
     DetailPane(
         detailState = state,
         showBack = true,
-        trackItem = {},
+        execute = {},
         goBack = {}
     )
 }

@@ -2,6 +2,7 @@ package com.chesire.nekomp.feature.discover.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
@@ -32,6 +33,7 @@ class DiscoverViewModel(
     private val addItemToTracking: AddItemToTrackingUseCase,
     private val recentSearches: RecentSearchesUseCase,
     private val searchFor: SearchForUseCase,
+    private val mappingDao: MappingDao,
     private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
@@ -100,7 +102,24 @@ class DiscoverViewModel(
             is ViewAction.RecentSearchClick -> onRecentSearchClick(action.recentSearchTerm)
             is ViewAction.ItemSelect -> onItemSelect(action.discoverItem)
             is ViewAction.TrackItemClick -> onTrackItemClick(action.discoverItem)
+            is ViewAction.UntrackItemClick -> onUnTrackItemClick(action.discoverItem)
+            is ViewAction.WebViewClick -> onWebViewClick(action.discoverItem, action.webViewType)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
+        }
+    }
+
+    private fun onWebViewClick(discoverItem: DiscoverItem, type: WebViewType) {
+        val url = when (type) {
+            WebViewType.Kitsu -> "https://kitsu.app/${discoverItem.type.name.lowercase()}/${discoverItem.id}"
+            WebViewType.MyAnimeList -> "https://myanimelist.net/${discoverItem.type.name.lowercase()}/${discoverItem.malId}"
+            WebViewType.AniList -> "https://anilist.co/${discoverItem.type.name.lowercase()}/${discoverItem.aniListId}"
+        }
+        _uiState.update { state ->
+            state.copy(
+                viewEvent = ViewEvent.OpenWebView(
+                    url = url
+                )
+            )
         }
     }
 
@@ -199,6 +218,22 @@ class DiscoverViewModel(
         }
     }
 
+    private fun onUnTrackItemClick(discoverItem: DiscoverItem) {
+        _uiState.update { state ->
+            if (state.detailState.currentItem?.id != discoverItem.id) {
+                return
+            }
+            state.copy(
+                detailState = state.detailState.copy(
+                    currentItem = state.detailState.currentItem.copy(isPendingTrack = true)
+                )
+            )
+        }
+        viewModelScope.launch {
+            // TODO: Delete item from tracking
+        }
+    }
+
     private fun onObservedViewEvent() {
         _uiState.update { state ->
             state.copy(viewEvent = null)
@@ -208,8 +243,11 @@ class DiscoverViewModel(
     private suspend fun TrendingItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
         val imageQuality = applicationSettings.imageQuality.first()
         val titleLanguage = applicationSettings.titleLanguage.first()
+        val mapper = mappingDao.entityFromKitsuId(id)
         return DiscoverItem(
             id = id,
+            malId = mapper?.malId,
+            aniListId = mapper?.aniListId,
             title = titles.toChosenLanguage(titleLanguage),
             type = type,
             subType = subtype,
@@ -226,8 +264,11 @@ class DiscoverViewModel(
     private suspend fun SearchItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
         val imageQuality = applicationSettings.imageQuality.first()
         val titleLanguage = applicationSettings.titleLanguage.first()
+        val mapper = mappingDao.entityFromKitsuId(id)
         return DiscoverItem(
             id = id,
+            malId = mapper?.malId,
+            aniListId = mapper?.aniListId,
             title = titles.toChosenLanguage(titleLanguage),
             type = type,
             subType = subtype,
@@ -240,4 +281,10 @@ class DiscoverViewModel(
             isTracked = isTracked
         )
     }
+}
+
+enum class WebViewType {
+    Kitsu,
+    MyAnimeList,
+    AniList
 }

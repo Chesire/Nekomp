@@ -23,7 +23,7 @@ class Initializers(private val mappingDao: MappingDao) {
             val items = json
                 .decodeFromString<List<Mapping>>(value)
                 .map {
-                    MappingEntity(malId = it.malId, kitsuId = it.kitsuId)
+                    MappingEntity(malId = it.malId, kitsuId = it.kitsuId, aniListId = it.aniListId)
                 }
             mappingDao.upsert(items)
             Logger.d("Initializers") { "MapperDao now populated" }
@@ -35,6 +35,8 @@ class Initializers(private val mappingDao: MappingDao) {
         @SerialName("mal_id")
         val malId: Int?,
         @SerialName("kitsu_id")
-        val kitsuId: Int?
+        val kitsuId: Int?,
+        @SerialName("anilist_id")
+        val aniListId: Int?
     )
 }
