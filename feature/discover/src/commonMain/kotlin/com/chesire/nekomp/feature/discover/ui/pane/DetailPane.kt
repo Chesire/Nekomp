@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LibraryAdd
@@ -60,6 +59,9 @@ import com.chesire.nekomp.core.ext.capitalize
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
+import com.chesire.nekomp.core.ui.drawable.Anilist
+import com.chesire.nekomp.core.ui.drawable.KitsuLogo
+import com.chesire.nekomp.core.ui.drawable.MalLogo
 import com.chesire.nekomp.core.ui.util.NoRippleInteractionSource
 import com.chesire.nekomp.core.ui.util.ifFalse
 import com.chesire.nekomp.feature.discover.ui.DetailState
@@ -187,7 +189,7 @@ internal fun DetailPane(
                             )
                         }
                         ActionBlock(
-                            imageVector = Icons.Default.Image, // TODO: Get a Kitsu image,
+                            imageVector = KitsuLogo,
                             helperText = "View on Kitsu",
                             useColor = false,
                             onClick = {
@@ -196,7 +198,7 @@ internal fun DetailPane(
                         )
                         // TODO: If we have a MAL id
                         ActionBlock(
-                            imageVector = Icons.Default.Image, // TODO: Get a MAL image,
+                            imageVector = MalLogo,
                             helperText = "View on MAL",
                             useColor = false,
                             onClick = {
@@ -205,7 +207,7 @@ internal fun DetailPane(
                         )
                         // TODO: If we have a AniList id
                         ActionBlock(
-                            imageVector = Icons.Default.Image, // TODO: Get a AniList image,
+                            imageVector = Anilist,
                             helperText = "View on AniList",
                             useColor = false,
                             onClick = {
