@@ -14,3 +14,15 @@ fun Modifier.ifTrue(
         this
     }
 }
+
+@Composable
+fun Modifier.ifFalse(
+    condition: Boolean,
+    modifier: @Composable Modifier.() -> Modifier
+): Modifier {
+    return if (!condition) {
+        then(modifier(Modifier))
+    } else {
+        this
+    }
+}

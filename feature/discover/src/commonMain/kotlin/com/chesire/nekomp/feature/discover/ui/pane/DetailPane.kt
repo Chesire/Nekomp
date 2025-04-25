@@ -3,14 +3,17 @@
 package com.chesire.nekomp.feature.discover.ui.pane
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -27,6 +30,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
@@ -39,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -52,6 +57,7 @@ import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.core.ui.util.NoRippleInteractionSource
+import com.chesire.nekomp.core.ui.util.ifFalse
 import com.chesire.nekomp.feature.discover.ui.DetailState
 import com.chesire.nekomp.feature.discover.ui.DiscoverItem
 import kotlin.math.absoluteValue
@@ -201,28 +207,43 @@ private fun Synopsis(text: String) {
         mutableStateOf(BASE_SYNOPSIS_LINES)
     }
 
-    Column {
-        Text(
-            text = text,
-            maxLines = when (isTextExpand) {
-                false -> BASE_SYNOPSIS_LINES
-                else -> Int.MAX_VALUE
-            },
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .clickable(
-                    onClick = {
-                        isTextExpand = !isTextExpand
-                    },
-                    interactionSource = NoRippleInteractionSource(),
-                    indication = null
-                )
-                .animateContentSize(),
-            onTextLayout = { textLayoutResult: TextLayoutResult ->
-                didOverflowHeight = textLayoutResult.didOverflowHeight
-                lines = textLayoutResult.lineCount
-            }
-        )
+    Column(modifier = Modifier.animateContentSize()) {
+        Box(modifier = Modifier.height(IntrinsicSize.Min)) {
+            Text(
+                text = text,
+                maxLines = when (isTextExpand) {
+                    false -> BASE_SYNOPSIS_LINES
+                    else -> Int.MAX_VALUE
+                },
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .clickable(
+                        onClick = {
+                            isTextExpand = !isTextExpand
+                        },
+                        interactionSource = NoRippleInteractionSource(),
+                        indication = null
+                    ),
+                onTextLayout = { textLayoutResult: TextLayoutResult ->
+                    didOverflowHeight = textLayoutResult.didOverflowHeight
+                    lines = textLayoutResult.lineCount
+                }
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .ifFalse(isTextExpand && !didOverflowHeight) {
+                        background(
+                            brush = Brush.verticalGradient(
+                                .5F to Color.Transparent,
+                                .7f to MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+                                .8f to MaterialTheme.colorScheme.background.copy(alpha = 0.9f),
+                                1F to MaterialTheme.colorScheme.background.copy(alpha = 1f)
+                            )
+                        )
+                    }
+            )
+        }
         if (lines > BASE_SYNOPSIS_LINES || didOverflowHeight) {
             IconButton(
                 onClick = { isTextExpand = !isTextExpand },
