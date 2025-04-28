@@ -59,7 +59,7 @@ import com.chesire.nekomp.core.ext.capitalize
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
-import com.chesire.nekomp.core.ui.drawable.Anilist
+import com.chesire.nekomp.core.ui.drawable.AniListLogo
 import com.chesire.nekomp.core.ui.drawable.KitsuLogo
 import com.chesire.nekomp.core.ui.drawable.MalLogo
 import com.chesire.nekomp.core.ui.util.NoRippleInteractionSource
@@ -219,7 +219,7 @@ internal fun DetailPane(
                         }
                         if (detailState.currentItem.aniListId != null) {
                             ActionBlock(
-                                imageVector = Anilist,
+                                imageVector = AniListLogo,
                                 helperText = "View on AniList",
                                 useColor = false,
                                 onClick = {
