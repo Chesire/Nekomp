@@ -132,19 +132,6 @@ class DiscoverViewModel(
         }
     }
 
-    private fun onWebViewClick(discoverItem: DiscoverItem, type: WebViewType) {
-        val url = when (type) {
-            WebViewType.Kitsu -> "https://kitsu.app/${discoverItem.type.name.lowercase()}/${discoverItem.kitsuId}"
-            WebViewType.MyAnimeList -> "https://myanimelist.net/${discoverItem.type.name.lowercase()}/${discoverItem.malId}"
-            WebViewType.AniList -> "https://anilist.co/${discoverItem.type.name.lowercase()}/${discoverItem.aniListId}"
-        }
-        _uiState.update { state ->
-            state.copy(
-                viewEvent = ViewEvent.OpenWebView(url = url)
-            )
-        }
-    }
-
     private fun onSearchTextUpdated(newSearchText: String) {
         _uiState.update { state ->
             state.copy(searchTerm = newSearchText)
@@ -217,23 +204,19 @@ class DiscoverViewModel(
         }
 
         viewModelScope.launch {
-            val result = addItemToTracking(discoverItem.type, discoverItem.kitsuId)
-
-            // TODO: Snow snackbar error
-            _uiState.update { state ->
-                if (state.detailState.currentItem?.kitsuId != discoverItem.kitsuId) {
-                    // Ignore it, the ui has changed
-                    return@launch
+            addItemToTracking(discoverItem.type, discoverItem.kitsuId)
+                .onFailure {
+                    _uiState.update { state ->
+                        state.copy(
+                            viewEvent = ViewEvent.ShowFailure("Failed to track, please try again")
+                        )
+                    }
                 }
+        }.invokeOnCompletion {
+            _uiState.update { state ->
                 state.copy(
                     detailState = state.detailState.copy(
-                        currentItem = state
-                            .detailState
-                            .currentItem
-                            .copy(
-                                isPendingTrack = false,
-                                isTracked = result.isOk
-                            )
+                        currentItem = state.detailState.currentItem?.copy(isPendingTrack = false)
                     )
                 )
             }
@@ -252,12 +235,13 @@ class DiscoverViewModel(
                 )
             )
         }
+
         viewModelScope.launch {
             deleteItem(entryId!!)
                 .onFailure {
                     _uiState.update { state ->
                         state.copy(
-                            viewEvent = ViewEvent.ShowFailure("Failed to delete, please try again")
+                            viewEvent = ViewEvent.ShowFailure("Failed to remove tracking, please try again")
                         )
                     }
                 }
@@ -269,6 +253,19 @@ class DiscoverViewModel(
                     )
                 )
             }
+        }
+    }
+
+    private fun onWebViewClick(discoverItem: DiscoverItem, type: WebViewType) {
+        val url = when (type) {
+            WebViewType.Kitsu -> "https://kitsu.app/${discoverItem.type.name.lowercase()}/${discoverItem.kitsuId}"
+            WebViewType.MyAnimeList -> "https://myanimelist.net/${discoverItem.type.name.lowercase()}/${discoverItem.malId}"
+            WebViewType.AniList -> "https://anilist.co/${discoverItem.type.name.lowercase()}/${discoverItem.aniListId}"
+        }
+        _uiState.update { state ->
+            state.copy(
+                viewEvent = ViewEvent.OpenWebView(url = url)
+            )
         }
     }
 
