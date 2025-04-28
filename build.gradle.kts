@@ -122,42 +122,18 @@ kover {
             filters {
                 excludes {
                     androidGeneratedClasses()
-                    packages(
-                        listOf()
-                    )
                     annotatedBy("androidx.compose.runtime.Composable")
                     classes(
-                        listOf(
-                            "*Activity",
-                            "*Activity\$*",
-                            "*Adapter",
-                            "*BuildConfig",
-                            "*ComposableSingletons\$*",
-                            "*Directions",
-                            "*Directions\$*",
-                            "*Factory",
-                            "*Factory\$*",
-                            "*Fragment",
-                            "*Fragment\$*",
-                            "*FragmentArgs",
-                            "*Module",
-                            "*ModuleKt",
-                            "*Module\$*",
-                            "*NavigationArgs",
-                            "*Navigator",
-                            "*NavigatorBinder",
-                            "*Preview*Kt",
-                            "*Request",
-                            "*Response",
-                            "*Screen",
-                            "*Screen\$*",
-                            "*ScreenKt",
-                            "*ScreenKt\$*",
-                            "*Sheet",
-                            "*ShowkaseMetadata*",
-                            "*Stub.kt",
-                            "*Widget"
-                        )
+                        "*Activity",
+                        "*BuildConfig",
+                        "*Fragment",
+                        "*Graph",
+                        "*Module*",
+                        "*Pane*",
+                        "*Screen*"
+                    )
+                    packages(
+                        "com.chesire.nekomp.core.ui"
                     )
                 }
             }
