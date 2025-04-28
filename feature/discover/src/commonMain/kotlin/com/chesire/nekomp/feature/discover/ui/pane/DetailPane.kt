@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material.icons.filled.LibraryAddCheck
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,7 +52,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -176,22 +179,26 @@ internal fun DetailPane(
                     }
                     Row(
                         modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         if (detailState.currentItem.isTracked) {
-                            ActionBlock(
+                            AddBlock(
                                 imageVector = Icons.Default.LibraryAdd,
                                 helperText = stringResource(NekoRes.string.discover_detail_added),
                                 useColor = true,
+                                isPending = detailState.currentItem.isPendingTrack,
+                                modifier = Modifier.weight(1f),
                                 onClick = {
                                     execute(ViewAction.UntrackItemClick(detailState.currentItem))
                                 }
                             )
                         } else {
-                            ActionBlock(
+                            AddBlock(
                                 imageVector = Icons.Default.LibraryAddCheck,
                                 helperText = stringResource(NekoRes.string.discover_detail_add),
                                 useColor = false,
+                                isPending = detailState.currentItem.isPendingTrack,
+                                modifier = Modifier.weight(1f),
                                 onClick = {
                                     execute(ViewAction.TrackItemClick(detailState.currentItem))
                                 }
@@ -200,7 +207,7 @@ internal fun DetailPane(
                         ActionBlock(
                             imageVector = KitsuLogo,
                             helperText = stringResource(NekoRes.string.discover_detail_kitsu_content_description),
-                            useColor = false,
+                            modifier = Modifier.weight(1f),
                             onClick = {
                                 execute(
                                     ViewAction.WebViewClick(
@@ -214,7 +221,7 @@ internal fun DetailPane(
                             ActionBlock(
                                 imageVector = MalLogo,
                                 helperText = stringResource(NekoRes.string.discover_detail_mal_content_description),
-                                useColor = false,
+                                modifier = Modifier.weight(1f),
                                 onClick = {
                                     execute(
                                         ViewAction.WebViewClick(
@@ -230,7 +237,7 @@ internal fun DetailPane(
                             ActionBlock(
                                 imageVector = AniListLogo,
                                 helperText = stringResource(NekoRes.string.discover_detail_anilist_content_description),
-                                useColor = false,
+                                modifier = Modifier.weight(1f),
                                 onClick = {
                                     execute(
                                         ViewAction.WebViewClick(
@@ -267,24 +274,67 @@ private fun InfoChip(text: String, color: Color) {
 }
 
 @Composable
-private fun ActionBlock(
+private fun AddBlock(
     imageVector: ImageVector,
     helperText: String,
     useColor: Boolean,
+    isPending: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier
+            .clickable(
+                interactionSource = NoRippleInteractionSource(),
+                indication = null,
+                enabled = !isPending,
+                onClickLabel = null,
+                role = Role.Button,
+                onClick = onClick
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (isPending) {
+            CircularProgressIndicator()
+        } else {
+            IconButton(onClick = onClick) {
+                Icon(
+                    imageVector = imageVector,
+                    contentDescription = helperText,
+                    modifier = Modifier.size(32.dp),
+                    tint = if (useColor) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                )
+            }
+            Text(
+                text = helperText,
+                color = if (useColor) MaterialTheme.colorScheme.primary else Color.Unspecified,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun ActionBlock(
+    imageVector: ImageVector,
+    helperText: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = modifier.clickable(true, null, Role.Button, onClick),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         IconButton(onClick = onClick) {
             Icon(
                 imageVector = imageVector,
                 contentDescription = helperText,
-                modifier = Modifier.size(32.dp),
-                tint = if (useColor) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                modifier = Modifier.size(32.dp)
             )
         }
         Text(
             text = helperText,
-            color = if (useColor) MaterialTheme.colorScheme.primary else Color.Unspecified
+            textAlign = TextAlign.Center
         )
     }
 }
