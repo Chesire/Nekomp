@@ -24,6 +24,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -48,7 +49,7 @@ class DiscoverViewModel(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val trendingData = retrieveTrendingData()
-            retrieveLibrary().collect { libraryItems ->
+            retrieveLibrary().collectLatest { libraryItems ->
                 _libraryItems = libraryItems
                 val trendingAnime = trendingData
                     .trendingAnime
@@ -86,6 +87,26 @@ class DiscoverViewModel(
                             mostPopularManga = mostPopularManga
                         )
                     )
+                }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            retrieveLibrary().collect { libraryItems ->
+                _uiState.update { state ->
+                    val currentItem = state.detailState.currentItem
+                    if (currentItem != null) {
+                        state.copy(
+                            detailState = state.detailState.copy(
+                                currentItem.copy(
+                                    entryId = libraryItems.find { it.id == currentItem.kitsuId }?.entryId,
+                                    isTracked = libraryItems.any { it.id == currentItem.kitsuId }
+                                )
+                            )
+                        )
+                    } else {
+                        state
+                    }
                 }
             }
         }
@@ -261,8 +282,9 @@ class DiscoverViewModel(
         val imageQuality = applicationSettings.imageQuality.first()
         val titleLanguage = applicationSettings.titleLanguage.first()
         val mapper = mappingDao.entityFromKitsuId(id)
+        val matchingId = _libraryItems.find { it.id == id }?.entryId
         return DiscoverItem(
-            entryId = _libraryItems.find { it.id == id }?.entryId,
+            entryId = matchingId,
             kitsuId = id,
             malId = mapper?.malId,
             aniListId = mapper?.aniListId,
@@ -275,7 +297,7 @@ class DiscoverViewModel(
             totalLength = totalLength,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
-            isTracked = _libraryItems.any { it.id == id }
+            isTracked = matchingId != null
         )
     }
 
@@ -283,8 +305,9 @@ class DiscoverViewModel(
         val imageQuality = applicationSettings.imageQuality.first()
         val titleLanguage = applicationSettings.titleLanguage.first()
         val mapper = mappingDao.entityFromKitsuId(id)
+        val matchingId = _libraryItems.find { it.id == id }?.entryId
         return DiscoverItem(
-            entryId = _libraryItems.find { it.id == id }?.entryId,
+            entryId = matchingId,
             kitsuId = id,
             malId = mapper?.malId,
             aniListId = mapper?.aniListId,
@@ -297,7 +320,7 @@ class DiscoverViewModel(
             totalLength = totalLength,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
-            isTracked = _libraryItems.any { it.id == id }
+            isTracked = matchingId != null
         )
     }
 }
