@@ -69,6 +69,14 @@ import com.chesire.nekomp.feature.discover.ui.DiscoverItem
 import com.chesire.nekomp.feature.discover.ui.ViewAction
 import com.chesire.nekomp.feature.discover.ui.WebViewType
 import kotlin.math.absoluteValue
+import nekomp.core.resources.generated.resources.discover_detail_add
+import nekomp.core.resources.generated.resources.discover_detail_added
+import nekomp.core.resources.generated.resources.discover_detail_anilist_content_description
+import nekomp.core.resources.generated.resources.discover_detail_hide_synopsis_content_description
+import nekomp.core.resources.generated.resources.discover_detail_kitsu_content_description
+import nekomp.core.resources.generated.resources.discover_detail_mal_content_description
+import nekomp.core.resources.generated.resources.discover_detail_no_entry
+import nekomp.core.resources.generated.resources.discover_detail_show_synopsis_content_description
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -102,7 +110,8 @@ internal fun DetailPane(
             LargeTopAppBar(
                 title = {
                     Text(
-                        text = detailState.currentItem?.title ?: "No entry selected",
+                        text = detailState.currentItem?.title
+                            ?: stringResource(NekoRes.string.discover_detail_no_entry),
                         modifier = Modifier.fillMaxWidth()
                     )
                 },
@@ -172,7 +181,7 @@ internal fun DetailPane(
                         if (detailState.currentItem.isTracked) {
                             ActionBlock(
                                 imageVector = Icons.Default.LibraryAdd,
-                                helperText = "In library",
+                                helperText = stringResource(NekoRes.string.discover_detail_added),
                                 useColor = true,
                                 onClick = {
                                     execute(ViewAction.TrackItemClick(detailState.currentItem))
@@ -181,7 +190,7 @@ internal fun DetailPane(
                         } else {
                             ActionBlock(
                                 imageVector = Icons.Default.LibraryAddCheck,
-                                helperText = "Add to library",
+                                helperText = stringResource(NekoRes.string.discover_detail_add),
                                 useColor = false,
                                 onClick = {
                                     execute(ViewAction.UntrackItemClick(detailState.currentItem))
@@ -190,7 +199,7 @@ internal fun DetailPane(
                         }
                         ActionBlock(
                             imageVector = KitsuLogo,
-                            helperText = "View on Kitsu",
+                            helperText = stringResource(NekoRes.string.discover_detail_kitsu_content_description),
                             useColor = false,
                             onClick = {
                                 execute(
@@ -204,7 +213,7 @@ internal fun DetailPane(
                         if (detailState.currentItem.malId != null) {
                             ActionBlock(
                                 imageVector = MalLogo,
-                                helperText = "View on MAL",
+                                helperText = stringResource(NekoRes.string.discover_detail_mal_content_description),
                                 useColor = false,
                                 onClick = {
                                     execute(
@@ -220,7 +229,7 @@ internal fun DetailPane(
                         if (detailState.currentItem.aniListId != null) {
                             ActionBlock(
                                 imageVector = AniListLogo,
-                                helperText = "View on AniList",
+                                helperText = stringResource(NekoRes.string.discover_detail_anilist_content_description),
                                 useColor = false,
                                 onClick = {
                                     execute(
@@ -236,7 +245,7 @@ internal fun DetailPane(
                     Synopsis(detailState.currentItem.synopsis)
                 }
             } else {
-                Text("No entry selected")
+                Text(text = stringResource(NekoRes.string.discover_detail_no_entry))
             }
         }
     }
@@ -337,12 +346,12 @@ private fun Synopsis(text: String) {
                 if (lines <= BASE_SYNOPSIS_LINES) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Show full synopsis"
+                        contentDescription = stringResource(NekoRes.string.discover_detail_show_synopsis_content_description)
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = "Hide full synopsis"
+                        contentDescription = stringResource(NekoRes.string.discover_detail_hide_synopsis_content_description)
                     )
                 }
             }
