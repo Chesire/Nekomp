@@ -46,7 +46,7 @@ internal fun ResultsPane(
     ) {
         items(
             items = resultsState.searchResults,
-            key = { it.id }
+            key = { it.kitsuId }
         ) { item ->
             SearchDisplay(
                 item = item,
@@ -107,7 +107,7 @@ private fun Preview() {
     val state = ResultsState(
         searchResults = persistentListOf(
             DiscoverItem(
-                id = 1,
+                kitsuId = 1,
                 title = "Item",
                 type = Type.Anime,
                 subType = "OVA",

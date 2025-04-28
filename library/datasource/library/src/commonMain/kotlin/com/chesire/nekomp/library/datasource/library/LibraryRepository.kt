@@ -19,6 +19,7 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.anyOk
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapBoth
+import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import kotlinx.coroutines.async
@@ -220,5 +221,14 @@ class LibraryRepository(
                 endDate = included.attributes.endDate ?: ""
             )
         }
+    }
+
+    suspend fun deleteEntry(entryId: Int): Result<Unit, Unit> {
+        return libraryApi
+            .deleteItem(entryId)
+            .onSuccess {
+                libraryStorage.deleteEntry(entryId)
+            }
+            .mapError { }
     }
 }

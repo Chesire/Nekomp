@@ -146,7 +146,7 @@ private fun TrendingDisplay(
 @Preview
 private fun Preview() {
     val model = DiscoverItem(
-        id = 1,
+        kitsuId = 1,
         title = "Item",
         type = Type.Anime,
         subType = "OVA",

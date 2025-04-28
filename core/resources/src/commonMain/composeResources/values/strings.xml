@@ -36,9 +36,9 @@
     <string name="discover_detail_no_entry">No entry selected</string>
     <string name="discover_detail_add">Add to library</string>
     <string name="discover_detail_added">In library</string>
-    <string name="discover_detail_kitsu_content_description">View on Kitsu.app</string>
-    <string name="discover_detail_mal_content_description">View on MyAnimeList.net</string>
-    <string name="discover_detail_anilist_content_description">View on AniList.co</string>
+    <string name="discover_detail_kitsu_content_description">View on Kitsu</string>
+    <string name="discover_detail_mal_content_description">View on MyAnimeList</string>
+    <string name="discover_detail_anilist_content_description">View on AniList</string>
     <string name="discover_detail_show_synopsis_content_description">Show full synopsis</string>
     <string name="discover_detail_hide_synopsis_content_description">Hide full synopsis</string>
 

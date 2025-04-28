@@ -7,10 +7,12 @@ import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
+import com.chesire.nekomp.feature.discover.core.DeleteItemUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingDataUseCase
 import com.chesire.nekomp.feature.discover.core.SearchForUseCase
+import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.search.SearchItem
 import com.chesire.nekomp.library.datasource.trending.TrendingItem
 import com.github.michaelbull.result.onFailure
@@ -31,6 +33,7 @@ class DiscoverViewModel(
     private val retrieveLibrary: RetrieveLibraryUseCase,
     private val retrieveTrendingData: RetrieveTrendingDataUseCase,
     private val addItemToTracking: AddItemToTrackingUseCase,
+    private val deleteItem: DeleteItemUseCase,
     private val recentSearches: RecentSearchesUseCase,
     private val searchFor: SearchForUseCase,
     private val mappingDao: MappingDao,
@@ -40,36 +43,36 @@ class DiscoverViewModel(
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
     private var _lastSearch = ""
-    private var _libraryIds: Set<Int> = emptySet() // TODO: Find better way to handle this
+    private var _libraryItems: List<LibraryEntry> = emptyList()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val trendingData = retrieveTrendingData()
             retrieveLibrary().collect { libraryItems ->
-                _libraryIds = libraryItems.map { it.id }.toSet()
+                _libraryItems = libraryItems
                 val trendingAnime = trendingData
                     .trendingAnime
-                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
+                    .map { it.toDiscoverItem() }
                     .toPersistentList()
                 val trendingManga = trendingData
                     .trendingManga
-                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
+                    .map { it.toDiscoverItem() }
                     .toPersistentList()
                 val topRatedAnime = trendingData
                     .topRatedAnime
-                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
+                    .map { it.toDiscoverItem() }
                     .toPersistentList()
                 val topRatedManga = trendingData
                     .topRatedManga
-                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
+                    .map { it.toDiscoverItem() }
                     .toPersistentList()
                 val mostPopularAnime = trendingData
                     .mostPopularAnime
-                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
+                    .map { it.toDiscoverItem() }
                     .toPersistentList()
                 val mostPopularManga = trendingData
                     .mostPopularManga
-                    .map { it.toDiscoverItem(_libraryIds.contains(it.id)) }
+                    .map { it.toDiscoverItem() }
                     .toPersistentList()
 
                 _uiState.update { state ->
@@ -102,7 +105,7 @@ class DiscoverViewModel(
             is ViewAction.RecentSearchClick -> onRecentSearchClick(action.recentSearchTerm)
             is ViewAction.ItemSelect -> onItemSelect(action.discoverItem)
             is ViewAction.TrackItemClick -> onTrackItemClick(action.discoverItem)
-            is ViewAction.UntrackItemClick -> onUnTrackItemClick(action.discoverItem)
+            is ViewAction.UntrackItemClick -> onUntrackItemClick(action.discoverItem)
             is ViewAction.WebViewClick -> onWebViewClick(action.discoverItem, action.webViewType)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -110,15 +113,13 @@ class DiscoverViewModel(
 
     private fun onWebViewClick(discoverItem: DiscoverItem, type: WebViewType) {
         val url = when (type) {
-            WebViewType.Kitsu -> "https://kitsu.app/${discoverItem.type.name.lowercase()}/${discoverItem.id}"
+            WebViewType.Kitsu -> "https://kitsu.app/${discoverItem.type.name.lowercase()}/${discoverItem.kitsuId}"
             WebViewType.MyAnimeList -> "https://myanimelist.net/${discoverItem.type.name.lowercase()}/${discoverItem.malId}"
             WebViewType.AniList -> "https://anilist.co/${discoverItem.type.name.lowercase()}/${discoverItem.aniListId}"
         }
         _uiState.update { state ->
             state.copy(
-                viewEvent = ViewEvent.OpenWebView(
-                    url = url
-                )
+                viewEvent = ViewEvent.OpenWebView(url = url)
             )
         }
     }
@@ -152,9 +153,9 @@ class DiscoverViewModel(
                     _uiState.update { state ->
                         state.copy(
                             resultsState = state.resultsState.copy(
-                                searchResults = searchItems.map { item ->
-                                    item.toDiscoverItem(_libraryIds.contains(item.id))
-                                }.toPersistentList()
+                                searchResults = searchItems
+                                    .map { item -> item.toDiscoverItem() }
+                                    .toPersistentList()
                             )
                         )
                     }
@@ -184,7 +185,7 @@ class DiscoverViewModel(
 
     private fun onTrackItemClick(discoverItem: DiscoverItem) {
         _uiState.update { state ->
-            if (state.detailState.currentItem?.id != discoverItem.id) {
+            if (state.detailState.currentItem?.kitsuId != discoverItem.kitsuId) {
                 return
             }
             state.copy(
@@ -195,11 +196,11 @@ class DiscoverViewModel(
         }
 
         viewModelScope.launch {
-            val result = addItemToTracking(discoverItem.type, discoverItem.id)
+            val result = addItemToTracking(discoverItem.type, discoverItem.kitsuId)
 
             // TODO: Snow snackbar error
             _uiState.update { state ->
-                if (state.detailState.currentItem?.id != discoverItem.id) {
+                if (state.detailState.currentItem?.kitsuId != discoverItem.kitsuId) {
                     // Ignore it, the ui has changed
                     return@launch
                 }
@@ -218,9 +219,10 @@ class DiscoverViewModel(
         }
     }
 
-    private fun onUnTrackItemClick(discoverItem: DiscoverItem) {
+    private fun onUntrackItemClick(discoverItem: DiscoverItem) {
+        val entryId = discoverItem.entryId
         _uiState.update { state ->
-            if (state.detailState.currentItem?.id != discoverItem.id) {
+            if (state.detailState.currentItem?.kitsuId != discoverItem.kitsuId || entryId == null) {
                 return
             }
             state.copy(
@@ -230,7 +232,22 @@ class DiscoverViewModel(
             )
         }
         viewModelScope.launch {
-            // TODO: Delete item from tracking
+            deleteItem(entryId!!)
+                .onFailure {
+                    _uiState.update { state ->
+                        state.copy(
+                            viewEvent = ViewEvent.ShowFailure("Failed to delete, please try again")
+                        )
+                    }
+                }
+        }.invokeOnCompletion {
+            _uiState.update { state ->
+                state.copy(
+                    detailState = state.detailState.copy(
+                        currentItem = state.detailState.currentItem?.copy(isPendingTrack = false)
+                    )
+                )
+            }
         }
     }
 
@@ -240,12 +257,13 @@ class DiscoverViewModel(
         }
     }
 
-    private suspend fun TrendingItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
+    private suspend fun TrendingItem.toDiscoverItem(): DiscoverItem {
         val imageQuality = applicationSettings.imageQuality.first()
         val titleLanguage = applicationSettings.titleLanguage.first()
         val mapper = mappingDao.entityFromKitsuId(id)
         return DiscoverItem(
-            id = id,
+            entryId = _libraryItems.find { it.id == id }?.entryId,
+            kitsuId = id,
             malId = mapper?.malId,
             aniListId = mapper?.aniListId,
             title = titles.toChosenLanguage(titleLanguage),
@@ -257,16 +275,17 @@ class DiscoverViewModel(
             totalLength = totalLength,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
-            isTracked = isTracked
+            isTracked = _libraryItems.any { it.id == id }
         )
     }
 
-    private suspend fun SearchItem.toDiscoverItem(isTracked: Boolean): DiscoverItem {
+    private suspend fun SearchItem.toDiscoverItem(): DiscoverItem {
         val imageQuality = applicationSettings.imageQuality.first()
         val titleLanguage = applicationSettings.titleLanguage.first()
         val mapper = mappingDao.entityFromKitsuId(id)
         return DiscoverItem(
-            id = id,
+            entryId = _libraryItems.find { it.id == id }?.entryId,
+            kitsuId = id,
             malId = mapper?.malId,
             aniListId = mapper?.aniListId,
             title = titles.toChosenLanguage(titleLanguage),
@@ -278,7 +297,7 @@ class DiscoverViewModel(
             totalLength = totalLength,
             coverImage = coverImage.toBestImage(imageQuality),
             posterImage = posterImage.toBestImage(imageQuality),
-            isTracked = isTracked
+            isTracked = _libraryItems.any { it.id == id }
         )
     }
 }

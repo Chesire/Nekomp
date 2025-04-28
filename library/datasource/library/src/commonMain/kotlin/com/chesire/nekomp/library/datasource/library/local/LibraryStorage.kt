@@ -124,4 +124,8 @@ class LibraryStorage(private val libraryEntryDao: LibraryEntryDao) {
         )
         libraryEntryDao.upsert(newEntry)
     }
+
+    suspend fun deleteEntry(entryId: Int) {
+        libraryEntryDao.delete(entryId = entryId)
+    }
 }

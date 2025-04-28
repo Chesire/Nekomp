@@ -184,7 +184,7 @@ internal fun DetailPane(
                                 helperText = stringResource(NekoRes.string.discover_detail_added),
                                 useColor = true,
                                 onClick = {
-                                    execute(ViewAction.TrackItemClick(detailState.currentItem))
+                                    execute(ViewAction.UntrackItemClick(detailState.currentItem))
                                 }
                             )
                         } else {
@@ -193,7 +193,7 @@ internal fun DetailPane(
                                 helperText = stringResource(NekoRes.string.discover_detail_add),
                                 useColor = false,
                                 onClick = {
-                                    execute(ViewAction.UntrackItemClick(detailState.currentItem))
+                                    execute(ViewAction.TrackItemClick(detailState.currentItem))
                                 }
                             )
                         }
@@ -364,7 +364,7 @@ private fun Synopsis(text: String) {
 private fun Preview() {
     val state = DetailState(
         currentItem = DiscoverItem(
-            id = 1,
+            kitsuId = 1,
             title = "Item",
             type = Type.Anime,
             subType = "OVA",

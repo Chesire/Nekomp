@@ -37,7 +37,8 @@ data class DetailState(
 )
 
 data class DiscoverItem(
-    val id: Int,
+    val entryId: Int? = null,
+    val kitsuId: Int,
     val malId: Int? = null,
     val aniListId: Int? = null,
     val title: String,
