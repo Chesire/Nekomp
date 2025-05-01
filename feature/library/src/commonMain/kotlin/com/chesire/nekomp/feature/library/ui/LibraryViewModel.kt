@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Suppress("TooManyFunctions")
 class LibraryViewModel(
     private val refreshLibraryEntries: RefreshLibraryEntriesUseCase,
     private val observeLibraryEntries: ObserveLibraryEntriesUseCase,

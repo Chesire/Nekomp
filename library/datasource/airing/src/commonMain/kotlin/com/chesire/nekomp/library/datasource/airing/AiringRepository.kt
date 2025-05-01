@@ -36,6 +36,7 @@ class AiringRepository(
 
     val currentAiring: Flow<List<AiringAnime>> = airingStorage.airingEntries
 
+    @Suppress("ReturnCount")
     suspend fun syncCurrentAiring(): Result<List<AiringAnime>, Unit> {
         Logger.d("AiringRepository") { "Populating the airing data" }
         var page = 1

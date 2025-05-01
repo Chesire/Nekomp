@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 class DiscoverViewModel(
     private val retrieveLibrary: RetrieveLibraryUseCase,
     private val retrieveTrendingData: RetrieveTrendingDataUseCase,
@@ -257,11 +257,12 @@ class DiscoverViewModel(
     }
 
     private fun onWebViewClick(discoverItem: DiscoverItem, type: WebViewType) {
-        val url = when (type) {
-            WebViewType.Kitsu -> "https://kitsu.app/${discoverItem.type.name.lowercase()}/${discoverItem.kitsuId}"
-            WebViewType.MyAnimeList -> "https://myanimelist.net/${discoverItem.type.name.lowercase()}/${discoverItem.malId}"
-            WebViewType.AniList -> "https://anilist.co/${discoverItem.type.name.lowercase()}/${discoverItem.aniListId}"
+        val id = when (type) {
+            WebViewType.Kitsu -> discoverItem.kitsuId
+            WebViewType.MyAnimeList -> discoverItem.malId
+            WebViewType.AniList -> discoverItem.aniListId
         }
+        val url = type.buildWebUrl(discoverItem.type.name.lowercase(), id)
         _uiState.update { state ->
             state.copy(
                 viewEvent = ViewEvent.OpenWebView(url = url)
@@ -322,8 +323,12 @@ class DiscoverViewModel(
     }
 }
 
-enum class WebViewType {
-    Kitsu,
-    MyAnimeList,
-    AniList
+enum class WebViewType(val address: String) {
+    Kitsu("https://kitsu.app"),
+    MyAnimeList("https://myanimelist.net"),
+    AniList("https://anilist.co");
+
+    fun buildWebUrl(type: String, id: Int?): String {
+        return "$address/$type/${id ?: ""}"
+    }
 }

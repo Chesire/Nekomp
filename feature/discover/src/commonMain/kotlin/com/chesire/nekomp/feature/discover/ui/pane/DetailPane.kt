@@ -242,7 +242,6 @@ internal fun DetailPane(
                                     )
                                 }
                             )
-
                         }
                         if (detailState.currentItem.aniListId != null) {
                             ActionBlock(
@@ -407,12 +406,16 @@ private fun Synopsis(text: String) {
                 if (lines <= BASE_SYNOPSIS_LINES) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = stringResource(NekoRes.string.discover_detail_show_synopsis_content_description)
+                        contentDescription = stringResource(
+                            NekoRes.string.discover_detail_show_synopsis_content_description
+                        )
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = stringResource(NekoRes.string.discover_detail_hide_synopsis_content_description)
+                        contentDescription = stringResource(
+                            NekoRes.string.discover_detail_hide_synopsis_content_description
+                        )
                     )
                 }
             }
