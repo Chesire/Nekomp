@@ -75,12 +75,15 @@ import kotlin.math.absoluteValue
 import nekomp.core.resources.generated.resources.discover_detail_add
 import nekomp.core.resources.generated.resources.discover_detail_added
 import nekomp.core.resources.generated.resources.discover_detail_anilist_content_description
+import nekomp.core.resources.generated.resources.discover_detail_chapters
+import nekomp.core.resources.generated.resources.discover_detail_episodes
 import nekomp.core.resources.generated.resources.discover_detail_hide_synopsis_content_description
 import nekomp.core.resources.generated.resources.discover_detail_kitsu_content_description
 import nekomp.core.resources.generated.resources.discover_detail_mal_content_description
 import nekomp.core.resources.generated.resources.discover_detail_no_entry
 import nekomp.core.resources.generated.resources.discover_detail_show_synopsis_content_description
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -152,8 +155,8 @@ internal fun DetailPane(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(0.dp)
                     ) {
-                        // add startdate-enddate (if known)
-                        // age rating?
+                        // TODO: Add StartDate -> EndDate chip (if known)?
+                        // TODO: Add age rating chip?
                         InfoChip(
                             text = detailState.currentItem.type.name.capitalize(),
                             color = NekompTheme.colors.green
@@ -168,7 +171,15 @@ internal fun DetailPane(
                         )
                         if (detailState.currentItem.totalLength != -1) {
                             InfoChip(
-                                text = "${detailState.currentItem.totalLength} ${if (detailState.currentItem.type == Type.Anime) "episodes" else "chapters"}",
+                                text = pluralStringResource(
+                                    if (detailState.currentItem.type == Type.Anime) {
+                                        NekoRes.plurals.discover_detail_episodes
+                                    } else {
+                                        NekoRes.plurals.discover_detail_chapters
+                                    },
+                                    detailState.currentItem.totalLength,
+                                    detailState.currentItem.totalLength
+                                ),
                                 color = NekompTheme.colors.red
                             )
                         }

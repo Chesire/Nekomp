@@ -36,6 +36,14 @@
     <string name="discover_detail_no_entry">No entry selected</string>
     <string name="discover_detail_add">Add to\nlibrary</string>
     <string name="discover_detail_added">In\nlibrary</string>
+    <plurals name="discover_detail_episodes">
+        <item quantity="one">%1$d episode</item>
+        <item quantity="other">%1$d episodes</item>
+    </plurals>
+    <plurals name="discover_detail_chapters">
+        <item quantity="one">%1$d chapter</item>
+        <item quantity="other">%1$d chapters</item>
+    </plurals>
     <string name="discover_detail_kitsu_content_description">See\nKitsu</string>
     <string name="discover_detail_mal_content_description">See\nMAL</string>
     <string name="discover_detail_anilist_content_description">See\nAniList</string>
