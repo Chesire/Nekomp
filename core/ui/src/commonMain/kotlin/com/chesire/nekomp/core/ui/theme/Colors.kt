@@ -179,7 +179,7 @@ internal object NekompExtendedDarkColors : NekompExtendedColorScheme {
     override val red = Color(0xFFD32F2F)
     override val green = Color(0xFF00796B)
     override val blue = Color(0xFF1976D2)
-    override val yellow = Color(0xFFF57C00)
+    override val yellow = Color(0xFFBA8E23)
 }
 
 internal val LocalExtendedColors = staticCompositionLocalOf<NekompExtendedColorScheme> {
