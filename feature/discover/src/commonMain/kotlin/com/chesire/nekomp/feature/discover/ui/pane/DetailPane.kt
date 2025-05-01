@@ -112,6 +112,20 @@ internal fun DetailPane(
                     contentScale = ContentScale.Crop,
                     alpha = (scrollBehavior.state.collapsedFraction - 1f).absoluteValue
                 )
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                .5F to Color.Transparent,
+                                .7f to MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+                                .8f to MaterialTheme.colorScheme.background.copy(alpha = 0.9f),
+                                1F to MaterialTheme.colorScheme.background.copy(alpha = 1f)
+                            )
+                        )
+                )
             }
             LargeTopAppBar(
                 title = {
