@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material.icons.filled.LibraryAddCheck
+import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -182,14 +183,17 @@ private fun Chips(item: DiscoverItem) {
     ) {
         // TODO: Add StartDate -> EndDate chip (if known)?
         // TODO: Add age rating chip?
+        // TODO: Should we build this all in the viewmodel and just pass down what to render?
         InfoChip(
             text = item.type.name.capitalize(),
             color = NekompTheme.colors.green
         )
-        InfoChip(
-            text = item.subType.capitalize(),
-            color = NekompTheme.colors.blue
-        )
+        if (item.type.name.capitalize() != item.subType.capitalize()) {
+            InfoChip(
+                text = item.subType.capitalize(),
+                color = NekompTheme.colors.green
+            )
+        }
         InfoChip(
             text = item.status.capitalize(),
             color = NekompTheme.colors.red
@@ -210,15 +214,29 @@ private fun Chips(item: DiscoverItem) {
         }
         InfoChip(
             text = item.averageRating,
-            color = NekompTheme.colors.yellow
+            color = NekompTheme.colors.yellow,
+            icon = Icons.Default.StarOutline
         )
     }
 }
 
 @Composable
-private fun InfoChip(text: String, color: Color) {
+private fun InfoChip(
+    text: String,
+    color: Color,
+    icon: ImageVector? = null
+) {
     ElevatedSuggestionChip(
         onClick = {},
+        icon = icon?.let {
+            {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = 2.dp, bottom = 1.dp).size(20.dp)
+                )
+            }
+        },
         label = {
             Text(text = text)
         },
