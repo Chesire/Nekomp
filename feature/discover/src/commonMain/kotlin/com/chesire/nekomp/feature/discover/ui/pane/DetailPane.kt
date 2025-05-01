@@ -165,120 +165,53 @@ internal fun DetailPane(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(0.dp)
-                    ) {
-                        // TODO: Add StartDate -> EndDate chip (if known)?
-                        // TODO: Add age rating chip?
-                        InfoChip(
-                            text = detailState.currentItem.type.name.capitalize(),
-                            color = NekompTheme.colors.green
-                        )
-                        InfoChip(
-                            text = detailState.currentItem.subType.capitalize(),
-                            color = NekompTheme.colors.blue
-                        )
-                        InfoChip(
-                            text = detailState.currentItem.status.capitalize(),
-                            color = NekompTheme.colors.red
-                        )
-                        if (detailState.currentItem.totalLength != -1) {
-                            InfoChip(
-                                text = pluralStringResource(
-                                    if (detailState.currentItem.type == Type.Anime) {
-                                        NekoRes.plurals.discover_detail_episodes
-                                    } else {
-                                        NekoRes.plurals.discover_detail_chapters
-                                    },
-                                    detailState.currentItem.totalLength,
-                                    detailState.currentItem.totalLength
-                                ),
-                                color = NekompTheme.colors.red
-                            )
-                        }
-                        InfoChip(
-                            text = detailState.currentItem.averageRating,
-                            color = NekompTheme.colors.yellow
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        if (detailState.currentItem.isTracked) {
-                            AddBlock(
-                                imageVector = Icons.Default.LibraryAdd,
-                                helperText = stringResource(NekoRes.string.discover_detail_added),
-                                useColor = true,
-                                isPending = detailState.currentItem.isPendingTrack,
-                                modifier = Modifier.weight(1f),
-                                onClick = {
-                                    execute(ViewAction.UntrackItemClick(detailState.currentItem))
-                                }
-                            )
-                        } else {
-                            AddBlock(
-                                imageVector = Icons.Default.LibraryAddCheck,
-                                helperText = stringResource(NekoRes.string.discover_detail_add),
-                                useColor = false,
-                                isPending = detailState.currentItem.isPendingTrack,
-                                modifier = Modifier.weight(1f),
-                                onClick = {
-                                    execute(ViewAction.TrackItemClick(detailState.currentItem))
-                                }
-                            )
-                        }
-                        ActionBlock(
-                            imageVector = KitsuLogo,
-                            helperText = stringResource(NekoRes.string.discover_detail_kitsu_content_description),
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                execute(
-                                    ViewAction.WebViewClick(
-                                        detailState.currentItem,
-                                        WebViewType.Kitsu
-                                    )
-                                )
-                            }
-                        )
-                        if (detailState.currentItem.malId != null) {
-                            ActionBlock(
-                                imageVector = MalLogo,
-                                helperText = stringResource(NekoRes.string.discover_detail_mal_content_description),
-                                modifier = Modifier.weight(1f),
-                                onClick = {
-                                    execute(
-                                        ViewAction.WebViewClick(
-                                            detailState.currentItem,
-                                            WebViewType.MyAnimeList
-                                        )
-                                    )
-                                }
-                            )
-                        }
-                        if (detailState.currentItem.aniListId != null) {
-                            ActionBlock(
-                                imageVector = AniListLogo,
-                                helperText = stringResource(NekoRes.string.discover_detail_anilist_content_description),
-                                modifier = Modifier.weight(1f),
-                                onClick = {
-                                    execute(
-                                        ViewAction.WebViewClick(
-                                            detailState.currentItem,
-                                            WebViewType.AniList
-                                        )
-                                    )
-                                }
-                            )
-                        }
-                    }
+                    Chips(detailState.currentItem)
+                    Actions(detailState.currentItem, execute)
                     Synopsis(detailState.currentItem.synopsis)
                 }
-            } else {
-                Text(text = stringResource(NekoRes.string.discover_detail_no_entry))
             }
         }
+    }
+}
+
+@Composable
+private fun Chips(item: DiscoverItem) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(0.dp)
+    ) {
+        // TODO: Add StartDate -> EndDate chip (if known)?
+        // TODO: Add age rating chip?
+        InfoChip(
+            text = item.type.name.capitalize(),
+            color = NekompTheme.colors.green
+        )
+        InfoChip(
+            text = item.subType.capitalize(),
+            color = NekompTheme.colors.blue
+        )
+        InfoChip(
+            text = item.status.capitalize(),
+            color = NekompTheme.colors.red
+        )
+        if (item.totalLength != -1) {
+            InfoChip(
+                text = pluralStringResource(
+                    if (item.type == Type.Anime) {
+                        NekoRes.plurals.discover_detail_episodes
+                    } else {
+                        NekoRes.plurals.discover_detail_chapters
+                    },
+                    item.totalLength,
+                    item.totalLength
+                ),
+                color = NekompTheme.colors.red
+            )
+        }
+        InfoChip(
+            text = item.averageRating,
+            color = NekompTheme.colors.yellow
+        )
     }
 }
 
@@ -295,6 +228,66 @@ private fun InfoChip(text: String, color: Color) {
         shape = RoundedCornerShape(32.dp),
         interactionSource = NoRippleInteractionSource()
     )
+}
+
+@Composable
+private fun Actions(item: DiscoverItem, execute: (ViewAction) -> Unit) {
+    Row(
+        modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (item.isTracked) {
+            AddBlock(
+                imageVector = Icons.Default.LibraryAdd,
+                helperText = stringResource(NekoRes.string.discover_detail_added),
+                useColor = true,
+                isPending = item.isPendingTrack,
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    execute(ViewAction.UntrackItemClick(item))
+                }
+            )
+        } else {
+            AddBlock(
+                imageVector = Icons.Default.LibraryAddCheck,
+                helperText = stringResource(NekoRes.string.discover_detail_add),
+                useColor = false,
+                isPending = item.isPendingTrack,
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    execute(ViewAction.TrackItemClick(item))
+                }
+            )
+        }
+        ActionBlock(
+            imageVector = KitsuLogo,
+            helperText = stringResource(NekoRes.string.discover_detail_kitsu_content_description),
+            modifier = Modifier.weight(1f),
+            onClick = {
+                execute(ViewAction.WebViewClick(item, WebViewType.Kitsu))
+            }
+        )
+        if (item.malId != null) {
+            ActionBlock(
+                imageVector = MalLogo,
+                helperText = stringResource(NekoRes.string.discover_detail_mal_content_description),
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    execute(ViewAction.WebViewClick(item, WebViewType.MyAnimeList))
+                }
+            )
+        }
+        if (item.aniListId != null) {
+            ActionBlock(
+                imageVector = AniListLogo,
+                helperText = stringResource(NekoRes.string.discover_detail_anilist_content_description),
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    execute(ViewAction.WebViewClick(item, WebViewType.AniList))
+                }
+            )
+        }
+    }
 }
 
 @Composable
