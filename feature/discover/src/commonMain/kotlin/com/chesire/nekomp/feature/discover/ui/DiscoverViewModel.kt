@@ -6,6 +6,8 @@ import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
+import com.chesire.nekomp.core.preferences.ImageQuality
+import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.DeleteItemUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
@@ -101,12 +103,16 @@ class DiscoverViewModel(
     )
     private var _lastSearch = ""
     private var _libraryItems: List<LibraryEntry> = emptyList()
+    private lateinit var _imageQuality: ImageQuality
+    private lateinit var _titleLanguage: TitleLanguage
 
     private fun collectLibrary() {
         viewModelScope.launch(Dispatchers.IO) {
             val trendingData = retrieveTrendingData()
+            _imageQuality = applicationSettings.imageQuality.first()
+            _titleLanguage = applicationSettings.titleLanguage.first()
             retrieveLibrary().collect { libraryItems ->
-                _libraryItems = libraryItems // TODO: Could this use fold or something?
+                _libraryItems = libraryItems
                 updateDetailState(libraryItems)
                 updateTrendingState(trendingData)
             }
@@ -151,7 +157,7 @@ class DiscoverViewModel(
             .toPersistentList()
 
         _trendingState.update { trendingState ->
-            trendingState.copy(
+            TrendingState(
                 trendingAnime = trendingAnime,
                 trendingManga = trendingManga,
                 topRatedAnime = topRatedAnime,
@@ -288,8 +294,6 @@ class DiscoverViewModel(
     }
 
     private suspend fun TrendingItem.toDiscoverItem(): DiscoverItem {
-        val imageQuality = applicationSettings.imageQuality.first()
-        val titleLanguage = applicationSettings.titleLanguage.first()
         val mapper = mappingDao.entityFromKitsuId(id)
         val matchingId = _libraryItems.find { it.id == id }?.entryId
         return DiscoverItem(
@@ -297,22 +301,20 @@ class DiscoverViewModel(
             kitsuId = id,
             malId = mapper?.malId,
             aniListId = mapper?.aniListId,
-            title = titles.toChosenLanguage(titleLanguage),
+            title = titles.toChosenLanguage(_titleLanguage),
             type = type,
             subType = subtype,
             status = status,
             synopsis = synopsis,
             averageRating = averageRating,
             totalLength = totalLength,
-            coverImage = coverImage.toBestImage(imageQuality),
-            posterImage = posterImage.toBestImage(imageQuality),
+            coverImage = coverImage.toBestImage(_imageQuality),
+            posterImage = posterImage.toBestImage(_imageQuality),
             isTracked = matchingId != null
         )
     }
 
     private suspend fun SearchItem.toDiscoverItem(): DiscoverItem {
-        val imageQuality = applicationSettings.imageQuality.first()
-        val titleLanguage = applicationSettings.titleLanguage.first()
         val mapper = mappingDao.entityFromKitsuId(id)
         val matchingId = _libraryItems.find { it.id == id }?.entryId
         return DiscoverItem(
@@ -320,15 +322,15 @@ class DiscoverViewModel(
             kitsuId = id,
             malId = mapper?.malId,
             aniListId = mapper?.aniListId,
-            title = titles.toChosenLanguage(titleLanguage),
+            title = titles.toChosenLanguage(_titleLanguage),
             type = type,
             subType = subtype,
             status = status,
             synopsis = synopsis,
             averageRating = averageRating,
             totalLength = totalLength,
-            coverImage = coverImage.toBestImage(imageQuality),
-            posterImage = posterImage.toBestImage(imageQuality),
+            coverImage = coverImage.toBestImage(_imageQuality),
+            posterImage = posterImage.toBestImage(_imageQuality),
             isTracked = matchingId != null
         )
     }
