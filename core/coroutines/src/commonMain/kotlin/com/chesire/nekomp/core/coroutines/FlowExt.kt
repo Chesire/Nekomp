@@ -22,6 +22,7 @@ fun <T> Flow<T>.emitLatestPeriodically(interval: Duration): Flow<T> = transformL
 /**
  * Performs a [combine] with 6 elements.
  */
+@Suppress("MagicNumber")
 inline fun <T1, T2, T3, T4, T5, T6, R> combine(
     flow: Flow<T1>,
     flow2: Flow<T2>,
