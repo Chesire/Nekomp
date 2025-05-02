@@ -2,6 +2,7 @@ package com.chesire.nekomp.feature.discover.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.coroutines.combine
 import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.ext.toChosenLanguage
@@ -24,10 +25,8 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -52,29 +51,6 @@ class DiscoverViewModel(
     private val _searchTerm = MutableStateFlow("")
     private val _resultsState = MutableStateFlow(ResultsState())
     private val _viewEvent = MutableStateFlow<ViewEvent?>(null)
-
-    // TODO: Move this elsewhere
-    inline fun <T1, T2, T3, T4, T5, T6, R> combine(
-        flow: Flow<T1>,
-        flow2: Flow<T2>,
-        flow3: Flow<T3>,
-        flow4: Flow<T4>,
-        flow5: Flow<T5>,
-        flow6: Flow<T6>,
-        crossinline transform: suspend (T1, T2, T3, T4, T5, T6) -> R
-    ): Flow<R> {
-        return combine(flow, flow2, flow3, flow4, flow5, flow6) { args: Array<*> ->
-            @Suppress("UNCHECKED_CAST")
-            transform(
-                args[0] as T1,
-                args[1] as T2,
-                args[2] as T3,
-                args[3] as T4,
-                args[4] as T5,
-                args[5] as T6,
-            )
-        }
-    }
 
     val uiState = combine(
         _detailState,
