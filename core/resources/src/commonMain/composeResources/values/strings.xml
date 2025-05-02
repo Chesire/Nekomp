@@ -29,6 +29,27 @@
     <string name="login_error_invalid_credentials">Failed to login, invalid credentials provided</string>
     <string name="login_error_generic">Failed to login, please check your internet and try again</string>
 
+    <!-- Discover -->
+    <string name="discover_detail_kitsu_link">https://kitsu.app/%1$s/%2$s</string>
+    <string name="discover_detail_mal_link">https://myanimelist.net/%1$s/%2$s</string>
+    <string name="discover_detail_anilist_link">https://anilist.co/%1$s/%2$s</string>
+    <string name="discover_detail_no_entry">No entry selected</string>
+    <string name="discover_detail_add">Add to\nlibrary</string>
+    <string name="discover_detail_added">In\nlibrary</string>
+    <plurals name="discover_detail_episodes">
+        <item quantity="one">%1$d episode</item>
+        <item quantity="other">%1$d episodes</item>
+    </plurals>
+    <plurals name="discover_detail_chapters">
+        <item quantity="one">%1$d chapter</item>
+        <item quantity="other">%1$d chapters</item>
+    </plurals>
+    <string name="discover_detail_kitsu_content_description">See\nKitsu</string>
+    <string name="discover_detail_mal_content_description">See\nMAL</string>
+    <string name="discover_detail_anilist_content_description">See\nAniList</string>
+    <string name="discover_detail_show_synopsis_content_description">Show full synopsis</string>
+    <string name="discover_detail_hide_synopsis_content_description">Hide full synopsis</string>
+
     <!-- Settings -->
     <string name="settings_theme_title">Theme</string>
     <string name="settings_title_language_title">Title Language</string>

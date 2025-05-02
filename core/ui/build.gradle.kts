@@ -36,6 +36,7 @@ kotlin {
             implementation(compose.preview)
         }
         commonMain.dependencies {
+            implementation(compose.animationGraphics)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.foundation)

@@ -6,6 +6,7 @@ import com.chesire.nekomp.library.datasource.library.remote.model.EntryResponseD
 import com.chesire.nekomp.library.datasource.library.remote.model.RetrieveResponseDto
 import com.github.michaelbull.result.Result
 import de.jensklingenberg.ktorfit.http.Body
+import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.PATCH
@@ -90,4 +91,11 @@ interface LibraryApi {
         @Path("id") entryId: Int,
         @Body data: EntryRequestDto
     ): Result<EntryResponseDto, NetworkError>
+
+    @Headers(
+        "Accept: application/vnd.api+json",
+        "Content-Type: application/vnd.api+json"
+    )
+    @DELETE("api/edge/library-entries/{id}")
+    suspend fun deleteItem(@Path("id") entryId: Int): Result<Unit, NetworkError>
 }

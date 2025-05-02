@@ -8,5 +8,6 @@ data class MappingEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val malId: Int?,
-    val kitsuId: Int?
+    val kitsuId: Int?,
+    val aniListId: Int?
 )

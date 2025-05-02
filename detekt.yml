@@ -2,10 +2,10 @@ build:
   maxIssues: 0
   excludeCorrectable: false
   weights:
-    # complexity: 2
-    # LongParameterList: 1
-    # style: 1
-    # comments: 1
+  # complexity: 2
+  # LongParameterList: 1
+  # style: 1
+  # comments: 1
 
 config:
   validation: true
@@ -17,7 +17,7 @@ config:
 processors:
   active: true
   exclude:
-  - 'DetektProgressListener'
+    - 'DetektProgressListener'
   # - 'KtFileCountProcessor'
   # - 'PackageCountProcessor'
   # - 'ClassCountProcessor'
@@ -34,20 +34,20 @@ processors:
 console-reports:
   active: true
   exclude:
-  - 'ProjectStatisticsReport'
-  - 'ComplexityReport'
-  - 'NotificationReport'
-  - 'FindingsReport'
-  - 'FileBasedFindingsReport'
+    - 'ProjectStatisticsReport'
+    - 'ComplexityReport'
+    - 'NotificationReport'
+    - 'FindingsReport'
+    - 'FileBasedFindingsReport'
   #  - 'LiteFindingsReport'
 
 output-reports:
   active: true
   exclude:
-    # - 'TxtOutputReport'
-    # - 'XmlOutputReport'
-    # - 'HtmlOutputReport'
-    # - 'MdOutputReport'
+  # - 'TxtOutputReport'
+  # - 'XmlOutputReport'
+  # - 'HtmlOutputReport'
+  # - 'MdOutputReport'
 
 comments:
   active: true
@@ -110,18 +110,18 @@ complexity:
     ignoreSimpleWhenEntries: false
     ignoreNestingFunctions: false
     nestingFunctions:
-    - 'also'
-    - 'apply'
-    - 'forEach'
-    - 'isNotNull'
-    - 'ifNull'
-    - 'let'
-    - 'run'
-    - 'use'
-    - 'with'
+      - 'also'
+      - 'apply'
+      - 'forEach'
+      - 'isNotNull'
+      - 'ifNull'
+      - 'let'
+      - 'run'
+      - 'use'
+      - 'with'
   LabeledExpression:
     active: false
-    ignoredLabels: []
+    ignoredLabels: [ ]
   LargeClass:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
@@ -129,6 +129,7 @@ complexity:
   LongMethod:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
+    ignoreAnnotated: [ 'Preview', 'Composable' ]
     threshold: 80
   LongParameterList:
     active: true
@@ -136,7 +137,7 @@ complexity:
     constructorThreshold: 7
     ignoreDefaultParameters: true
     ignoreDataClasses: true
-    ignoreAnnotatedParameter: []
+    ignoreAnnotatedParameter: [ ]
   MethodOverloading:
     active: false
     threshold: 6
@@ -151,11 +152,11 @@ complexity:
     active: false
     threshold: 1
     functions:
-    - 'kotlin.apply'
-    - 'kotlin.run'
-    - 'kotlin.with'
-    - 'kotlin.let'
-    - 'kotlin.also'
+      - 'kotlin.apply'
+      - 'kotlin.run'
+      - 'kotlin.with'
+      - 'kotlin.let'
+      - 'kotlin.also'
   ReplaceSafeCallChainWithRun:
     active: false
   StringLiteralDuplication:
@@ -184,9 +185,9 @@ coroutines:
   InjectDispatcher:
     active: true
     dispatcherNames:
-    - 'IO'
-    - 'Default'
-    - 'Unconfined'
+      - 'IO'
+      - 'Default'
+      - 'Unconfined'
   RedundantSuspendModifier:
     active: true
   SleepInsteadOfDelay:
@@ -236,10 +237,10 @@ exceptions:
   ExceptionRaisedInUnexpectedLocation:
     active: true
     methodNames:
-    - 'equals'
-    - 'finalize'
-    - 'hashCode'
-    - 'toString'
+      - 'equals'
+      - 'finalize'
+      - 'hashCode'
+      - 'toString'
   InstanceOfCheckForException:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
@@ -257,10 +258,10 @@ exceptions:
   SwallowedException:
     active: true
     ignoredExceptionTypes:
-    - 'InterruptedException'
-    - 'MalformedURLException'
-    - 'NumberFormatException'
-    - 'ParseException'
+      - 'InterruptedException'
+      - 'MalformedURLException'
+      - 'NumberFormatException'
+      - 'ParseException'
     allowedExceptionNameRegex: '_|(ignore|expected).*'
   ThrowingExceptionFromFinally:
     active: true
@@ -270,37 +271,37 @@ exceptions:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
     exceptions:
-    - 'ArrayIndexOutOfBoundsException'
-    - 'Exception'
-    - 'IllegalArgumentException'
-    - 'IllegalMonitorStateException'
-    - 'IllegalStateException'
-    - 'IndexOutOfBoundsException'
-    - 'NullPointerException'
-    - 'RuntimeException'
-    - 'Throwable'
+      - 'ArrayIndexOutOfBoundsException'
+      - 'Exception'
+      - 'IllegalArgumentException'
+      - 'IllegalMonitorStateException'
+      - 'IllegalStateException'
+      - 'IndexOutOfBoundsException'
+      - 'NullPointerException'
+      - 'RuntimeException'
+      - 'Throwable'
   ThrowingNewInstanceOfSameException:
     active: true
   TooGenericExceptionCaught:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
     exceptionNames:
-    - 'ArrayIndexOutOfBoundsException'
-    - 'Error'
-    - 'Exception'
-    - 'IllegalMonitorStateException'
-    - 'IndexOutOfBoundsException'
-    - 'NullPointerException'
-    - 'RuntimeException'
-    - 'Throwable'
+      - 'ArrayIndexOutOfBoundsException'
+      - 'Error'
+      - 'Exception'
+      - 'IllegalMonitorStateException'
+      - 'IndexOutOfBoundsException'
+      - 'NullPointerException'
+      - 'RuntimeException'
+      - 'Throwable'
     allowedExceptionNameRegex: '_|(ignore|expected).*'
   TooGenericExceptionThrown:
     active: true
     exceptionNames:
-    - 'Error'
-    - 'Exception'
-    - 'RuntimeException'
-    - 'Throwable'
+      - 'Error'
+      - 'Exception'
+      - 'RuntimeException'
+      - 'Throwable'
 
 formatting:
   active: true
@@ -412,7 +413,7 @@ naming:
     enumEntryPattern: '[A-Z][_a-zA-Z0-9]*'
   ForbiddenClassName:
     active: false
-    forbiddenName: []
+    forbiddenName: [ ]
   FunctionMaxLength:
     active: false
     maximumFunctionNameLength: 30
@@ -479,7 +480,7 @@ potential-bugs:
   AvoidReferentialEquality:
     active: true
     forbiddenTypePatterns:
-    - 'kotlin.String'
+      - 'kotlin.String'
   CastToNullableType:
     active: false
   Deprecation:
@@ -489,14 +490,14 @@ potential-bugs:
   DoubleMutabilityForCollection:
     active: true
     mutableTypes:
-    - 'kotlin.collections.MutableList'
-    - 'kotlin.collections.MutableMap'
-    - 'kotlin.collections.MutableSet'
-    - 'java.util.ArrayList'
-    - 'java.util.LinkedHashSet'
-    - 'java.util.HashSet'
-    - 'java.util.LinkedHashMap'
-    - 'java.util.HashMap'
+      - 'kotlin.collections.MutableList'
+      - 'kotlin.collections.MutableMap'
+      - 'kotlin.collections.MutableSet'
+      - 'java.util.ArrayList'
+      - 'java.util.LinkedHashSet'
+      - 'java.util.HashSet'
+      - 'java.util.LinkedHashMap'
+      - 'java.util.HashMap'
   ElseCaseInsteadOfExhaustiveWhen:
     active: false
   EqualsAlwaysReturnsTrueOrFalse:
@@ -513,15 +514,15 @@ potential-bugs:
     active: true
     restrictToConfig: true
     returnValueAnnotations:
-    - '*.CheckResult'
-    - '*.CheckReturnValue'
+      - '*.CheckResult'
+      - '*.CheckReturnValue'
     ignoreReturnValueAnnotations:
-    - '*.CanIgnoreReturnValue'
+      - '*.CanIgnoreReturnValue'
     returnValueTypes:
-    - 'kotlin.sequences.Sequence'
-    - 'kotlinx.coroutines.flow.*Flow'
-    - 'java.util.stream.*Stream'
-    ignoreFunctionCall: []
+      - 'kotlin.sequences.Sequence'
+      - 'kotlinx.coroutines.flow.*Flow'
+      - 'java.util.stream.*Stream'
+    ignoreFunctionCall: [ ]
   ImplicitDefaultLocale:
     active: true
   ImplicitUnitReturnType:
@@ -586,7 +587,7 @@ style:
   DataClassContainsFunctions:
     active: false
     conversionFunctionPrefix:
-    - 'to'
+      - 'to'
   DataClassShouldBeImmutable:
     active: false
   DestructuringDeclarationWithTooManyEntries:
@@ -608,18 +609,18 @@ style:
     allowedPatterns: 'TODO:'
   ForbiddenImport:
     active: false
-    imports: []
+    imports: [ ]
     forbiddenPatterns: ''
   ForbiddenMethodCall:
     active: false
     methods:
-    - reason: 'print does not allow you to configure the output stream. Use a logger instead.'
-      value: 'kotlin.io.print'
-    - reason: 'println does not allow you to configure the output stream. Use a logger instead.'
-      value: 'kotlin.io.println'
+      - reason: 'print does not allow you to configure the output stream. Use a logger instead.'
+        value: 'kotlin.io.print'
+      - reason: 'println does not allow you to configure the output stream. Use a logger instead.'
+        value: 'kotlin.io.println'
   ForbiddenSuppress:
     active: false
-    rules: []
+    rules: [ ]
   ForbiddenVoid:
     active: true
     ignoreOverridden: false
@@ -628,7 +629,7 @@ style:
     active: true
     ignoreOverridableFunction: true
     ignoreActualFunction: true
-    excludedFunctions: []
+    excludedFunctions: [ ]
   LoopWithTooManyJumpStatements:
     active: true
     maxJumpCount: 1
@@ -636,10 +637,10 @@ style:
     active: true
     excludes: [ '**/test/**', '**/android*Test/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/ios*Test/**', '**/*.kts' ]
     ignoreNumbers:
-    - '-1'
-    - '0'
-    - '1'
-    - '2'
+      - '-1'
+      - '0'
+      - '1'
+      - '2'
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: true
     ignoreLocalVariableDeclaration: false
@@ -701,7 +702,7 @@ style:
     active: true
     max: 2
     excludedFunctions:
-    - 'equals'
+      - 'equals'
     excludeLabeled: false
     excludeReturnFromLambda: true
     excludeGuardClauses: false
@@ -789,4 +790,4 @@ style:
   WildcardImport:
     active: true
     excludeImports:
-    - 'com.epsyhealth.epsy.infrastructure.*'
+      - 'com.epsyhealth.epsy.infrastructure.*'

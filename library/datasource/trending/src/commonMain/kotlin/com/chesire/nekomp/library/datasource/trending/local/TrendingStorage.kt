@@ -53,6 +53,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
                 cjk = cjkTitle
             ),
             subtype = subtype,
+            status = status,
             posterImage = Image(
                 tiny = posterImageTiny,
                 small = posterImageSmall,
@@ -67,6 +68,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
                 large = coverImageLarge,
                 original = coverImageOriginal
             ),
+            totalLength = totalLength,
             averageRating = averageRating,
             ratingRank = ratingRank,
             popularityRank = popularityRank,
@@ -84,6 +86,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             romajiTitle = titles.romaji,
             cjkTitle = titles.cjk,
             subtype = subtype,
+            status = status,
             posterImageTiny = posterImage.tiny,
             posterImageSmall = posterImage.small,
             posterImageMedium = posterImage.medium,
@@ -94,6 +97,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
             coverImageMedium = coverImage.medium,
             coverImageLarge = coverImage.large,
             coverImageOriginal = coverImage.original,
+            totalLength = totalLength,
             averageRating = averageRating,
             ratingRank = ratingRank,
             popularityRank = popularityRank,

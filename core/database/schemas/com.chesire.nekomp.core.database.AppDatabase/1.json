@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "de198887436df0e087fe89054d11233d",
+    "identityHash": "c24a4f340f655a4767cb409ba614ef8f",
     "entities": [
       {
         "tableName": "AiringEntity",
@@ -305,7 +305,7 @@
       },
       {
         "tableName": "MappingEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `malId` INTEGER, `kitsuId` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `malId` INTEGER, `kitsuId` INTEGER, `aniListId` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -322,6 +322,11 @@
             "fieldPath": "kitsuId",
             "columnName": "kitsuId",
             "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "aniListId",
+            "columnName": "aniListId",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -333,7 +338,7 @@
       },
       {
         "tableName": "TrendingEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `type` TEXT NOT NULL, `synopsis` TEXT NOT NULL, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `subtype` TEXT NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `coverImageTiny` TEXT NOT NULL, `coverImageSmall` TEXT NOT NULL, `coverImageMedium` TEXT NOT NULL, `coverImageLarge` TEXT NOT NULL, `coverImageOriginal` TEXT NOT NULL, `averageRating` TEXT NOT NULL, `ratingRank` INTEGER NOT NULL, `popularityRank` INTEGER NOT NULL, `trendingRank` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `type` TEXT NOT NULL, `synopsis` TEXT NOT NULL, `canonicalTitle` TEXT NOT NULL, `englishTitle` TEXT NOT NULL, `romajiTitle` TEXT NOT NULL, `cjkTitle` TEXT NOT NULL, `subtype` TEXT NOT NULL, `status` TEXT NOT NULL, `posterImageTiny` TEXT NOT NULL, `posterImageSmall` TEXT NOT NULL, `posterImageMedium` TEXT NOT NULL, `posterImageLarge` TEXT NOT NULL, `posterImageOriginal` TEXT NOT NULL, `coverImageTiny` TEXT NOT NULL, `coverImageSmall` TEXT NOT NULL, `coverImageMedium` TEXT NOT NULL, `coverImageLarge` TEXT NOT NULL, `coverImageOriginal` TEXT NOT NULL, `totalLength` INTEGER NOT NULL, `averageRating` TEXT NOT NULL, `ratingRank` INTEGER NOT NULL, `popularityRank` INTEGER NOT NULL, `trendingRank` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -380,6 +385,12 @@
           {
             "fieldPath": "subtype",
             "columnName": "subtype",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -441,6 +452,12 @@
             "fieldPath": "coverImageOriginal",
             "columnName": "coverImageOriginal",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalLength",
+            "columnName": "totalLength",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -561,7 +578,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'de198887436df0e087fe89054d11233d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c24a4f340f655a4767cb409ba614ef8f')"
     ]
   }
 }

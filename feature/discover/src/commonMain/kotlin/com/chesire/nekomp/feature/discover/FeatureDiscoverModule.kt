@@ -2,6 +2,7 @@ package com.chesire.nekomp.feature.discover
 
 import com.chesire.nekomp.core.preferences.createDataStore
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
+import com.chesire.nekomp.feature.discover.core.DeleteItemUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveLibraryUseCase
 import com.chesire.nekomp.feature.discover.core.RetrieveTrendingDataUseCase
@@ -17,6 +18,7 @@ private const val RECENT_SEARCHES_DATASTORE_NAME = "nekomp.recentsearches.prefer
 
 val featureDiscoverModule = module {
     factoryOf(::AddItemToTrackingUseCase)
+    factoryOf(::DeleteItemUseCase)
     factoryOf(::SearchForUseCase)
     singleOf(::RecentSearchesUseCase)
     singleOf(::RetrieveLibraryUseCase)

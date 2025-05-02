@@ -7,7 +7,8 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.Query
 
-private const val FIELDS = "synopsis,titles,canonicalTitle,subtype,posterImage,coverImage"
+private const val FIELDS =
+    "synopsis,titles,canonicalTitle,subtype,status,averageRating,posterImage,coverImage"
 
 // TODO: These calls should support pagination, might be good to add at some point
 interface SearchApi {
@@ -16,7 +17,7 @@ interface SearchApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/anime?fields[anime]=$FIELDS")
+    @GET("api/edge/anime?fields[anime]=$FIELDS,episodeCount")
     suspend fun searchForAnime(
         @Query("filter[text]") title: String
     ): Result<SearchResponseDto, NetworkError>
@@ -25,7 +26,7 @@ interface SearchApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/manga?fields[manga]=$FIELDS")
+    @GET("api/edge/manga?fields[manga]=$FIELDS,chapterCount")
     suspend fun searchForManga(
         @Query("filter[text]") title: String
     ): Result<SearchResponseDto, NetworkError>

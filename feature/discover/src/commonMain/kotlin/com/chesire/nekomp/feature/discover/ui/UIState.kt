@@ -37,9 +37,17 @@ data class DetailState(
 )
 
 data class DiscoverItem(
-    val id: Int,
+    val entryId: Int? = null,
+    val kitsuId: Int,
+    val malId: Int? = null,
+    val aniListId: Int? = null,
     val title: String,
     val type: Type,
+    val subType: String,
+    val status: String,
+    val synopsis: String,
+    val averageRating: String,
+    val totalLength: Int,
     val coverImage: String,
     val posterImage: String,
     val isTracked: Boolean = false,

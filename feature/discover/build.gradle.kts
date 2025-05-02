@@ -39,11 +39,13 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.coroutines)
+            implementation(projects.core.database)
             implementation(projects.core.ext)
             implementation(projects.core.model)
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.core.resources)
+            implementation(projects.core.ui)
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.search)
@@ -67,6 +69,7 @@ kotlin {
             implementation(libs.compose.ui.backhandler)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
+            implementation(libs.kotlin.result)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.touchlab.kermit)
         }

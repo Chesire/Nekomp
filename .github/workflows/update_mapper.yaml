@@ -31,7 +31,7 @@ jobs:
             const { INPUT_FILE, OUTPUT_FILE } = process.env
             const fs = require('fs')
             let input = require(INPUT_FILE)
-            let stringified = JSON.stringify(input, ["mal_id", "kitsu_id"]) 
+            let stringified = JSON.stringify(input, ["mal_id", "kitsu_id", "anilist_id"]) 
             fs.writeFileSync(OUTPUT_FILE, stringified)
 
       - name: Create pull request

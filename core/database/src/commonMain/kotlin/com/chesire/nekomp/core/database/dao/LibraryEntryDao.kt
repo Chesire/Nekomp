@@ -20,4 +20,7 @@ interface LibraryEntryDao {
 
     @Query("DELETE FROM LibraryEntryEntity")
     suspend fun delete()
+
+    @Query("DELETE FROM LibraryEntryEntity WHERE entryId == :entryId")
+    suspend fun delete(entryId: Int)
 }

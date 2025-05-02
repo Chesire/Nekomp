@@ -1,19 +1,18 @@
 package com.chesire.nekomp.feature.discover.ui.pane
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -40,7 +39,7 @@ internal fun TrendingPane(
     onItemClick: (DiscoverItem) -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
         TrendingSection(
@@ -82,20 +81,22 @@ private fun TrendingSection(
     items: ImmutableList<DiscoverItem>,
     onItemClick: (DiscoverItem) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column {
         Text(
             text = title,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
-        Row(
+        LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max)
-                .horizontalScroll(rememberScrollState())
+                .height(180.dp)
                 .safeContentPadding(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items.forEach {
+            items(
+                items = items,
+                key = { it.kitsuId }
+            ) {
                 TrendingDisplay(
                     discoverItem = it,
                     modifier = Modifier.fillMaxHeight(),
@@ -114,14 +115,14 @@ private fun TrendingDisplay(
 ) {
     Card(
         onClick = { onItemClick(discoverItem) },
-        modifier = modifier.width(256.dp).heightIn(min = 140.dp)
+        modifier = modifier.width(256.dp).fillMaxHeight()
     ) {
         Box {
             AsyncImage(
                 model = discoverItem.coverImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
+                contentScale = ContentScale.Crop,
                 alpha = 0.3f
             )
             Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
@@ -146,9 +147,14 @@ private fun TrendingDisplay(
 @Preview
 private fun Preview() {
     val model = DiscoverItem(
-        id = 1,
+        kitsuId = 1,
         title = "Item",
         type = Type.Anime,
+        subType = "OVA",
+        status = "current",
+        synopsis = "",
+        averageRating = "81.13",
+        totalLength = 12,
         coverImage = "",
         posterImage = "",
         isTracked = false,

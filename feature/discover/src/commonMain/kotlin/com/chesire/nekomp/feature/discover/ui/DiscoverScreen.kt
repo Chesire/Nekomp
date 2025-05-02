@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.platform.LocalUriHandler
 import com.chesire.nekomp.feature.discover.ui.pane.DetailPane
 import com.chesire.nekomp.feature.discover.ui.pane.ListPane
 import com.chesire.nekomp.feature.discover.ui.pane.ListPaneType
@@ -56,6 +57,7 @@ private fun Render(
     execute: (ViewAction) -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val uriHandler = LocalUriHandler.current
     val snackbarHostState = remember { SnackbarHostState() }
     val navigator = rememberListDetailPaneScaffoldNavigator<DiscoverItem>()
     val paneState = rememberPaneExpansionState().apply {
@@ -67,6 +69,7 @@ private fun Render(
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
+            is ViewEvent.OpenWebView -> uriHandler.openUri(state.viewEvent.url)
             is ViewEvent.ShowFailure -> snackbarHostState.showSnackbar(state.viewEvent.errorString)
             null -> Unit
         }
@@ -85,7 +88,7 @@ private fun Render(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        SharedTransitionLayout(modifier = Modifier.padding(paddingValues)) {
+        SharedTransitionLayout {
             AnimatedContent(
                 targetState = isListAndDetailVisible,
                 label = "listDetailAnimatedContent"
@@ -102,6 +105,7 @@ private fun Render(
                                 recentSearches = state.recentSearches,
                                 trendingState = state.trendingState,
                                 resultsState = state.resultsState,
+                                modifier = Modifier.padding(paddingValues),
                                 execute = execute,
                                 onItemClick = { item ->
                                     execute(ViewAction.ItemSelect(item))
@@ -121,7 +125,7 @@ private fun Render(
                                 detailState = state.detailState,
                                 showBack = !isListAndDetailVisible &&
                                     navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
-                                trackItem = { execute(ViewAction.TrackItemClick(it)) },
+                                execute = execute,
                                 goBack = {
                                     scope.launch {
                                         navigator.navigateBack()

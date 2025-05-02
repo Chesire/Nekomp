@@ -42,6 +42,7 @@ internal fun ListPane(
     recentSearches: ImmutableList<String>,
     trendingState: TrendingState,
     resultsState: ResultsState,
+    modifier: Modifier = Modifier,
     execute: (ViewAction) -> Unit,
     onItemClick: (DiscoverItem) -> Unit,
     updateListPaneType: (ListPaneType) -> Unit
@@ -62,7 +63,10 @@ internal fun ListPane(
         }
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         Row {
             AnimatedVisibility(
                 visible = listPaneType != ListPaneType.Trending,
