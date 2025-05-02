@@ -308,8 +308,12 @@ class DiscoverViewModel(
             synopsis = synopsis,
             averageRating = averageRating,
             totalLength = totalLength,
-            coverImage = coverImage.toBestImage(_imageQuality),
-            posterImage = posterImage.toBestImage(_imageQuality),
+            coverImage = coverImage
+                .toBestImage(_imageQuality)
+                .ifBlank { posterImage.toBestImage(_imageQuality) },
+            posterImage = posterImage
+                .toBestImage(_imageQuality)
+                .ifBlank { coverImage.toBestImage(_imageQuality) },
             isTracked = matchingId != null
         )
     }
@@ -329,8 +333,12 @@ class DiscoverViewModel(
             synopsis = synopsis,
             averageRating = averageRating,
             totalLength = totalLength,
-            coverImage = coverImage.toBestImage(_imageQuality),
-            posterImage = posterImage.toBestImage(_imageQuality),
+            coverImage = coverImage
+                .toBestImage(_imageQuality)
+                .ifBlank { posterImage.toBestImage(_imageQuality) },
+            posterImage = posterImage
+                .toBestImage(_imageQuality)
+                .ifBlank { coverImage.toBestImage(_imageQuality) },
             isTracked = matchingId != null
         )
     }

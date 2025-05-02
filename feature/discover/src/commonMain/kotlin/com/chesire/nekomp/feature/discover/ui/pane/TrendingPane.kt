@@ -122,7 +122,7 @@ private fun TrendingDisplay(
                 model = discoverItem.coverImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillHeight,
+                contentScale = ContentScale.Crop,
                 alpha = 0.3f
             )
             Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
