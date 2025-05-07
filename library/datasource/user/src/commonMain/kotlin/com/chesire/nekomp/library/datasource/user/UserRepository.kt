@@ -28,6 +28,7 @@ class UserRepository(
         return User(
             id = id,
             name = attributes.name,
+            about = attributes.about,
             avatar = attributes.avatar.toImage(),
             coverImage = attributes.coverImage.toImage()
         )

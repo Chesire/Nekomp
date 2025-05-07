@@ -17,6 +17,7 @@ internal class UserLocalDataSource(private val userDao: UserDao) : UserStorage {
                     User(
                         id = -1,
                         name = "",
+                        about = "",
                         avatar = Image.empty,
                         coverImage = Image.empty,
                         isAuthenticated = false
@@ -25,6 +26,7 @@ internal class UserLocalDataSource(private val userDao: UserDao) : UserStorage {
                     User(
                         id = it.id,
                         name = it.name,
+                        about = it.about,
                         avatar = Image(
                             tiny = it.avatarTiny,
                             small = it.avatarSmall,
@@ -48,6 +50,7 @@ internal class UserLocalDataSource(private val userDao: UserDao) : UserStorage {
         val entity = UserEntity(
             id = user.id,
             name = user.name,
+            about = user.about,
             avatarTiny = user.avatar.tiny,
             avatarSmall = user.avatar.small,
             avatarMedium = user.avatar.medium,

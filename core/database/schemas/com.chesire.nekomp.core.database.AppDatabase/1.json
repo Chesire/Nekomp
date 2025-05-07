@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c24a4f340f655a4767cb409ba614ef8f",
+    "identityHash": "d473a8641a4487a269a043026908b4f8",
     "entities": [
       {
         "tableName": "AiringEntity",
@@ -493,7 +493,7 @@
       },
       {
         "tableName": "UserEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `avatarTiny` TEXT NOT NULL, `avatarSmall` TEXT NOT NULL, `avatarMedium` TEXT NOT NULL, `avatarLarge` TEXT NOT NULL, `avatarOriginal` TEXT NOT NULL, `coverImageTiny` TEXT NOT NULL, `coverImageSmall` TEXT NOT NULL, `coverImageMedium` TEXT NOT NULL, `coverImageLarge` TEXT NOT NULL, `coverImageOriginal` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `about` TEXT NOT NULL, `avatarTiny` TEXT NOT NULL, `avatarSmall` TEXT NOT NULL, `avatarMedium` TEXT NOT NULL, `avatarLarge` TEXT NOT NULL, `avatarOriginal` TEXT NOT NULL, `coverImageTiny` TEXT NOT NULL, `coverImageSmall` TEXT NOT NULL, `coverImageMedium` TEXT NOT NULL, `coverImageLarge` TEXT NOT NULL, `coverImageOriginal` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -504,6 +504,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "about",
+            "columnName": "about",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -578,7 +584,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c24a4f340f655a4767cb409ba614ef8f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd473a8641a4487a269a043026908b4f8')"
     ]
   }
 }

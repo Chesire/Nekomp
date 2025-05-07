@@ -12,6 +12,6 @@ interface UserApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/users?filter[self]=true&fields[users]=id,name,avatar,coverImage")
+    @GET("api/edge/users?filter[self]=true&fields[users]=id,name,about,avatar,coverImage")
     suspend fun retrieveUser(): Result<UserResponseDto, NetworkError>
 }
