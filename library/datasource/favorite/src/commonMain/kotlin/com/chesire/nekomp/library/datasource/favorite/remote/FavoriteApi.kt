@@ -21,4 +21,32 @@ interface FavoriteApi {
     suspend fun retrieveFavoriteCharacters(
         @Query("filter[userId]") userId: Int
     ): Result<RetrieveFavoriteCharacterResponseDto, NetworkError>
+
+    @Headers(
+        "Accept: application/vnd.api+json",
+        "Content-Type: application/vnd.api+json"
+    )
+    @GET(
+        "api/edge/favorites" +
+            "?include=item" +
+            "&filter[itemType]=Anime" +
+            "&fields[anime]=canonicalTitle,posterImage"
+    )
+    suspend fun retrieveFavoriteAnime(
+        @Query("filter[userId]") userId: Int
+    ): Result<String, NetworkError>
+
+    @Headers(
+        "Accept: application/vnd.api+json",
+        "Content-Type: application/vnd.api+json"
+    )
+    @GET(
+        "api/edge/favorites" +
+            "?include=item" +
+            "&filter[itemType]=Manga" +
+            "&fields[manga]=canonicalTitle,posterImage"
+    )
+    suspend fun retrieveFavoriteManga(
+        @Query("filter[userId]") userId: Int
+    ): Result<String, NetworkError>
 }

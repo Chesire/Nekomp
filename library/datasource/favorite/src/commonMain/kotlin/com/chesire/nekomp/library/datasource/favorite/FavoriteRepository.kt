@@ -14,7 +14,7 @@ class FavoriteRepository(
     private val userRepository: UserRepository // TODO: Inject method to get the user id?
 ) {
 
-    suspend fun debugcall(): Result<List<Favorite>, Unit> {
+    suspend fun retrieveCharacterFavorites(): Result<List<Favorite>, Unit> {
         val user = userRepository.user.firstOrNull()
         if (user?.isAuthenticated != true) {
             Logger.e("LibraryRepository") { "No user object, cancelling retrieve" }
@@ -43,5 +43,29 @@ class FavoriteRepository(
         } else {
             Err(Unit)
         }
+    }
+
+    suspend fun retrieveAnimeFavorites(): Result<Unit, Unit> {
+        val user = userRepository.user.firstOrNull()
+        if (user?.isAuthenticated != true) {
+            Logger.e("LibraryRepository") { "No user object, cancelling retrieve" }
+            return Err(Unit) // TODO: Add custom error type
+        }
+
+        val response = favoriteApi.retrieveFavoriteAnime(user.id)
+        Logger.d("Result - $response")
+        return Ok(Unit)
+    }
+
+    suspend fun retrieveMangaFavorites(): Result<Unit, Unit> {
+        val user = userRepository.user.firstOrNull()
+        if (user?.isAuthenticated != true) {
+            Logger.e("LibraryRepository") { "No user object, cancelling retrieve" }
+            return Err(Unit) // TODO: Add custom error type
+        }
+
+        val response = favoriteApi.retrieveFavoriteManga(user.id)
+        Logger.d("Result - $response")
+        return Ok(Unit)
     }
 }
