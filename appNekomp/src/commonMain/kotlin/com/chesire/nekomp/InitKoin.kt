@@ -16,6 +16,7 @@ import com.chesire.nekomp.feature.profile.featureProfileModule
 import com.chesire.nekomp.feature.settings.featureSettingsModule
 import com.chesire.nekomp.library.datasource.airing.libraryAiringModule
 import com.chesire.nekomp.library.datasource.auth.libraryAuthModule
+import com.chesire.nekomp.library.datasource.favorite.libraryFavoriteModule
 import com.chesire.nekomp.library.datasource.library.libraryLibraryModule
 import com.chesire.nekomp.library.datasource.search.librarySearchModule
 import com.chesire.nekomp.library.datasource.trending.libraryTrendingModule
@@ -52,6 +53,7 @@ val koinModules = listOf(
     initializersModule,
     libraryAiringModule,
     libraryAuthModule,
+    libraryFavoriteModule,
     libraryLibraryModule,
     librarySearchModule,
     libraryTrendingModule,
