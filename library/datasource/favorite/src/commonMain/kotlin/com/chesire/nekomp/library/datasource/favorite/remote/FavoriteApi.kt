@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.favorite.remote
 
 import com.chesire.nekomp.core.network.NetworkError
+import com.chesire.nekomp.library.datasource.favorite.remote.model.RetrieveFavoriteCharacterResponseDto
 import com.github.michaelbull.result.Result
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
@@ -15,10 +16,9 @@ interface FavoriteApi {
     @GET(
         "api/edge/favorites" +
             "?include=item" +
-            "&filter[itemType]=Character" +
-            "&fields[item]=canonicalName,image"
+            "&filter[itemType]=Character"
     )
     suspend fun retrieveFavoriteCharacters(
         @Query("filter[userId]") userId: Int
-    ): Result<String, NetworkError>
+    ): Result<RetrieveFavoriteCharacterResponseDto, NetworkError>
 }

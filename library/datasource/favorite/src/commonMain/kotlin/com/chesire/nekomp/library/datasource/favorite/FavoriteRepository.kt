@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.favorite
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.library.datasource.favorite.remote.FavoriteApi
+import com.chesire.nekomp.library.datasource.kitsumodels.toImage
 import com.chesire.nekomp.library.datasource.user.UserRepository
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
@@ -13,14 +14,34 @@ class FavoriteRepository(
     private val userRepository: UserRepository // TODO: Inject method to get the user id?
 ) {
 
-    suspend fun debugcall(): Result<Unit, Unit> {
+    suspend fun debugcall(): Result<List<Favorite>, Unit> {
         val user = userRepository.user.firstOrNull()
         if (user?.isAuthenticated != true) {
             Logger.e("LibraryRepository") { "No user object, cancelling retrieve" }
             return Err(Unit) // TODO: Add custom error type
         }
-        favoriteApi.retrieveFavoriteCharacters(user.id)
 
-        return Ok(Unit)
+        val response = favoriteApi.retrieveFavoriteCharacters(user.id)
+        return if (response.isOk) {
+            val characterMap = response.value.included?.associateBy { it.id } ?: emptyMap()
+            Ok(
+                response.value.data.mapNotNull { favorite ->
+                    val charId = favorite.relationships.item?.data?.id
+                    val character = characterMap[charId]
+                    if (character != null) {
+                        Favorite(
+                            type = FavoriteType.Character,
+                            title = character.attributes.canonicalName,
+                            image = character.attributes.image.toImage(),
+                            rank = favorite.attributes.favRank
+                        )
+                    } else {
+                        null
+                    }
+                }
+            )
+        } else {
+            Err(Unit)
+        }
     }
 }
