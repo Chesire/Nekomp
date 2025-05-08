@@ -5,26 +5,26 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RetrieveFavoriteCharacterResponseDto(
+data class RetrieveFavoriteMediaResponseDto(
     @SerialName("data")
     val data: List<DataDto>,
     @SerialName("included")
-    val included: List<CharacterIncludedDto>?
+    val included: List<MediaIncludedDto>?
 )
 
 @Serializable
-data class CharacterIncludedDto(
+data class MediaIncludedDto(
     @SerialName("id")
     val id: Int,
     @SerialName("attributes")
-    val attributes: CharacterAttributes
+    val attributes: MediaAttributes
 ) {
 
     @Serializable
-    data class CharacterAttributes(
-        @SerialName("canonicalName")
-        val canonicalName: String,
-        @SerialName("image")
-        val image: ImagesDto?
+    data class MediaAttributes(
+        @SerialName("canonicalTitle")
+        val canonicalTitle: String,
+        @SerialName("posterImage")
+        val posterImage: ImagesDto?
     )
 }

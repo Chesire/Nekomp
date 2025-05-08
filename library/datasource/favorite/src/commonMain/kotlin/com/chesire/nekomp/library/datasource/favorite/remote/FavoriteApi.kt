@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.favorite.remote
 
 import com.chesire.nekomp.core.network.NetworkError
 import com.chesire.nekomp.library.datasource.favorite.remote.model.RetrieveFavoriteCharacterResponseDto
+import com.chesire.nekomp.library.datasource.favorite.remote.model.RetrieveFavoriteMediaResponseDto
 import com.github.michaelbull.result.Result
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
@@ -34,7 +35,7 @@ interface FavoriteApi {
     )
     suspend fun retrieveFavoriteAnime(
         @Query("filter[userId]") userId: Int
-    ): Result<String, NetworkError>
+    ): Result<RetrieveFavoriteMediaResponseDto, NetworkError>
 
     @Headers(
         "Accept: application/vnd.api+json",
@@ -48,5 +49,5 @@ interface FavoriteApi {
     )
     suspend fun retrieveFavoriteManga(
         @Query("filter[userId]") userId: Int
-    ): Result<String, NetworkError>
+    ): Result<RetrieveFavoriteMediaResponseDto, NetworkError>
 }

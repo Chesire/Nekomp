@@ -71,7 +71,7 @@ fun App() {
     val coroutineScope = rememberCoroutineScope()
     val repo = getKoin().get<FavoriteRepository>()
     coroutineScope.launch {
-        repo.retrieveAnimeFavorites()
+        repo.retrieveCharacterFavorites()
     }
 
     NekompTheme(useDarkTheme) {
