@@ -22,6 +22,8 @@ data class UserItemDto(
     data class Attributes(
         @SerialName("name")
         val name: String,
+        @SerialName("about")
+        val about: String,
         @SerialName("avatar")
         val avatar: ImagesDto?,
         @SerialName("coverImage")

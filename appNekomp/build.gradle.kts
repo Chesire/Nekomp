@@ -62,6 +62,7 @@ kotlin {
             implementation(projects.feature.settings)
             implementation(projects.library.datasource.airing)
             implementation(projects.library.datasource.auth)
+            implementation(projects.library.datasource.favorite)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.search)
             implementation(projects.library.datasource.trending)
