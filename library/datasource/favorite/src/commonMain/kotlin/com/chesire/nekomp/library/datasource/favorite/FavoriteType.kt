@@ -5,4 +5,3 @@ enum class FavoriteType {
     Anime,
     Manga
 }
-

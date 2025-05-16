@@ -39,5 +39,4 @@ val libraryFavoriteModule = module {
         }.build().createFavoriteApi()
     }
     singleOf(::FavoriteRepository)
-
 }
