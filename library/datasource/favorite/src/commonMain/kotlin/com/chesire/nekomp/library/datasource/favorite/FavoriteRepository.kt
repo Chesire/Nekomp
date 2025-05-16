@@ -45,6 +45,8 @@ class FavoriteRepository(
             )
         } else {
             Err(Unit)
+        }.onSuccess {
+            // TODO: store in storage
         }
     }
 
