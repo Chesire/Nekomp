@@ -44,15 +44,10 @@ kotlin {
             implementation(projects.library.datasource.kitsumodels)
             implementation(projects.library.datasource.user)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.bundles.ktorfit)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.ktor.client.auth)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.serialization)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktorfit.converters.response)
-            implementation(libs.ktorfit.lib)
             implementation(libs.touchlab.kermit)
         }
         commonTest.dependencies {

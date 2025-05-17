@@ -3,6 +3,8 @@ package com.chesire.nekomp.core.database
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.chesire.nekomp.core.database.dao.AiringDao
+import com.chesire.nekomp.core.database.dao.ConsumedDao
+import com.chesire.nekomp.core.database.dao.FavoriteDao
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
 import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.database.dao.TrendingDao
@@ -23,6 +25,8 @@ val databaseModule = module {
             .build()
     }
     single<AiringDao> { get<AppDatabase>().getAiringDao() }
+    single<ConsumedDao> { get<AppDatabase>().getConsumedDao() }
+    single<FavoriteDao> { get<AppDatabase>().getFavoriteDao() }
     single<LibraryEntryDao> { get<AppDatabase>().getLibraryEntryDao() }
     single<MappingDao> { get<AppDatabase>().getMappingDao() }
     single<TrendingDao> { get<AppDatabase>().getTrendingDao() }
