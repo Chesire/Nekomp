@@ -5,6 +5,7 @@ import com.chesire.nekomp.core.network.plugin.installAuth
 import com.chesire.nekomp.core.network.plugin.installContentNegotiation
 import com.chesire.nekomp.core.network.plugin.installLogging
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
+import com.chesire.nekomp.library.datasource.favorite.local.FavoriteStorage
 import com.chesire.nekomp.library.datasource.favorite.remote.FavoriteApi
 import com.chesire.nekomp.library.datasource.favorite.remote.createFavoriteApi
 import de.jensklingenberg.ktorfit.ktorfitBuilder
@@ -39,4 +40,5 @@ val libraryFavoriteModule = module {
         }.build().createFavoriteApi()
     }
     singleOf(::FavoriteRepository)
+    singleOf(::FavoriteStorage)
 }

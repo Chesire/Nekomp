@@ -34,8 +34,13 @@ class FavoriteStorage(private val favoriteDao: FavoriteDao) {
                 .map { it.toFavorite(FavoriteType.Manga) }
         }
 
-    suspend fun updateFavorites() {
+    suspend fun updateFavorites(newFavorites: List<Favorite>) {
+        val models = newFavorites.map { it.toFavoriteEntity() }
+        favoriteDao.upsert(models)
+    }
 
+    suspend fun clearLegacyData(type: FavoriteType) {
+        favoriteDao.deleteAllOf(type.name)
     }
 
     private fun FavoriteEntity.toFavorite(type: FavoriteType): Favorite {
@@ -49,6 +54,19 @@ class FavoriteStorage(private val favoriteDao: FavoriteDao) {
                 large = posterImageLarge,
                 original = posterImageOriginal
             ),
+            rank = rank
+        )
+    }
+
+    private fun Favorite.toFavoriteEntity(): FavoriteEntity {
+        return FavoriteEntity(
+            type = type.name,
+            title = title,
+            posterImageTiny = image.tiny,
+            posterImageSmall = image.small,
+            posterImageMedium = image.medium,
+            posterImageLarge = image.large,
+            posterImageOriginal = image.original,
             rank = rank
         )
     }
