@@ -1,5 +1,6 @@
 package com.chesire.nekomp.library.datasource.favorite.local
 
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.dao.FavoriteDao
 import com.chesire.nekomp.core.database.entity.FavoriteEntity
 import com.chesire.nekomp.core.model.Image
@@ -40,7 +41,9 @@ class FavoriteStorage(private val favoriteDao: FavoriteDao) {
     }
 
     suspend fun clearLegacyData(type: FavoriteType) {
-        favoriteDao.deleteAllOf(type.name)
+        Logger.d("FavoriteStorage") { "Executing call to clear favorites dao of [$type]" }
+        val amount = favoriteDao.deleteAllOf(type.name)
+        Logger.d("FavoriteStorage") { "Finished delete call, cleared $amount entries" }
     }
 
     private fun FavoriteEntity.toFavorite(type: FavoriteType): Favorite {
