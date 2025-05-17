@@ -17,7 +17,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
@@ -43,13 +42,10 @@ import com.chesire.nekomp.feature.login.ui.LoginScreen
 import com.chesire.nekomp.feature.profile.ui.ProfileScreen
 import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
-import com.chesire.nekomp.library.datasource.stats.StatsRepository
 import com.chesire.nekomp.navigation.DashboardDestination
 import com.chesire.nekomp.navigation.OriginScreen
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.getKoin
 import org.koin.compose.koinInject
 
 @Composable
@@ -66,12 +62,6 @@ fun App() {
         theme == Theme.Light -> false
         theme == Theme.Dark -> true
         else -> false
-    }
-
-    val coroutineScope = rememberCoroutineScope()
-    val repo = getKoin().get<StatsRepository>()
-    coroutineScope.launch {
-        repo.retrieveConsumedStats()
     }
 
     NekompTheme(useDarkTheme) {
