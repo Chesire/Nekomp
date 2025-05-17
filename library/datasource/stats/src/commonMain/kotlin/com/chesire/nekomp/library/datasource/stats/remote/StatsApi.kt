@@ -13,9 +13,11 @@ interface StatsApi {
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"
     )
-    @GET("api/edge/stats")
+    @GET(
+        "api/edge/stats" +
+            "?filter[kind]=anime-amount-consumed,manga-amount-consumed"
+    )
     suspend fun retrieveStats(
-        @Query("filter[userId]") userId: Int,
-        @Query("filter[kind]") kind: String // See StatsKind
+        @Query("filter[userId]") userId: Int
     ): Result<RetrieveStatsResponseDto, NetworkError>
 }

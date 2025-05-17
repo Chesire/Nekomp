@@ -19,12 +19,14 @@ data class DataDto(
 
 @Serializable
 data class AttributesDto(
+    @SerialName("kind")
+    val kind: String,
     @SerialName("statsData")
-    val statsData: StatsDataDto
+    val statsData: ConsumedDataDto
 )
 
 @Serializable
-data class StatsDataDto(
+data class ConsumedDataDto(
     @SerialName("time")
     val time: Int,
     @SerialName("media")

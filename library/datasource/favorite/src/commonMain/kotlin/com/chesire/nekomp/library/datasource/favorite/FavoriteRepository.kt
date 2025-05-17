@@ -20,9 +20,7 @@ class FavoriteRepository(
 ) {
 
     val favoriteCharacters = favoriteStorage.favoriteCharacters
-
     val favoriteAnime = favoriteStorage.favoriteAnime
-
     val favoriteManga = favoriteStorage.favoriteManga
 
     suspend fun retrieveCharacterFavorites(): Result<List<Favorite>, Unit> {

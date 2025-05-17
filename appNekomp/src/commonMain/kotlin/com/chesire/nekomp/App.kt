@@ -71,7 +71,7 @@ fun App() {
     val coroutineScope = rememberCoroutineScope()
     val repo = getKoin().get<StatsRepository>()
     coroutineScope.launch {
-        repo.test()
+        repo.retrieveConsumedStats()
     }
 
     NekompTheme(useDarkTheme) {

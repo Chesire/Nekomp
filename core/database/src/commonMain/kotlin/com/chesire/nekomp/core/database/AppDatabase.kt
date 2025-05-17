@@ -5,12 +5,14 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import com.chesire.nekomp.core.database.dao.AiringDao
+import com.chesire.nekomp.core.database.dao.ConsumedDao
 import com.chesire.nekomp.core.database.dao.FavoriteDao
 import com.chesire.nekomp.core.database.dao.LibraryEntryDao
 import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.database.dao.TrendingDao
 import com.chesire.nekomp.core.database.dao.UserDao
 import com.chesire.nekomp.core.database.entity.AiringEntity
+import com.chesire.nekomp.core.database.entity.ConsumedDataEntity
 import com.chesire.nekomp.core.database.entity.FavoriteEntity
 import com.chesire.nekomp.core.database.entity.LibraryEntryEntity
 import com.chesire.nekomp.core.database.entity.MappingEntity
@@ -20,6 +22,7 @@ import com.chesire.nekomp.core.database.entity.UserEntity
 @Database(
     entities = [
         AiringEntity::class,
+        ConsumedDataEntity::class,
         FavoriteEntity::class,
         LibraryEntryEntity::class,
         MappingEntity::class,
@@ -31,6 +34,7 @@ import com.chesire.nekomp.core.database.entity.UserEntity
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getAiringDao(): AiringDao
+    abstract fun getConsumedDao(): ConsumedDao
     abstract fun getFavoriteDao(): FavoriteDao
     abstract fun getLibraryEntryDao(): LibraryEntryDao
     abstract fun getMappingDao(): MappingDao

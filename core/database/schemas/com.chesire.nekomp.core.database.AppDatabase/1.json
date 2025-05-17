@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fc430dd062adc268155ee83ddbfb9e21",
+    "identityHash": "68b4b60be1aaade64d0eecf6c2db2dba",
     "entities": [
       {
         "tableName": "AiringEntity",
@@ -120,6 +120,48 @@
           "autoGenerate": false,
           "columnNames": [
             "malId"
+          ]
+        }
+      },
+      {
+        "tableName": "ConsumedDataEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`type` TEXT NOT NULL, `time` INTEGER NOT NULL, `media` INTEGER NOT NULL, `units` INTEGER NOT NULL, `completed` INTEGER NOT NULL, PRIMARY KEY(`type`))",
+        "fields": [
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "media",
+            "columnName": "media",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "units",
+            "columnName": "units",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "completed",
+            "columnName": "completed",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "type"
           ]
         }
       },
@@ -650,7 +692,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fc430dd062adc268155ee83ddbfb9e21')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '68b4b60be1aaade64d0eecf6c2db2dba')"
     ]
   }
 }
