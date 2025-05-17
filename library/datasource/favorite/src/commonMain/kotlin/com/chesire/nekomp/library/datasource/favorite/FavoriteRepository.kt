@@ -19,6 +19,12 @@ class FavoriteRepository(
     private val userRepository: UserRepository // TODO: Inject method to get the user id?
 ) {
 
+    val favoriteCharacters = favoriteStorage.favoriteCharacters
+
+    val favoriteAnime = favoriteStorage.favoriteAnime
+
+    val favoriteManga = favoriteStorage.favoriteManga
+
     suspend fun retrieveCharacterFavorites(): Result<List<Favorite>, Unit> {
         val user = userRepository.user.firstOrNull()
         if (user?.isAuthenticated != true) {
