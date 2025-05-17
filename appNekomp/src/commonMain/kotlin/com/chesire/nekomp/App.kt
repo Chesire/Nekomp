@@ -43,7 +43,7 @@ import com.chesire.nekomp.feature.login.ui.LoginScreen
 import com.chesire.nekomp.feature.profile.ui.ProfileScreen
 import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
-import com.chesire.nekomp.library.datasource.favorite.FavoriteRepository
+import com.chesire.nekomp.library.datasource.stats.StatsRepository
 import com.chesire.nekomp.navigation.DashboardDestination
 import com.chesire.nekomp.navigation.OriginScreen
 import kotlinx.coroutines.launch
@@ -69,9 +69,9 @@ fun App() {
     }
 
     val coroutineScope = rememberCoroutineScope()
-    val repo = getKoin().get<FavoriteRepository>()
+    val repo = getKoin().get<StatsRepository>()
     coroutineScope.launch {
-        repo.retrieveCharacterFavorites()
+        repo.test()
     }
 
     NekompTheme(useDarkTheme) {
