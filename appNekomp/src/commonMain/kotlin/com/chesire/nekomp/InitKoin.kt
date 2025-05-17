@@ -19,6 +19,7 @@ import com.chesire.nekomp.library.datasource.auth.libraryAuthModule
 import com.chesire.nekomp.library.datasource.favorite.libraryFavoriteModule
 import com.chesire.nekomp.library.datasource.library.libraryLibraryModule
 import com.chesire.nekomp.library.datasource.search.librarySearchModule
+import com.chesire.nekomp.library.datasource.stats.libraryStatsModule
 import com.chesire.nekomp.library.datasource.trending.libraryTrendingModule
 import com.chesire.nekomp.library.datasource.user.libraryUserModule
 import kotlin.experimental.ExperimentalObjCRefinement
@@ -56,6 +57,7 @@ val koinModules = listOf(
     libraryFavoriteModule,
     libraryLibraryModule,
     librarySearchModule,
+    libraryStatsModule,
     libraryTrendingModule,
     libraryUserModule,
     logoutModule,
