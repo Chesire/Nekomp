@@ -70,7 +70,7 @@ private fun Render(
         topBar = {
             Box {
                 AsyncImage(
-                    model = state.coverImage,
+                    model = "",
                     contentDescription = null,
                     modifier = Modifier.align(Alignment.TopCenter)
                         .heightIn(max = TopAppBarDefaults.LargeAppBarExpandedHeight)
