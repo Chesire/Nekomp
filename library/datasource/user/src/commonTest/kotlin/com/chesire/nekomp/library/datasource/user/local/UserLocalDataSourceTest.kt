@@ -47,6 +47,7 @@ class UserLocalDataSourceTest : FunSpec({
         val userFake = User(
             id = 2784,
             name = "",
+            about = "",
             avatar = Image(
                 tiny = "c",
                 small = "",

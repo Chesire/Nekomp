@@ -29,10 +29,8 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
         }
 
     suspend fun updateTrending(newTrending: List<TrendingItem>) {
-        trendingDao.apply {
-            val models = newTrending.map { it.toTrendingEntity() }
-            upsert(models)
-        }
+        val models = newTrending.map { it.toTrendingEntity() }
+        trendingDao.upsert(models)
     }
 
     suspend fun clearLegacyData() {

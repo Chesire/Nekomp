@@ -28,6 +28,7 @@ class UserRepositoryTest : FunSpec({
                 id = 123,
                 attributes = UserItemDto.Attributes(
                     name = "Name",
+                    about = "About",
                     avatar = null,
                     coverImage = null
                 )

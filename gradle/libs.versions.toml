@@ -92,3 +92,12 @@ kotest = [
     "kotest-framework-datatest",
     "kotest-framework-engine"
 ]
+ktorfit = [
+    "ktor-client-auth",
+    "ktor-client-content-negotiation",
+    "ktor-client-logging",
+    "ktor-client-serialization",
+    "ktor-serialization-kotlinx-json",
+    "ktorfit-converters-response",
+    "ktorfit-lib"
+]
