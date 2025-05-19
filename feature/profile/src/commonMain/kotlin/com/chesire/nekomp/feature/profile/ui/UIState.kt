@@ -21,10 +21,10 @@ data class UserData(
 
 @Immutable
 data class HighlightsData(
-    val episodesWatched: Int = 0,
-    val chaptersRead: Int = 0,
+    val episodesWatched: String = "",
+    val chaptersRead: String = "",
     val timeSpentWatching: String = "",
-    val seriesCompleted: Int = 0
+    val seriesCompleted: String = ""
 )
 
 @Immutable

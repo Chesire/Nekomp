@@ -45,10 +45,10 @@ class ProfileViewModel(
             statsRepository.consumedManga
         ) { animeStats, mangaStats ->
             HighlightsData(
-                episodesWatched = animeStats.units,
-                chaptersRead = mangaStats.units,
+                episodesWatched = animeStats.units.toString(),
+                chaptersRead = mangaStats.units.toString(),
                 timeSpentWatching = animeStats.time.toString(), // TODO: Convert to proper string
-                seriesCompleted = animeStats.completed
+                seriesCompleted = animeStats.completed.toString()
             )
         }
     private val _backlogData: Flow<BacklogData>
