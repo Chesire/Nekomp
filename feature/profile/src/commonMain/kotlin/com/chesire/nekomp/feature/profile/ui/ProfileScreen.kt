@@ -5,6 +5,7 @@ package com.chesire.nekomp.feature.profile.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,6 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
+import kotlinx.collections.immutable.ImmutableList
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_content_description_settings
 import org.jetbrains.compose.resources.stringResource
@@ -235,7 +239,35 @@ private fun BacklogBlock(backlogData: BacklogData) {
 
 @Composable
 private fun FavoritesBlock(favoritesData: FavoritesData) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        FavoriteSection("Favorite Character", favoritesData.favoriteCharacters)
+        FavoriteSection("Favorite Anime", favoritesData.favoriteAnime)
+        FavoriteSection("Favorite Manga", favoritesData.favoriteManga)
+    }
+}
 
+@Composable
+private fun FavoriteSection(title: String, listData: ImmutableList<String>) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = title,
+            modifier = Modifier.padding(horizontal = 16.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        LazyRow(
+            contentPadding = PaddingValues(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(listData) { item ->
+                AsyncImage(
+                    item,
+                    null,
+                    modifier = Modifier.clip(RoundedCornerShape(4.dp))
+                )
+            }
+        }
+    }
 }
 
 @Composable
