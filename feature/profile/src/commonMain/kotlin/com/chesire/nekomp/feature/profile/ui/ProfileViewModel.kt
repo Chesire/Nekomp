@@ -11,6 +11,7 @@ import com.chesire.nekomp.library.datasource.favorite.FavoriteRepository
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
 import com.chesire.nekomp.library.datasource.stats.StatsRepository
 import com.chesire.nekomp.library.datasource.user.UserRepository
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +48,7 @@ class ProfileViewModel(
             HighlightsData(
                 episodesWatched = animeStats.units.toString(),
                 chaptersRead = mangaStats.units.toString(),
-                timeSpentWatching = animeStats.time.toString(), // TODO: Convert to proper string
+                timeSpentWatching = animeStats.time.convertToDateString(),
                 seriesCompleted = animeStats.completed.toString()
             )
         }
@@ -114,5 +115,27 @@ class ProfileViewModel(
 
     private fun onObservedViewEvent() {
         _viewEvent.update { null }
+    }
+
+    private fun Int.convertToDateString(): String {
+        if (this <= 0) {
+            return "0 hours"
+        }
+
+        val duration = this.seconds
+        val parts = mutableListOf<String>()
+        duration.toComponents { days, hours, minutes, seconds, _ ->
+            if (days > 0) {
+                parts.add("$days day${if (days > 1) "s" else ""}")
+            }
+            if (hours > 0) {
+                parts.add("$hours hour${if (hours > 1) "s" else ""}")
+            }
+            if (parts.isEmpty()) {
+                parts.add("0 hours")
+            }
+        }
+
+        return parts.joinToString(", ")
     }
 }
