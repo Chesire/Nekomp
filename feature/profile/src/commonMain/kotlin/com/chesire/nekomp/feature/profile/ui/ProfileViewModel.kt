@@ -59,10 +59,9 @@ class ProfileViewModel(
             val plannedManga = manga.count { it.entryStatus == EntryStatus.Planned }
             BacklogData(
                 animeProgress = "$plannedAnime/${anime.count() - plannedAnime}",
-                animePercent = anime.count().toFloat() / plannedAnime.toFloat(),
+                animePercent = plannedAnime.toFloat() / anime.count().toFloat() * 100,
                 mangaProgress = "$plannedManga/${manga.count() - plannedManga}",
-                mangaPercent = manga.count()
-                    .toFloat() / plannedManga.toFloat() // TODO: These probably aren't right
+                mangaPercent = plannedManga.toFloat() / manga.count().toFloat() * 100
             )
         }
     private val _favoritesData: Flow<FavoritesData>
