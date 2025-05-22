@@ -267,8 +267,8 @@ private fun FavoriteSection(title: String, listData: ImmutableList<String>) {
         ) {
             items(listData) { item ->
                 AsyncImage(
-                    item,
-                    null,
+                    model = item,
+                    contentDescription = null,
                     modifier = Modifier.clip(RoundedCornerShape(4.dp))
                 )
             }
@@ -289,7 +289,9 @@ private fun Preview() {
             chaptersRead = "300",
             timeSpentWatching = "3d 21h",
             seriesCompleted = "4"
-        )
+        ),
+        backlog = BacklogData(),
+        favorites = FavoritesData()
     )
     Render(
         state = state,
