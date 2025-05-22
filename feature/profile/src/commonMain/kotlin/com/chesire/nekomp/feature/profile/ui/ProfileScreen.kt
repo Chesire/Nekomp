@@ -240,9 +240,15 @@ private fun BacklogBlock(backlogData: BacklogData) {
 @Composable
 private fun FavoritesBlock(favoritesData: FavoritesData) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        FavoriteSection("Favorite Character", favoritesData.favoriteCharacters)
-        FavoriteSection("Favorite Anime", favoritesData.favoriteAnime)
-        FavoriteSection("Favorite Manga", favoritesData.favoriteManga)
+        if (favoritesData.favoriteCharacters.isNotEmpty()) {
+            FavoriteSection("Favorite Character", favoritesData.favoriteCharacters)
+        }
+        if (favoritesData.favoriteAnime.isNotEmpty()) {
+            FavoriteSection("Favorite Anime", favoritesData.favoriteAnime)
+        }
+        if (favoritesData.favoriteManga.isNotEmpty()) {
+            FavoriteSection("Favorite Manga", favoritesData.favoriteManga)
+        }
     }
 }
 
