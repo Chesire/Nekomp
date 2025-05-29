@@ -83,7 +83,6 @@ class ProfileViewModel(
             )
         }
 
-    // TODO: Check if this combine takes awhile to run or not, hopefully it doesn't stall the UI
     val uiState = combine(
         _userData,
         _highlightsData,
