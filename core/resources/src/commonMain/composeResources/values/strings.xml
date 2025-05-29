@@ -51,7 +51,15 @@
     <string name="discover_detail_hide_synopsis_content_description">Hide full synopsis</string>
 
     <!-- Profile -->
-    
+    <string name="profile_highlights_episodes_watched">Episodes watched</string>
+    <string name="profile_highlights_chapters_read">Chapters read</string>
+    <string name="profile_highlights_time_spent_watching">Time spent watching</string>
+    <string name="profile_highlights_series_completed">Series completed</string>
+    <string name="profile_completed_completed_anime">Completed anime</string>
+    <string name="profile_completed_completed_manga">Completed manga</string>
+    <string name="profile_favorites_favorite_character">Favorite character</string>
+    <string name="profile_favorites_favorite_anime">Favorite anime</string>
+    <string name="profile_favorites_favorite_manga">Favorite manga</string>
 
     <!-- Settings -->
     <string name="settings_theme_title">Theme</string>

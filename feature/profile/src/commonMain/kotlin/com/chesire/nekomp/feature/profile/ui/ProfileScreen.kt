@@ -52,6 +52,15 @@ import com.chesire.nekomp.core.resources.NekoRes
 import kotlinx.collections.immutable.ImmutableList
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_content_description_settings
+import nekomp.core.resources.generated.resources.profile_completed_completed_anime
+import nekomp.core.resources.generated.resources.profile_completed_completed_manga
+import nekomp.core.resources.generated.resources.profile_favorites_favorite_anime
+import nekomp.core.resources.generated.resources.profile_favorites_favorite_character
+import nekomp.core.resources.generated.resources.profile_favorites_favorite_manga
+import nekomp.core.resources.generated.resources.profile_highlights_chapters_read
+import nekomp.core.resources.generated.resources.profile_highlights_episodes_watched
+import nekomp.core.resources.generated.resources.profile_highlights_series_completed
+import nekomp.core.resources.generated.resources.profile_highlights_time_spent_watching
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -166,17 +175,17 @@ private fun HighlightsBlock(highlightsData: HighlightsData) {
         shape = RoundedCornerShape(8.dp)
     ) {
         HighlightsRow(
-            title1 = "Episodes Watched",
+            title1 = stringResource(NekoRes.string.profile_highlights_episodes_watched),
             text1 = highlightsData.episodesWatched,
-            title2 = "Chapters Read",
+            title2 = stringResource(NekoRes.string.profile_highlights_chapters_read),
             text2 = highlightsData.chaptersRead,
             modifier = Modifier.weight(1f)
         )
         HorizontalDivider()
         HighlightsRow(
-            title1 = "Time spent watching",
+            title1 = stringResource(NekoRes.string.profile_highlights_time_spent_watching),
             text1 = highlightsData.timeSpentWatching,
-            title2 = "Series completed",
+            title2 = stringResource(NekoRes.string.profile_highlights_series_completed),
             text2 = highlightsData.seriesCompleted,
             modifier = Modifier.weight(1f)
         )
@@ -242,12 +251,12 @@ private fun CompletedBlock(completedData: CompletedData) {
         shape = RoundedCornerShape(8.dp)
     ) {
         CompletedSection(
-            title = "Completed anime",
+            title = stringResource(NekoRes.string.profile_completed_completed_anime),
             progress = completedData.animeProgress,
             percent = completedData.animePercent
         )
         CompletedSection(
-            title = "Completed manga",
+            title = stringResource(NekoRes.string.profile_completed_completed_manga),
             progress = completedData.mangaProgress,
             percent = completedData.mangaPercent
         )
@@ -284,13 +293,22 @@ private fun CompletedSection(title: String, progress: String, percent: Float) {
 private fun FavoritesBlock(favoritesData: FavoritesData) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         if (favoritesData.favoriteCharacters.isNotEmpty()) {
-            FavoriteSection("Favorite Character", favoritesData.favoriteCharacters)
+            FavoriteSection(
+                title = stringResource(NekoRes.string.profile_favorites_favorite_character),
+                listData = favoritesData.favoriteCharacters
+            )
         }
         if (favoritesData.favoriteAnime.isNotEmpty()) {
-            FavoriteSection("Favorite Anime", favoritesData.favoriteAnime)
+            FavoriteSection(
+                title = stringResource(NekoRes.string.profile_favorites_favorite_anime),
+                listData = favoritesData.favoriteAnime
+            )
         }
         if (favoritesData.favoriteManga.isNotEmpty()) {
-            FavoriteSection("Favorite Manga", favoritesData.favoriteManga)
+            FavoriteSection(
+                title = stringResource(NekoRes.string.profile_favorites_favorite_manga),
+                listData = favoritesData.favoriteManga
+            )
         }
     }
 }
