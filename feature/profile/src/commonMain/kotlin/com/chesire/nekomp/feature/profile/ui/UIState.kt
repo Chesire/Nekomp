@@ -8,8 +8,7 @@ data class UIState(
     val user: UserData = UserData(),
     val highlights: HighlightsData = HighlightsData(),
     val backlog: CompletedData = CompletedData(),
-    val favorites: FavoritesData = FavoritesData(),
-    val viewEvent: ViewEvent? = null
+    val favorites: FavoritesData = FavoritesData()
 )
 
 @Immutable

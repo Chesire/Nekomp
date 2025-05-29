@@ -15,13 +15,11 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 
 class ProfileViewModel(
     private val userRepository: UserRepository,
@@ -84,7 +82,6 @@ class ProfileViewModel(
                 favoriteManga = favManga.uiMap()
             )
         }
-    private val _viewEvent = MutableStateFlow<ViewEvent?>(null)
 
     // TODO: Check if this combine takes awhile to run or not, hopefully it doesn't stall the UI
     val uiState = combine(
@@ -92,30 +89,18 @@ class ProfileViewModel(
         _highlightsData,
         _completedData,
         _favoritesData,
-        _viewEvent
-    ) { userData, highlightsData, backlogData, favoritesData, viewEvent ->
+    ) { userData, highlightsData, backlogData, favoritesData ->
         UIState(
             user = userData,
             highlights = highlightsData,
             backlog = backlogData,
-            favorites = favoritesData,
-            viewEvent = viewEvent
+            favorites = favoritesData
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = UIState()
     )
-
-    fun execute(action: ViewAction) {
-        when (action) {
-            ViewAction.ObservedViewEvent -> onObservedViewEvent()
-        }
-    }
-
-    private fun onObservedViewEvent() {
-        _viewEvent.update { null }
-    }
 
     private fun Int.convertToDateString(): String {
         if (this <= 0) {

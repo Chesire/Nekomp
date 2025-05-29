@@ -4,63 +4,33 @@ package com.chesire.nekomp.feature.profile.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
-import kotlinx.collections.immutable.ImmutableList
+import com.chesire.nekomp.feature.profile.ui.component.CompletedComponent
+import com.chesire.nekomp.feature.profile.ui.component.FavoritesComponent
+import com.chesire.nekomp.feature.profile.ui.component.HighlightsComponent
+import com.chesire.nekomp.feature.profile.ui.component.UserComponent
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_content_description_settings
-import nekomp.core.resources.generated.resources.profile_completed_completed_anime
-import nekomp.core.resources.generated.resources.profile_completed_completed_manga
-import nekomp.core.resources.generated.resources.profile_favorites_favorite_anime
-import nekomp.core.resources.generated.resources.profile_favorites_favorite_character
-import nekomp.core.resources.generated.resources.profile_favorites_favorite_manga
-import nekomp.core.resources.generated.resources.profile_highlights_chapters_read
-import nekomp.core.resources.generated.resources.profile_highlights_episodes_watched
-import nekomp.core.resources.generated.resources.profile_highlights_series_completed
-import nekomp.core.resources.generated.resources.profile_highlights_time_spent_watching
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -76,8 +46,7 @@ fun ProfileScreen(
     Render(
         state = state,
         goBack = goBack,
-        navigateToSettings = navigateToSettings,
-        execute = { viewModel.execute(it) }
+        navigateToSettings = navigateToSettings
     )
 }
 
@@ -85,8 +54,7 @@ fun ProfileScreen(
 private fun Render(
     state: UIState,
     goBack: () -> Unit,
-    navigateToSettings: () -> Unit,
-    execute: (ViewAction) -> Unit
+    navigateToSettings: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -106,14 +74,16 @@ private fun Render(
                     IconButton(onClick = navigateToSettings) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(NekoRes.string.nav_content_description_settings)
+                            contentDescription = stringResource(
+                                NekoRes.string.nav_content_description_settings
+                            )
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = Color.Transparent
-                ),
+                )
             )
         }
     ) { innerPadding ->
@@ -124,215 +94,10 @@ private fun Render(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            UserBlock(state.user)
-            HighlightsBlock(state.highlights)
-            CompletedBlock(state.backlog)
-            FavoritesBlock(state.favorites)
-            // Big stats block, can probably do this later
-        }
-    }
-}
-
-@Composable
-private fun UserBlock(userData: UserData) {
-    Row(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        AsyncImage(
-            model = userData.avatarImage,
-            contentDescription = null,
-            modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape),
-            placeholder = rememberVectorPainter(Icons.Default.Person),
-            error = rememberVectorPainter(Icons.Default.Person)
-        )
-        Column {
-            Text(
-                text = userData.name,
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = userData.about,
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    }
-}
-
-@Composable
-private fun HighlightsBlock(highlightsData: HighlightsData) {
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth()
-            .height(IntrinsicSize.Max),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        HighlightsRow(
-            title1 = stringResource(NekoRes.string.profile_highlights_episodes_watched),
-            text1 = highlightsData.episodesWatched,
-            title2 = stringResource(NekoRes.string.profile_highlights_chapters_read),
-            text2 = highlightsData.chaptersRead,
-            modifier = Modifier.weight(1f)
-        )
-        HorizontalDivider()
-        HighlightsRow(
-            title1 = stringResource(NekoRes.string.profile_highlights_time_spent_watching),
-            text1 = highlightsData.timeSpentWatching,
-            title2 = stringResource(NekoRes.string.profile_highlights_series_completed),
-            text2 = highlightsData.seriesCompleted,
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
-
-@Composable
-private fun HighlightsRow(
-    title1: String,
-    text1: String,
-    title2: String,
-    text2: String,
-    modifier: Modifier = Modifier
-) {
-    Row(modifier = modifier) {
-        HighlightsSection(
-            title = title1,
-            text = text1,
-            modifier = Modifier.weight(1f)
-        )
-        VerticalDivider()
-        HighlightsSection(
-            title = title2,
-            text = text2,
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
-
-@Composable
-private fun HighlightsSection(
-    title: String,
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .heightIn(min = 120.dp)
-            .padding(8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = title,
-            modifier = Modifier.padding(bottom = 8.dp),
-            style = MaterialTheme.typography.titleSmall,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun CompletedBlock(completedData: CompletedData) {
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        CompletedSection(
-            title = stringResource(NekoRes.string.profile_completed_completed_anime),
-            progress = completedData.animeProgress,
-            percent = completedData.animePercent
-        )
-        CompletedSection(
-            title = stringResource(NekoRes.string.profile_completed_completed_manga),
-            progress = completedData.mangaProgress,
-            percent = completedData.mangaPercent
-        )
-    }
-}
-
-@Composable
-private fun CompletedSection(title: String, progress: String, percent: Float) {
-    Column(
-        modifier = Modifier.padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = progress,
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.titleSmall,
-                textAlign = TextAlign.End
-            )
-        }
-        LinearProgressIndicator(
-            progress = { percent },
-            modifier = Modifier.fillMaxWidth(),
-            drawStopIndicator = {}
-        )
-    }
-}
-
-@Composable
-private fun FavoritesBlock(favoritesData: FavoritesData) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        if (favoritesData.favoriteCharacters.isNotEmpty()) {
-            FavoriteSection(
-                title = stringResource(NekoRes.string.profile_favorites_favorite_character),
-                listData = favoritesData.favoriteCharacters
-            )
-        }
-        if (favoritesData.favoriteAnime.isNotEmpty()) {
-            FavoriteSection(
-                title = stringResource(NekoRes.string.profile_favorites_favorite_anime),
-                listData = favoritesData.favoriteAnime
-            )
-        }
-        if (favoritesData.favoriteManga.isNotEmpty()) {
-            FavoriteSection(
-                title = stringResource(NekoRes.string.profile_favorites_favorite_manga),
-                listData = favoritesData.favoriteManga
-            )
-        }
-    }
-}
-
-@Composable
-private fun FavoriteSection(title: String, listData: ImmutableList<String>) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(
-            text = title,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        LazyRow(
-            contentPadding = PaddingValues(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(listData) { item ->
-                AsyncImage(
-                    model = item,
-                    contentDescription = null,
-                    modifier = Modifier.clip(RoundedCornerShape(4.dp))
-                )
-            }
+            UserComponent(state.user)
+            HighlightsComponent(state.highlights)
+            CompletedComponent(state.backlog)
+            FavoritesComponent(state.favorites)
         }
     }
 }
@@ -362,7 +127,6 @@ private fun Preview() {
     Render(
         state = state,
         goBack = {},
-        navigateToSettings = {},
-        execute = {}
+        navigateToSettings = {}
     )
 }
