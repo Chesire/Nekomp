@@ -1,6 +1,7 @@
 package com.chesire.nekomp.library.datasource.favorite
 
 import co.touchlab.kermit.Logger
+import com.chesire.nekomp.core.model.Image
 import com.chesire.nekomp.core.network.NetworkError
 import com.chesire.nekomp.library.datasource.favorite.local.FavoriteStorage
 import com.chesire.nekomp.library.datasource.favorite.remote.FavoriteApi
@@ -37,11 +38,18 @@ class FavoriteRepository(
                 response.value.data.mapNotNull { favorite ->
                     val charId = favorite.relationships.item?.data?.id
                     val character = characterMap[charId]
-                    if (character != null) {
+                    if (character != null && character.attributes.image?.original != null) {
                         Favorite(
                             type = FavoriteType.Character,
                             title = character.attributes.canonicalName,
-                            image = character.attributes.image.toImage(),
+                            // All images other than original are corrupt for some reason, so only use original until fixed.
+                            image = Image(
+                                tiny = "",
+                                small = "",
+                                medium = "",
+                                large = "",
+                                original = character.attributes.image.original
+                            ),
                             rank = favorite.attributes.favRank
                         )
                     } else {
