@@ -50,6 +50,9 @@
     <string name="discover_detail_show_synopsis_content_description">Show full synopsis</string>
     <string name="discover_detail_hide_synopsis_content_description">Hide full synopsis</string>
 
+    <!-- Profile -->
+    
+
     <!-- Settings -->
     <string name="settings_theme_title">Theme</string>
     <string name="settings_title_language_title">Title Language</string>

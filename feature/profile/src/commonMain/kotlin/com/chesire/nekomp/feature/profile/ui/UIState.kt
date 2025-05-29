@@ -7,7 +7,7 @@ import kotlinx.collections.immutable.persistentListOf
 data class UIState(
     val user: UserData = UserData(),
     val highlights: HighlightsData = HighlightsData(),
-    val backlog: BacklogData = BacklogData(),
+    val backlog: CompletedData = CompletedData(),
     val favorites: FavoritesData = FavoritesData(),
     val viewEvent: ViewEvent? = null
 )
@@ -28,7 +28,7 @@ data class HighlightsData(
 )
 
 @Immutable
-data class BacklogData(
+data class CompletedData(
     val animeProgress: String = "",
     val animePercent: Float = 0f,
     val mangaProgress: String = "",

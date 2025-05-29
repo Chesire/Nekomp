@@ -52,17 +52,17 @@ class ProfileViewModel(
                 seriesCompleted = animeStats.completed.toString()
             )
         }
-    private val _backlogData: Flow<BacklogData>
+    private val _completedData: Flow<CompletedData>
         get() = libraryRepository.libraryEntries.map { libraryEntries ->
             val anime = libraryEntries.filter { it.type == Type.Anime }
             val manga = libraryEntries.filter { it.type == Type.Manga }
-            val plannedAnime = anime.count { it.entryStatus == EntryStatus.Planned }
-            val plannedManga = manga.count { it.entryStatus == EntryStatus.Planned }
-            BacklogData(
-                animeProgress = "$plannedAnime/${anime.count() - plannedAnime}",
-                animePercent = plannedAnime.toFloat() / anime.count().toFloat() * 100,
-                mangaProgress = "$plannedManga/${manga.count() - plannedManga}",
-                mangaPercent = plannedManga.toFloat() / manga.count().toFloat() * 100
+            val completedAnime = anime.count { it.entryStatus == EntryStatus.Completed }
+            val completedManga = manga.count { it.entryStatus == EntryStatus.Completed }
+            CompletedData(
+                animeProgress = "$completedAnime/${anime.count()}",
+                animePercent = completedAnime.toFloat() / anime.count().toFloat(),
+                mangaProgress = "$completedManga/${manga.count()}",
+                mangaPercent = completedManga.toFloat() / manga.count().toFloat()
             )
         }
     private val _favoritesData: Flow<FavoritesData>
@@ -90,7 +90,7 @@ class ProfileViewModel(
     val uiState = combine(
         _userData,
         _highlightsData,
-        _backlogData,
+        _completedData,
         _favoritesData,
         _viewEvent
     ) { userData, highlightsData, backlogData, favoritesData, viewEvent ->

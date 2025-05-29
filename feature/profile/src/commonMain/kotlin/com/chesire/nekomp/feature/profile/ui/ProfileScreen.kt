@@ -29,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -116,7 +117,7 @@ private fun Render(
         ) {
             UserBlock(state.user)
             HighlightsBlock(state.highlights)
-            BacklogBlock(state.backlog)
+            CompletedBlock(state.backlog)
             FavoritesBlock(state.favorites)
             // Big stats block, can probably do this later
         }
@@ -127,13 +128,13 @@ private fun Render(
 private fun UserBlock(userData: UserData) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(32.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         AsyncImage(
             model = userData.avatarImage,
             contentDescription = null,
             modifier = Modifier
-                .size(128.dp)
+                .size(64.dp)
                 .clip(CircleShape),
             placeholder = rememberVectorPainter(Icons.Default.Person),
             error = rememberVectorPainter(Icons.Default.Person)
@@ -233,8 +234,50 @@ private fun HighlightsSection(
 }
 
 @Composable
-private fun BacklogBlock(backlogData: BacklogData) {
+private fun CompletedBlock(completedData: CompletedData) {
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        CompletedSection(
+            title = "Completed anime",
+            progress = completedData.animeProgress,
+            percent = completedData.animePercent
+        )
+        CompletedSection(
+            title = "Completed manga",
+            progress = completedData.mangaProgress,
+            percent = completedData.mangaPercent
+        )
+    }
+}
 
+@Composable
+private fun CompletedSection(title: String, progress: String, percent: Float) {
+    Column(
+        modifier = Modifier.padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = progress,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.titleSmall,
+                textAlign = TextAlign.End
+            )
+        }
+        LinearProgressIndicator(
+            progress = { percent },
+            modifier = Modifier.fillMaxWidth(),
+            drawStopIndicator = {}
+        )
+    }
 }
 
 @Composable
@@ -290,7 +333,12 @@ private fun Preview() {
             timeSpentWatching = "3d 21h",
             seriesCompleted = "4"
         ),
-        backlog = BacklogData(),
+        backlog = CompletedData(
+            animeProgress = "1/10",
+            animePercent = 0.10f,
+            mangaProgress = "50/100",
+            mangaPercent = 0.5f
+        ),
         favorites = FavoritesData()
     )
     Render(
