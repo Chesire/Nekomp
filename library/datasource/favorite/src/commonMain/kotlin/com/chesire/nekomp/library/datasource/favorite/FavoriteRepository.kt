@@ -42,7 +42,8 @@ class FavoriteRepository(
                         Favorite(
                             type = FavoriteType.Character,
                             title = character.attributes.canonicalName,
-                            // All images other than original are corrupt for some reason, so only use original until fixed.
+                            // All images other than original are corrupt for some reason,
+                            // so only use original until fixed.
                             image = Image(
                                 tiny = "",
                                 small = "",
