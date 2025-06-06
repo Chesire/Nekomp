@@ -35,7 +35,7 @@ class StatsStorage(private val consumedDao: ConsumedDao) {
 
     private fun ConsumedStats.toConsumedDataEntity(): ConsumedDataEntity {
         return ConsumedDataEntity(
-            type = type.name,
+            type = type.name.lowercase(),
             time = time,
             media = media,
             units = units,
