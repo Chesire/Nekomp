@@ -43,14 +43,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.resources.NekoRes
 import nekomp.core.resources.generated.resources.app_name
+import nekomp.core.resources.generated.resources.login_create_account_link
+import nekomp.core.resources.generated.resources.login_create_account_text
 import nekomp.core.resources.generated.resources.login_cta
 import nekomp.core.resources.generated.resources.login_email
 import nekomp.core.resources.generated.resources.login_hide_password
@@ -148,9 +156,7 @@ private fun Render(
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                "Don't have a kitsu.app account? Sign up"
-            )
+            CreateAccountLink()
         }
     }
 }
@@ -260,6 +266,26 @@ private fun LoginButton(
     ) {
         Text(text = stringResource(NekoRes.string.login_cta))
     }
+}
+
+@Composable
+private fun CreateAccountLink(modifier: Modifier = Modifier) {
+    val createAccountText = buildAnnotatedString {
+        withLink(
+            LinkAnnotation.Url(
+                url = stringResource(NekoRes.string.login_create_account_link),
+                styles = TextLinkStyles(SpanStyle())
+            )
+        ) {
+            append(stringResource(NekoRes.string.login_create_account_text))
+        }
+    }
+
+    Text(
+        text = createAccountText,
+        modifier = modifier,
+        style = MaterialTheme.typography.bodyMedium.copy(textDecoration = TextDecoration.Underline)
+    )
 }
 
 @Composable
