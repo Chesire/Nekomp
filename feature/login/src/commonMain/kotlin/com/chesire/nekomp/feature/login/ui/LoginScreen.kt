@@ -40,9 +40,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -171,7 +174,9 @@ private fun UsernameInput(
     OutlinedTextField(
         value = username,
         onValueChange = onUsernameChanged,
-        modifier = modifier,
+        modifier = modifier.semantics {
+            contentType = ContentType.EmailAddress + ContentType.Username
+        },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
@@ -206,7 +211,9 @@ private fun PasswordInput(
     OutlinedTextField(
         value = password,
         onValueChange = onPasswordChanged,
-        modifier = modifier,
+        modifier = modifier.semantics {
+            contentType = ContentType.Password
+        },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Lock,
