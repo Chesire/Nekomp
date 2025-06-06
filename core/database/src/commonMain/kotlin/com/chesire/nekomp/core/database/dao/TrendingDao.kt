@@ -15,6 +15,6 @@ interface TrendingDao {
     @Upsert(entity = TrendingEntity::class)
     suspend fun upsert(trending: List<TrendingEntity>)
 
-    @Query("SELECT * FROM TrendingEntity")
-    fun trending(): Flow<List<TrendingEntity>>
+    @Query("SELECT * FROM TrendingEntity WHERE type == :type")
+    fun trending(type: String): Flow<List<TrendingEntity>>
 }

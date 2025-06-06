@@ -13,22 +13,19 @@ import kotlinx.coroutines.flow.map
 class TrendingStorage(private val trendingDao: TrendingDao) {
 
     val trendingAnime: Flow<List<TrendingItem>> = trendingDao
-        .trending()
+        .trending(Type.Anime.name)
         .map { items ->
-            items
-                .filter { Type.fromString(it.type) == Type.Anime }
-                .map { it.toTrendingItem() }
+            items.map { it.toTrendingItem() }
         }
 
     val trendingManga: Flow<List<TrendingItem>> = trendingDao
-        .trending()
+        .trending(Type.Manga.name)
         .map { items ->
-            items
-                .filter { Type.fromString(it.type) == Type.Manga }
-                .map { it.toTrendingItem() }
+            items.map { it.toTrendingItem() }
         }
 
     suspend fun updateTrending(newTrending: List<TrendingItem>) {
+        Logger.d("TrendingStorage") { "Storing ${newTrending.count()} trending items" }
         val models = newTrending.map { it.toTrendingEntity() }
         trendingDao.upsert(models)
     }
