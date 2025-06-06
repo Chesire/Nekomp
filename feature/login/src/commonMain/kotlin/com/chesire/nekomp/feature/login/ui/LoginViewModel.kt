@@ -55,7 +55,7 @@ class LoginViewModel(
 
         _uiState.update {
             it.copy(
-                isPendingLogin = false,
+                isPendingLogin = loginResult.isOk,
                 viewEvent = if (loginResult.isOk) {
                     ViewEvent.LoginSuccessful
                 } else {
