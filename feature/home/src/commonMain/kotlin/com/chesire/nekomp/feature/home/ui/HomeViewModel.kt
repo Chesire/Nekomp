@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ class HomeViewModel(
     userRepository: UserRepository,
     showAiringSeries: ShowAiringSeriesUseCase,
     private val libraryRepository: LibraryRepository,
-    private val trendingRepository: TrendingRepository,
+    trendingRepository: TrendingRepository,
     private val applicationSettings: ApplicationSettings
 ) : ViewModel() {
 
@@ -44,6 +43,7 @@ class HomeViewModel(
     private val _libraryEntries = libraryRepository.libraryEntries.map { libraryEntries ->
         val imageQuality = applicationSettings.imageQuality.first()
         val titleLanguage = applicationSettings.titleLanguage.first()
+
         libraryEntries
             .asSequence()
             .filter { it.type == Type.Anime }
@@ -55,17 +55,38 @@ class HomeViewModel(
             .toList()
             .toPersistentList()
     }
+    private val _trendingEntries = combine(
+        trendingRepository.trendingAnime,
+        trendingRepository.trendingManga
+    ) { trendingAnime, trendingManga ->
+        val imageQuality = applicationSettings.imageQuality.first()
+        val titleLanguage = applicationSettings.titleLanguage.first()
+
+        val animeItems = trendingAnime
+            .map { it.toTrendItem(imageQuality, titleLanguage) }
+            .toPersistentList()
+        val mangaItems = trendingManga
+            .map { it.toTrendItem(imageQuality, titleLanguage) }
+            .toPersistentList()
+        Trending(
+            trendingAll = animeItems
+                .zip(mangaItems)
+                .flatMap { (first, second) -> listOf(first, second) }
+                .toPersistentList(),
+            trendingAnime = animeItems,
+            trendingManga = mangaItems
+        )
+    }
     private val _airingSeries = showAiringSeries().map { it.toPersistentList() }
     private val _viewEvent = MutableStateFlow<ViewEvent?>(null)
-    private val _trending = MutableStateFlow(Trending())
 
     val uiState = combine(
         _userName,
         _libraryEntries,
         _airingSeries,
+        _trendingEntries,
         _viewEvent,
-        _trending
-    ) { userName, libraryEntries, airingSeries, viewEvent, trending ->
+    ) { userName, libraryEntries, airingSeries, trending, viewEvent ->
         UIState(
             username = userName,
             watchList = libraryEntries,
@@ -75,8 +96,6 @@ class HomeViewModel(
             trendingManga = trending.trendingManga,
             viewEvent = viewEvent
         )
-    }.onStart {
-        getTrendingData()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -90,31 +109,6 @@ class HomeViewModel(
             is ViewAction.AiringItemClick -> onAiringItemClick(action.airingItem)
             is ViewAction.TrendItemClick -> onTrendItemClick(action.trendItem)
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
-        }
-    }
-
-    private fun getTrendingData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val imageQuality = applicationSettings.imageQuality.first()
-            val titleLanguage = applicationSettings.titleLanguage.first()
-            val trendingAnime = trendingRepository.getTrendingAnime()
-            val trendingManga = trendingRepository.getTrendingManga()
-            val animeItems = trendingAnime
-                .map { it.toTrendItem(imageQuality, titleLanguage) }
-                .toPersistentList()
-            val mangaItems = trendingManga
-                .map { it.toTrendItem(imageQuality, titleLanguage) }
-                .toPersistentList()
-            _trending.update {
-                Trending(
-                    trendingAll = animeItems
-                        .zip(mangaItems)
-                        .flatMap { (first, second) -> listOf(first, second) }
-                        .toPersistentList(),
-                    trendingAnime = animeItems,
-                    trendingManga = mangaItems
-                )
-            }
         }
     }
 

@@ -28,6 +28,7 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
         Logger.d("TrendingStorage") { "Storing ${newTrending.count()} trending items" }
         val models = newTrending.map { it.toTrendingEntity() }
         trendingDao.upsert(models)
+        Logger.d("TrendingStorage") { "Finished storing trending items" }
     }
 
     suspend fun clearLegacyData() {
