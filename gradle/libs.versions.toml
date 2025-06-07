@@ -83,7 +83,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.1" }
 ksp = { id = "com.google.devtools.ksp", version = "2.1.21-2.0.1" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
-mockkery = { id = "dev.mokkery", version = "2.7.2" }
+mockkery = { id = "dev.mokkery", version = "2.8.0" }
 
 [bundles]
 kotest = [
