@@ -60,8 +60,6 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-        iosMain.dependencies {
-        }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
         }

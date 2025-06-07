@@ -22,9 +22,6 @@ class PerformLoginUseCase(
     private val statsRepository: StatsRepository
 ) {
 
-    // For now this class will send a call to get everything once the user has been retrieved
-    // when the login flow is made nicer rewrite this.
-
     suspend operator fun invoke(username: String, password: String): Result<Any, AuthFailure> {
         return withContext(Dispatchers.IO) {
             authRepository
