@@ -175,7 +175,7 @@ private fun UsernameInput(
         value = username,
         onValueChange = onUsernameChanged,
         modifier = modifier.semantics {
-            contentType = ContentType.EmailAddress + ContentType.Username
+            contentType = ContentType.EmailAddress
         },
         leadingIcon = {
             Icon(
