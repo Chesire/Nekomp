@@ -45,6 +45,7 @@ kotlin {
             implementation(projects.library.datasource.favorite)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.stats)
+            implementation(projects.library.datasource.trending)
             implementation(projects.library.datasource.user)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
