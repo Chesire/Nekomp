@@ -34,7 +34,6 @@ compose-material3 = { module = "androidx.compose.material3:material3", version.r
 compose-material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-material3-adaptive" }
 compose-material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-material3-adaptive" }
 compose-material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "compose-material3-adaptive" }
-compose-material3-windowsizeclass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version = "1.7.3" }
 compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" } # This breaks iOS at the moment
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version = "1.8.2" }
 detekt-compose-rules = { module = "io.nlopez.compose.rules:detekt", version = "0.4.22" }
