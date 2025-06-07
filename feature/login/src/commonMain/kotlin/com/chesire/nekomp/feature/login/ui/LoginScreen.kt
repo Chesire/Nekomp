@@ -1,13 +1,13 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.chesire.nekomp.feature.login.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,10 +18,12 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -38,21 +40,34 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.resources.NekoRes
+import nekomp.core.resources.generated.resources.app_name
+import nekomp.core.resources.generated.resources.login_create_account_link
+import nekomp.core.resources.generated.resources.login_create_account_text
 import nekomp.core.resources.generated.resources.login_cta
+import nekomp.core.resources.generated.resources.login_email
 import nekomp.core.resources.generated.resources.login_hide_password
 import nekomp.core.resources.generated.resources.login_password
 import nekomp.core.resources.generated.resources.login_show_password
 import nekomp.core.resources.generated.resources.login_subtitle
-import nekomp.core.resources.generated.resources.login_username
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -98,53 +113,53 @@ private fun Render(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(text = stringResource(NekoRes.string.app_name)) }
+            )
+        }
     ) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ElevatedCard(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .align(Alignment.Center)
-                    .padding(paddingValues)
-                    .padding(16.dp)
-            ) {
-                Column(
+            Text(
+                text = stringResource(NekoRes.string.login_subtitle),
+                modifier = Modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
+            UsernameInput(
+                username = state.email,
+                modifier = Modifier.fillMaxWidth(),
+                onUsernameChanged = { execute(ViewAction.EmailUpdated(it)) }
+            )
+            PasswordInput(
+                password = state.password,
+                isLoggingIn = state.isPendingLogin,
+                modifier = Modifier.fillMaxWidth(),
+                onPasswordChanged = { execute(ViewAction.PasswordUpdated(it)) },
+                onLoginPressed = { execute(ViewAction.LoginPressed) }
+            )
+            if (state.isPendingLogin) {
+                CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
+            } else {
+                LoginButton(
+                    isLoggingIn = state.isPendingLogin,
                     modifier = Modifier
-                        .sizeIn(maxWidth = 320.dp)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = stringResource(NekoRes.string.login_subtitle)
-                    )
-                    UsernameInput(
-                        username = state.email,
-                        modifier = Modifier.fillMaxWidth(),
-                        onUsernameChanged = { execute(ViewAction.EmailUpdated(it)) }
-                    )
-                    PasswordInput(
-                        password = state.password,
-                        isLoggingIn = state.isPendingLogin,
-                        modifier = Modifier.fillMaxWidth(),
-                        onPasswordChanged = { execute(ViewAction.PasswordUpdated(it)) },
-                        onLoginPressed = { execute(ViewAction.LoginPressed) }
-                    )
-                    if (state.isPendingLogin) {
-                        CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
-                    } else {
-                        LoginButton(
-                            isLoggingIn = state.isPendingLogin,
-                            modifier = Modifier.padding(top = 8.dp),
-                            onLoginPressed = { execute(ViewAction.LoginPressed) }
-                        )
-                    }
-                }
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    onLoginPressed = { execute(ViewAction.LoginPressed) }
+                )
             }
+            Spacer(modifier = Modifier.weight(1f))
+            CreateAccountLink()
         }
     }
 }
@@ -159,7 +174,9 @@ private fun UsernameInput(
     OutlinedTextField(
         value = username,
         onValueChange = onUsernameChanged,
-        modifier = modifier,
+        modifier = modifier.semantics {
+            contentType = ContentType.EmailAddress
+        },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
@@ -175,7 +192,7 @@ private fun UsernameInput(
         ),
         singleLine = true,
         label = {
-            Text(text = stringResource(NekoRes.string.login_username))
+            Text(text = stringResource(NekoRes.string.login_email))
         }
     )
 }
@@ -194,7 +211,9 @@ private fun PasswordInput(
     OutlinedTextField(
         value = password,
         onValueChange = onPasswordChanged,
-        modifier = modifier,
+        modifier = modifier.semantics {
+            contentType = ContentType.Password
+        },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Lock,
@@ -254,6 +273,26 @@ private fun LoginButton(
     ) {
         Text(text = stringResource(NekoRes.string.login_cta))
     }
+}
+
+@Composable
+private fun CreateAccountLink(modifier: Modifier = Modifier) {
+    val createAccountText = buildAnnotatedString {
+        withLink(
+            LinkAnnotation.Url(
+                url = stringResource(NekoRes.string.login_create_account_link),
+                styles = TextLinkStyles(SpanStyle())
+            )
+        ) {
+            append(stringResource(NekoRes.string.login_create_account_text))
+        }
+    }
+
+    Text(
+        text = createAccountText,
+        modifier = modifier,
+        style = MaterialTheme.typography.bodyMedium.copy(textDecoration = TextDecoration.Underline)
+    )
 }
 
 @Composable

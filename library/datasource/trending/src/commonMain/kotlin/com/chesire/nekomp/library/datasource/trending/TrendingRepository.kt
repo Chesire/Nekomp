@@ -16,7 +16,9 @@ import com.github.michaelbull.result.mapBoth
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 
 private const val TRENDING_LIMIT = 10
 
@@ -27,8 +29,61 @@ class TrendingRepository(
     private val trendingApi: TrendingApi
 ) {
 
+    private val _trendingAnime: Flow<List<TrendingItem>> = trendingStorage.trendingAnime
+    private val _trendingManga: Flow<List<TrendingItem>> = trendingStorage.trendingManga
+
+    val trendingAnime: Flow<List<TrendingItem>> =
+        _trendingAnime.map { trending ->
+            trending
+                .filterNot { it.trendingRank == -1 }
+                .sortedBy { it.trendingRank }
+                .take(TRENDING_LIMIT)
+                .ifEmpty { emptyList() }
+        }
+
+    val trendingManga: Flow<List<TrendingItem>> =
+        _trendingManga.map { trending ->
+            trending
+                .filterNot { it.trendingRank == -1 }
+                .sortedBy { it.trendingRank }
+                .take(TRENDING_LIMIT)
+                .ifEmpty { emptyList() }
+        }
+
+    val topRatedAnime: Flow<List<TrendingItem>> =
+        _trendingAnime.map { trending ->
+            trending
+                .sortedBy { it.ratingRank }
+                .take(TRENDING_LIMIT)
+                .ifEmpty { emptyList() }
+        }
+
+    val topRatedManga: Flow<List<TrendingItem>> =
+        _trendingManga.map { trending ->
+            trending
+                .sortedBy { it.ratingRank }
+                .take(TRENDING_LIMIT)
+                .ifEmpty { emptyList() }
+        }
+
+    val mostPopularAnime: Flow<List<TrendingItem>> =
+        _trendingAnime.map { trending ->
+            trending
+                .sortedBy { it.popularityRank }
+                .take(TRENDING_LIMIT)
+                .ifEmpty { emptyList() }
+        }
+
+    val mostPopularManga: Flow<List<TrendingItem>> =
+        _trendingManga.map { trending ->
+            trending
+                .sortedBy { it.popularityRank }
+                .take(TRENDING_LIMIT)
+                .ifEmpty { emptyList() }
+        }
+
     suspend fun performFullSync(): List<Result<Any, Any>> {
-        Logger.d("TrendingService") { "Syncing all data" }
+        Logger.d("TrendingRepository") { "Syncing all data" }
         return coroutineScope {
             val jobs = awaitAll(
                 async {
@@ -87,8 +142,9 @@ class TrendingRepository(
         }
     }
 
+    @Deprecated("Switch to use the Flow")
     suspend fun getTrendingAnime(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting trending anime" }
+        Logger.d("TrendingRepository") { "Getting trending anime" }
         return trendingStorage
             .trendingAnime
             .firstOrNull()
@@ -98,8 +154,9 @@ class TrendingRepository(
             ?: emptyList()
     }
 
+    @Deprecated("Switch to use the Flow")
     suspend fun getTrendingManga(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting trending manga" }
+        Logger.d("TrendingRepository") { "Getting trending manga" }
         return trendingStorage
             .trendingManga
             .firstOrNull()
@@ -109,8 +166,9 @@ class TrendingRepository(
             ?: emptyList()
     }
 
+    @Deprecated("Switch to use the Flow")
     suspend fun getTopRatedAnime(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting top rated anime" }
+        Logger.d("TrendingRepository") { "Getting top rated anime" }
         return trendingStorage
             .trendingAnime
             .firstOrNull()
@@ -119,8 +177,9 @@ class TrendingRepository(
             ?: emptyList()
     }
 
+    @Deprecated("Switch to use the Flow")
     suspend fun getTopRatedManga(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting top rated manga" }
+        Logger.d("TrendingRepository") { "Getting top rated manga" }
         return trendingStorage
             .trendingManga
             .firstOrNull()
@@ -129,8 +188,9 @@ class TrendingRepository(
             ?: emptyList()
     }
 
+    @Deprecated("Switch to use the Flow")
     suspend fun getMostPopularAnime(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting most popular anime" }
+        Logger.d("TrendingRepository") { "Getting most popular anime" }
         return trendingStorage
             .trendingAnime
             .firstOrNull()
@@ -139,8 +199,9 @@ class TrendingRepository(
             ?: emptyList()
     }
 
+    @Deprecated("Switch to use the Flow")
     suspend fun getMostPopularManga(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting most popular manga" }
+        Logger.d("TrendingRepository") { "Getting most popular manga" }
         return trendingStorage
             .trendingManga
             .firstOrNull()

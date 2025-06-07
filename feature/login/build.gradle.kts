@@ -45,6 +45,7 @@ kotlin {
             implementation(projects.library.datasource.favorite)
             implementation(projects.library.datasource.library)
             implementation(projects.library.datasource.stats)
+            implementation(projects.library.datasource.trending)
             implementation(projects.library.datasource.user)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -59,8 +60,6 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-        }
-        iosMain.dependencies {
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
