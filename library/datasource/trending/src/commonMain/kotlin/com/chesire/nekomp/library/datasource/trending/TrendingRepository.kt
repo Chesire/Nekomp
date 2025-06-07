@@ -28,7 +28,7 @@ class TrendingRepository(
 ) {
 
     suspend fun performFullSync(): List<Result<Any, Any>> {
-        Logger.d("TrendingService") { "Syncing all data" }
+        Logger.d("TrendingRepository") { "Syncing all data" }
         return coroutineScope {
             val jobs = awaitAll(
                 async {
@@ -88,7 +88,7 @@ class TrendingRepository(
     }
 
     suspend fun getTrendingAnime(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting trending anime" }
+        Logger.d("TrendingRepository") { "Getting trending anime" }
         return trendingStorage
             .trendingAnime
             .firstOrNull()
@@ -99,7 +99,7 @@ class TrendingRepository(
     }
 
     suspend fun getTrendingManga(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting trending manga" }
+        Logger.d("TrendingRepository") { "Getting trending manga" }
         return trendingStorage
             .trendingManga
             .firstOrNull()
@@ -110,7 +110,7 @@ class TrendingRepository(
     }
 
     suspend fun getTopRatedAnime(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting top rated anime" }
+        Logger.d("TrendingRepository") { "Getting top rated anime" }
         return trendingStorage
             .trendingAnime
             .firstOrNull()
@@ -120,7 +120,7 @@ class TrendingRepository(
     }
 
     suspend fun getTopRatedManga(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting top rated manga" }
+        Logger.d("TrendingRepository") { "Getting top rated manga" }
         return trendingStorage
             .trendingManga
             .firstOrNull()
@@ -130,7 +130,7 @@ class TrendingRepository(
     }
 
     suspend fun getMostPopularAnime(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting most popular anime" }
+        Logger.d("TrendingRepository") { "Getting most popular anime" }
         return trendingStorage
             .trendingAnime
             .firstOrNull()
@@ -140,7 +140,7 @@ class TrendingRepository(
     }
 
     suspend fun getMostPopularManga(): List<TrendingItem> {
-        Logger.d("TrendingService") { "Getting most popular manga" }
+        Logger.d("TrendingRepository") { "Getting most popular manga" }
         return trendingStorage
             .trendingManga
             .firstOrNull()
