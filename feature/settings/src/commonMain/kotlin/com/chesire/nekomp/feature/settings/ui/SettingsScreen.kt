@@ -58,6 +58,7 @@ import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_settings
 import nekomp.core.resources.generated.resources.settings_help_body
 import nekomp.core.resources.generated.resources.settings_help_title
+import nekomp.core.resources.generated.resources.settings_help_url
 import nekomp.core.resources.generated.resources.settings_image_quality_title
 import nekomp.core.resources.generated.resources.settings_logout_body
 import nekomp.core.resources.generated.resources.settings_logout_cancel_cta
@@ -73,6 +74,7 @@ import nekomp.core.resources.generated.resources.settings_section_support
 import nekomp.core.resources.generated.resources.settings_theme_title
 import nekomp.core.resources.generated.resources.settings_title_language_title
 import nekomp.core.resources.generated.resources.settings_version_title
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -271,6 +273,8 @@ private fun LogoutConfirmationSheet(onConfirm: () -> Unit, onCancel: () -> Unit)
 @Composable
 private fun SupportSection(state: UIState) {
     val uriHandler = LocalUriHandler.current
+    val launchUrl = stringResource(NekoRes.string.settings_help_url)
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Heading(stringResource(NekoRes.string.settings_section_support))
         Setting(
@@ -279,7 +283,7 @@ private fun SupportSection(state: UIState) {
             startComposable = {
                 Icon(imageVector = Icons.Outlined.DeveloperMode, contentDescription = null)
             },
-            onClick = { uriHandler.openUri(state.helpUrl) }
+            onClick = { uriHandler.openUri(launchUrl) }
         )
         Setting(
             title = stringResource(NekoRes.string.settings_version_title),
