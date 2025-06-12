@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val applicationSettings: ApplicationSettings,
-    private val applicationVersionInfo: ApplicationVersionInfo,
+    applicationVersionInfo: ApplicationVersionInfo,
     private val logout: LogoutExecutor
 ) : ViewModel() {
 
