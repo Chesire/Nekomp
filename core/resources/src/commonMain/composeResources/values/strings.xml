@@ -64,6 +64,9 @@
     <string name="profile_favorites_favorite_manga">Favorite manga</string>
 
     <!-- Settings -->
+    <string name="settings_section_application_preferences">Application Preferences</string>
+    <string name="settings_section_account">Account</string>
+    <string name="settings_section_support">Support</string>
     <string name="settings_theme_title">Theme</string>
     <string name="settings_title_language_title">Title Language</string>
     <string name="settings_image_quality_title">Image Quality</string>
@@ -71,5 +74,8 @@
     <string name="settings_rate_series_body">Prompt to rate series when finishing it</string>
     <string name="settings_logout_title">Logout</string>
     <string name="settings_logout_body">Logout of the application</string>
+    <string name="settings_help_title">Get help</string>
+    <string name="settings_help_url">https://github.com/Chesire/Nekomp/issues</string>
+    <string name="settings_help_body">Found a problem? Submit an issue</string>
     <string name="settings_version_title">Version</string>
 </resources>

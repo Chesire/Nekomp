@@ -6,6 +6,7 @@ import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.Theme
 import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.settings.core.LogoutExecutor
 import com.chesire.nekomp.feature.settings.data.ApplicationVersionInfo
 import com.chesire.nekomp.feature.settings.ui.SettingsBottomSheet.ImageQualityBottomSheet
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nekomp.core.resources.generated.resources.settings_help_url
+import org.jetbrains.compose.resources.getString
 
 class SettingsViewModel(
     private val applicationSettings: ApplicationSettings,
@@ -53,6 +56,11 @@ class SettingsViewModel(
                 _uiState.update { state ->
                     state.copy(rateChecked = rateOnFinish)
                 }
+            }
+        }
+        viewModelScope.launch {
+            _uiState.update { state ->
+                state.copy(helpUrl = getString(NekoRes.string.settings_help_url))
             }
         }
     }

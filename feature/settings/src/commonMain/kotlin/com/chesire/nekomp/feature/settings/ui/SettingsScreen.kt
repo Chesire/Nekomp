@@ -2,19 +2,24 @@
 
 package com.chesire.nekomp.feature.settings.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.FormatPaint
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.RateReview
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.DeveloperMode
+import androidx.compose.material.icons.outlined.FormatPaint
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.RateReview
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,6 +42,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.component.SettingSheet
@@ -44,11 +51,16 @@ import com.chesire.nekomp.core.ui.util.ifTrue
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_settings
+import nekomp.core.resources.generated.resources.settings_help_body
+import nekomp.core.resources.generated.resources.settings_help_title
 import nekomp.core.resources.generated.resources.settings_image_quality_title
 import nekomp.core.resources.generated.resources.settings_logout_body
 import nekomp.core.resources.generated.resources.settings_logout_title
 import nekomp.core.resources.generated.resources.settings_rate_series_body
 import nekomp.core.resources.generated.resources.settings_rate_series_title
+import nekomp.core.resources.generated.resources.settings_section_account
+import nekomp.core.resources.generated.resources.settings_section_application_preferences
+import nekomp.core.resources.generated.resources.settings_section_support
 import nekomp.core.resources.generated.resources.settings_theme_title
 import nekomp.core.resources.generated.resources.settings_title_language_title
 import nekomp.core.resources.generated.resources.settings_version_title
@@ -81,6 +93,7 @@ private fun Render(
     execute: (ViewAction) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val uriHandler = LocalUriHandler.current
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
             ViewEvent.LoggedOut -> onLoggedOut()
@@ -113,13 +126,14 @@ private fun Render(
     ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            Heading(stringResource(NekoRes.string.settings_section_application_preferences))
             Setting(
                 title = stringResource(NekoRes.string.settings_theme_title),
                 subtitle = state.currentTheme,
                 startComposable = {
-                    Icon(imageVector = Icons.Default.FormatPaint, contentDescription = null)
+                    Icon(imageVector = Icons.Outlined.FormatPaint, contentDescription = null)
                 },
                 onClick = { execute(ViewAction.ThemeClick) }
             )
@@ -127,7 +141,7 @@ private fun Render(
                 title = stringResource(NekoRes.string.settings_title_language_title),
                 subtitle = state.titleLanguage,
                 startComposable = {
-                    Icon(imageVector = Icons.Default.Language, contentDescription = null)
+                    Icon(imageVector = Icons.Outlined.Language, contentDescription = null)
                 },
                 onClick = { execute(ViewAction.TitleLanguageClick) }
             )
@@ -135,7 +149,7 @@ private fun Render(
                 title = stringResource(NekoRes.string.settings_image_quality_title),
                 subtitle = state.imageQuality,
                 startComposable = {
-                    Icon(imageVector = Icons.Default.Image, contentDescription = null)
+                    Icon(imageVector = Icons.Outlined.Image, contentDescription = null)
                 },
                 onClick = { execute(ViewAction.ImageQualityClick) }
             )
@@ -143,13 +157,16 @@ private fun Render(
                 title = stringResource(NekoRes.string.settings_rate_series_title),
                 subtitle = stringResource(NekoRes.string.settings_rate_series_body),
                 startComposable = {
-                    Icon(imageVector = Icons.Default.RateReview, contentDescription = null)
+                    Icon(imageVector = Icons.Outlined.RateReview, contentDescription = null)
                 },
                 endComposable = {
                     Checkbox(checked = state.rateChecked, onCheckedChange = null)
                 },
                 onClick = { execute(ViewAction.RateChanged) }
             )
+
+            Heading(stringResource(NekoRes.string.settings_section_account))
+            // TODO: Add confirmation dialog
             Setting(
                 title = stringResource(NekoRes.string.settings_logout_title),
                 subtitle = stringResource(NekoRes.string.settings_logout_body),
@@ -158,9 +175,22 @@ private fun Render(
                 },
                 onClick = { execute(ViewAction.LogoutClick) }
             )
+
+            Heading(stringResource(NekoRes.string.settings_section_support))
+            Setting(
+                title = stringResource(NekoRes.string.settings_help_title),
+                subtitle = stringResource(NekoRes.string.settings_help_body),
+                startComposable = {
+                    Icon(imageVector = Icons.Outlined.DeveloperMode, contentDescription = null)
+                },
+                onClick = { uriHandler.openUri(state.helpUrl) }
+            )
             Setting(
                 title = stringResource(NekoRes.string.settings_version_title),
                 subtitle = state.version,
+                startComposable = {
+                    Icon(imageVector = Icons.Outlined.Build, contentDescription = null)
+                },
                 onClick = null
             )
         }
@@ -170,6 +200,16 @@ private fun Render(
             execute = execute
         )
     }
+}
+
+@Composable
+private fun Heading(title: String) {
+    Text(
+        text = title,
+        modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp),
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.Bold
+    )
 }
 
 @Composable
@@ -190,7 +230,16 @@ private fun Setting(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (startComposable != null) {
-            startComposable()
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(8.dp)
+            ) {
+                startComposable()
+            }
         }
 
         Column(
@@ -204,7 +253,8 @@ private fun Setting(
             if (subtitle.isNotBlank()) {
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         }

@@ -10,6 +10,7 @@ data class UIState(
     val titleLanguage: String = "",
     val imageQuality: String = "",
     val rateChecked: Boolean = false,
+    val helpUrl: String = "",
     val version: String = "",
     val viewEvent: ViewEvent? = null,
     val bottomSheet: SettingsBottomSheet? = null
