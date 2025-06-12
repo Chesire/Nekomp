@@ -62,6 +62,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.collections.immutable)
+            implementation(libs.touchlab.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

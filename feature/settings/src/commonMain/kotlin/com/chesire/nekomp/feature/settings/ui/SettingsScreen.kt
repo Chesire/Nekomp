@@ -7,10 +7,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -21,11 +22,14 @@ import androidx.compose.material.icons.outlined.FormatPaint
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.RateReview
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -56,6 +60,10 @@ import nekomp.core.resources.generated.resources.settings_help_body
 import nekomp.core.resources.generated.resources.settings_help_title
 import nekomp.core.resources.generated.resources.settings_image_quality_title
 import nekomp.core.resources.generated.resources.settings_logout_body
+import nekomp.core.resources.generated.resources.settings_logout_cancel_cta
+import nekomp.core.resources.generated.resources.settings_logout_confirm_body
+import nekomp.core.resources.generated.resources.settings_logout_confirm_cta
+import nekomp.core.resources.generated.resources.settings_logout_confirm_title
 import nekomp.core.resources.generated.resources.settings_logout_title
 import nekomp.core.resources.generated.resources.settings_rate_series_body
 import nekomp.core.resources.generated.resources.settings_rate_series_title
@@ -187,18 +195,77 @@ private fun ApplicationPreferencesSection(
 
 @Composable
 private fun AccountSection(execute: (ViewAction) -> Unit) {
+    var showLogoutConfirmation by remember { mutableStateOf(false) }
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Heading(stringResource(NekoRes.string.settings_section_account))
-        // TODO: Add confirmation dialog
         Setting(
             title = stringResource(NekoRes.string.settings_logout_title),
             subtitle = stringResource(NekoRes.string.settings_logout_body),
             startComposable = {
                 Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = null)
             },
-            onClick = { execute(ViewAction.LogoutClick) }
+            onClick = { showLogoutConfirmation = true }
         )
     }
+
+    if (showLogoutConfirmation) {
+        LogoutConfirmationSheet(
+            onConfirm = {
+                execute(ViewAction.LogoutClick)
+                showLogoutConfirmation = false
+            },
+            onCancel = {
+                showLogoutConfirmation = false
+            }
+        )
+    }
+}
+
+@Composable
+private fun LogoutConfirmationSheet(onConfirm: () -> Unit, onCancel: () -> Unit) {
+    ModalBottomSheet(
+        onDismissRequest = onCancel,
+        content = {
+            Column(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(NekoRes.string.settings_logout_confirm_title),
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = stringResource(NekoRes.string.settings_logout_confirm_body),
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Button(
+                        onClick = onConfirm,
+                        modifier = Modifier.widthIn(min = 120.dp)
+                    ) {
+                        Text(
+                            text = stringResource(NekoRes.string.settings_logout_confirm_cta)
+                        )
+                    }
+                    OutlinedButton(
+                        onClick = onCancel,
+                        modifier = Modifier.widthIn(min = 120.dp)
+                    ) {
+                        Text(
+                            text = stringResource(NekoRes.string.settings_logout_cancel_cta)
+                        )
+                    }
+                }
+            }
+        }
+    )
 }
 
 @Composable

@@ -74,6 +74,10 @@
     <string name="settings_rate_series_body">Prompt to rate series when finishing it</string>
     <string name="settings_logout_title">Logout</string>
     <string name="settings_logout_body">Logout of the application</string>
+    <string name="settings_logout_confirm_title">Confirm Log Out</string>
+    <string name="settings_logout_confirm_body">Are you sure you want to logout?</string>
+    <string name="settings_logout_confirm_cta">Confirm</string>
+    <string name="settings_logout_cancel_cta">Cancel</string>
     <string name="settings_help_title">Get help</string>
     <string name="settings_help_url">https://github.com/Chesire/Nekomp/issues</string>
     <string name="settings_help_body">Found a problem? Submit an issue</string>
