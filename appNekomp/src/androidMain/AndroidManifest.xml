@@ -10,6 +10,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
+        android:label="Nekomp"
         android:theme="@style/AppTheme"
         android:name=".NekompApp"
         tools:ignore="UnusedAttribute">

@@ -25,7 +25,7 @@ fun main() {
         }
         Window(
             onCloseRequest = ::exitApplication,
-            title = "Nekomp",
+            title = "Nekomp"
         ) {
             App()
         }

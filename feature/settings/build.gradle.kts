@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
+            implementation(projects.core.coroutines)
             implementation(projects.core.network)
             implementation(projects.core.preferences)
             implementation(projects.core.resources)
@@ -62,6 +63,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.collections.immutable)
+            implementation(libs.touchlab.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

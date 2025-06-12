@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavoriteDao {
 
-    @Query("DELETE FROM TrendingEntity WHERE type == :type")
+    @Query("DELETE FROM FavoriteEntity WHERE type == :type")
     suspend fun deleteAllOf(type: String): Int
 
     @Upsert
