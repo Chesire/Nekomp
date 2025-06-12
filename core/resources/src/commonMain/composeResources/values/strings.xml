@@ -78,7 +78,7 @@
     <string name="settings_logout_confirm_body">Are you sure you want to logout?</string>
     <string name="settings_logout_confirm_cta">Confirm</string>
     <string name="settings_logout_cancel_cta">Cancel</string>
-    <string name="settings_help_title">Get help</string>
+    <string name="settings_help_title">Get Help</string>
     <string name="settings_help_url">https://github.com/Chesire/Nekomp/issues</string>
     <string name="settings_help_body">Found a problem? Submit an issue</string>
     <string name="settings_version_title">Version</string>
