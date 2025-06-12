@@ -1,8 +1,11 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.INT
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.buildkonfig)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotest.multiplatform)
@@ -113,7 +116,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.1"
     }
     buildFeatures {
         compose = true
@@ -151,4 +154,23 @@ compose.desktop {
 
 dependencies {
     debugImplementation(libs.compose.ui.tooling)
+}
+
+buildkonfig {
+    packageName = "com.chesire.nekomp"
+
+    // Flavored TargetConfig > TargetConfig > Flavored DefaultConfig > DefaultConfig
+    // flavor can be configured in gradle.properties
+    defaultConfigs {
+        buildConfigField(
+            type = INT,
+            name = "VERSION_CODE",
+            value = "${android.defaultConfig.versionCode ?: 0}"
+        )
+        buildConfigField(
+            type = STRING,
+            name = "VERSION_NAME",
+            value = android.defaultConfig.versionName ?: "0.0.0"
+        )
+    }
 }

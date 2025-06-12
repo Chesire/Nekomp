@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.component.SettingSheet
+import com.chesire.nekomp.core.ui.util.ifTrue
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_settings
@@ -160,7 +161,7 @@ private fun Render(
             Setting(
                 title = stringResource(NekoRes.string.settings_version_title),
                 subtitle = state.version,
-                onClick = { }
+                onClick = null
             )
         }
 
@@ -177,11 +178,13 @@ private fun Setting(
     subtitle: String,
     startComposable: (@Composable () -> Unit)? = null,
     endComposable: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit
+    onClick: (() -> Unit)?
 ) {
     Row(
         modifier = Modifier
-            .clickable(enabled = true, onClick = onClick)
+            .ifTrue(onClick != null) {
+                clickable(enabled = onClick != null, onClick = { onClick?.invoke() })
+            }
             .padding(vertical = 8.dp, horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically

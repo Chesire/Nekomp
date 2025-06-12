@@ -7,6 +7,7 @@ import com.chesire.nekomp.core.preferences.ImageQuality
 import com.chesire.nekomp.core.preferences.Theme
 import com.chesire.nekomp.core.preferences.TitleLanguage
 import com.chesire.nekomp.feature.settings.core.LogoutExecutor
+import com.chesire.nekomp.feature.settings.data.ApplicationVersionInfo
 import com.chesire.nekomp.feature.settings.ui.SettingsBottomSheet.ImageQualityBottomSheet
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +19,11 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val applicationSettings: ApplicationSettings,
+    private val applicationVersionInfo: ApplicationVersionInfo,
     private val logout: LogoutExecutor
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UIState())
+    private val _uiState = MutableStateFlow(UIState(version = buildVersion()))
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
 
     init {
@@ -71,6 +73,10 @@ class SettingsViewModel(
             ViewAction.LogoutClick -> onLogoutClick()
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
+    }
+
+    private fun buildVersion(): String {
+        return "${applicationVersionInfo.versionName} (${applicationVersionInfo.versionCode})"
     }
 
     private fun onThemeClick() = viewModelScope.launch {
