@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -93,7 +94,6 @@ private fun Render(
     execute: (ViewAction) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val uriHandler = LocalUriHandler.current
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
             ViewEvent.LoggedOut -> onLoggedOut()
@@ -126,73 +126,11 @@ private fun Render(
     ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Heading(stringResource(NekoRes.string.settings_section_application_preferences))
-            Setting(
-                title = stringResource(NekoRes.string.settings_theme_title),
-                subtitle = state.currentTheme,
-                startComposable = {
-                    Icon(imageVector = Icons.Outlined.FormatPaint, contentDescription = null)
-                },
-                onClick = { execute(ViewAction.ThemeClick) }
-            )
-            Setting(
-                title = stringResource(NekoRes.string.settings_title_language_title),
-                subtitle = state.titleLanguage,
-                startComposable = {
-                    Icon(imageVector = Icons.Outlined.Language, contentDescription = null)
-                },
-                onClick = { execute(ViewAction.TitleLanguageClick) }
-            )
-            Setting(
-                title = stringResource(NekoRes.string.settings_image_quality_title),
-                subtitle = state.imageQuality,
-                startComposable = {
-                    Icon(imageVector = Icons.Outlined.Image, contentDescription = null)
-                },
-                onClick = { execute(ViewAction.ImageQualityClick) }
-            )
-            Setting(
-                title = stringResource(NekoRes.string.settings_rate_series_title),
-                subtitle = stringResource(NekoRes.string.settings_rate_series_body),
-                startComposable = {
-                    Icon(imageVector = Icons.Outlined.RateReview, contentDescription = null)
-                },
-                endComposable = {
-                    Checkbox(checked = state.rateChecked, onCheckedChange = null)
-                },
-                onClick = { execute(ViewAction.RateChanged) }
-            )
-
-            Heading(stringResource(NekoRes.string.settings_section_account))
-            // TODO: Add confirmation dialog
-            Setting(
-                title = stringResource(NekoRes.string.settings_logout_title),
-                subtitle = stringResource(NekoRes.string.settings_logout_body),
-                startComposable = {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = null)
-                },
-                onClick = { execute(ViewAction.LogoutClick) }
-            )
-
-            Heading(stringResource(NekoRes.string.settings_section_support))
-            Setting(
-                title = stringResource(NekoRes.string.settings_help_title),
-                subtitle = stringResource(NekoRes.string.settings_help_body),
-                startComposable = {
-                    Icon(imageVector = Icons.Outlined.DeveloperMode, contentDescription = null)
-                },
-                onClick = { uriHandler.openUri(state.helpUrl) }
-            )
-            Setting(
-                title = stringResource(NekoRes.string.settings_version_title),
-                subtitle = state.version,
-                startComposable = {
-                    Icon(imageVector = Icons.Outlined.Build, contentDescription = null)
-                },
-                onClick = null
-            )
+            ApplicationPreferencesSection(state, execute)
+            AccountSection(execute)
+            SupportSection(state)
         }
 
         BottomSheetEventHandler(
@@ -203,10 +141,95 @@ private fun Render(
 }
 
 @Composable
+private fun ApplicationPreferencesSection(
+    state: UIState,
+    execute: (ViewAction) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Heading(stringResource(NekoRes.string.settings_section_application_preferences))
+        Setting(
+            title = stringResource(NekoRes.string.settings_theme_title),
+            subtitle = state.currentTheme,
+            startComposable = {
+                Icon(imageVector = Icons.Outlined.FormatPaint, contentDescription = null)
+            },
+            onClick = { execute(ViewAction.ThemeClick) }
+        )
+        Setting(
+            title = stringResource(NekoRes.string.settings_title_language_title),
+            subtitle = state.titleLanguage,
+            startComposable = {
+                Icon(imageVector = Icons.Outlined.Language, contentDescription = null)
+            },
+            onClick = { execute(ViewAction.TitleLanguageClick) }
+        )
+        Setting(
+            title = stringResource(NekoRes.string.settings_image_quality_title),
+            subtitle = state.imageQuality,
+            startComposable = {
+                Icon(imageVector = Icons.Outlined.Image, contentDescription = null)
+            },
+            onClick = { execute(ViewAction.ImageQualityClick) }
+        )
+        Setting(
+            title = stringResource(NekoRes.string.settings_rate_series_title),
+            subtitle = stringResource(NekoRes.string.settings_rate_series_body),
+            startComposable = {
+                Icon(imageVector = Icons.Outlined.RateReview, contentDescription = null)
+            },
+            endComposable = {
+                Checkbox(checked = state.rateChecked, onCheckedChange = null)
+            },
+            onClick = { execute(ViewAction.RateChanged) }
+        )
+    }
+}
+
+@Composable
+private fun AccountSection(execute: (ViewAction) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Heading(stringResource(NekoRes.string.settings_section_account))
+        // TODO: Add confirmation dialog
+        Setting(
+            title = stringResource(NekoRes.string.settings_logout_title),
+            subtitle = stringResource(NekoRes.string.settings_logout_body),
+            startComposable = {
+                Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = null)
+            },
+            onClick = { execute(ViewAction.LogoutClick) }
+        )
+    }
+}
+
+@Composable
+private fun SupportSection(state: UIState) {
+    val uriHandler = LocalUriHandler.current
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Heading(stringResource(NekoRes.string.settings_section_support))
+        Setting(
+            title = stringResource(NekoRes.string.settings_help_title),
+            subtitle = stringResource(NekoRes.string.settings_help_body),
+            startComposable = {
+                Icon(imageVector = Icons.Outlined.DeveloperMode, contentDescription = null)
+            },
+            onClick = { uriHandler.openUri(state.helpUrl) }
+        )
+        Setting(
+            title = stringResource(NekoRes.string.settings_version_title),
+            subtitle = state.version,
+            startComposable = {
+                Icon(imageVector = Icons.Outlined.Build, contentDescription = null)
+            },
+            onClick = null
+        )
+    }
+}
+
+@Composable
 private fun Heading(title: String) {
     Text(
         text = title,
-        modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp),
+        modifier = Modifier.padding(horizontal = 16.dp),
         style = MaterialTheme.typography.bodyLarge,
         fontWeight = FontWeight.Bold
     )
