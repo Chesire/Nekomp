@@ -1,22 +1,22 @@
 [versions]
-agp = "8.9.1"
+agp = "8.10.1"
 android-compileSdk = "36"
 android-minSdk = "27"
 android-targetSdk = "36"
-coil = "3.1.0"
+coil = "3.2.0"
 compose-material3 = "1.3.2"
-compose-material3-adaptive = "1.1.0-beta02"
-compose-multiplatform = "1.8.0-beta02"
+compose-material3-adaptive = "1.1.1"
+compose-multiplatform = "1.8.1"
 coroutines = "1.10.2"
-datastore = "1.1.4"
+datastore = "1.1.7"
 detekt = "1.23.8"
 koin = "4.0.4"
 kotest = "5.9.1"
-kotlin = "2.1.20"
-ktor = "3.1.2"
-ktorfit = "2.5.0"
-lifecycle = "2.8.4"
-room = "2.7.0" # Might cause issues with iOS
+kotlin = "2.1.21"
+ktor = "3.1.3"
+ktorfit = "2.5.2"
+lifecycle = "2.9.0"
+room = "2.7.1" # Might cause issues with iOS
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.10.1" }
@@ -26,17 +26,16 @@ androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:life
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version = "2.8.0-alpha13" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version = "2.5.0" }
-androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version = "2.10.0" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version = "2.5.1" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version = "2.10.1" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 compose-material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-material3-adaptive" }
 compose-material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-material3-adaptive" }
 compose-material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "compose-material3-adaptive" }
-compose-material3-windowsizeclass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version = "1.7.3" }
 compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" } # This breaks iOS at the moment
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version = "1.7.8" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version = "1.8.2" }
 detekt-compose-rules = { module = "io.nlopez.compose.rules:detekt", version = "0.4.22" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -52,7 +51,7 @@ kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", versio
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotlin-result = { module = "com.michael-bull.kotlin-result:kotlin-result", version = "2.0.1" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version = "0.3.8" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version = "0.4.0" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
@@ -66,7 +65,7 @@ ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", vers
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktorfit-converters-response = { module = "de.jensklingenberg.ktorfit:ktorfit-converters-response", version.ref = "ktorfit" }
 ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version = "2.5.0" }
+ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version = "2.5.1" }
 touchlab-kermit = { module = "co.touchlab:kermit", version = "2.0.5" }
 
 [plugins]
@@ -82,9 +81,9 @@ kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref =
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.1" }
-ksp = { id = "com.google.devtools.ksp", version = "2.1.20-1.0.31" }
+ksp = { id = "com.google.devtools.ksp", version = "2.1.21-2.0.1" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
-mockkery = { id = "dev.mokkery", version = "2.7.2" }
+mockkery = { id = "dev.mokkery", version = "2.8.0" }
 
 [bundles]
 kotest = [
