@@ -74,7 +74,6 @@ import nekomp.core.resources.generated.resources.settings_section_support
 import nekomp.core.resources.generated.resources.settings_theme_title
 import nekomp.core.resources.generated.resources.settings_title_language_title
 import nekomp.core.resources.generated.resources.settings_version_title
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
