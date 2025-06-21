@@ -8,9 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-class MappingLocalDataSource(
-    private val mappingDao: MappingDao
-) {
+class MappingLocalDataSource(private val mappingDao: MappingDao) {
 
     // TODO: This can be removed when Room supports prepopulated in KMP
     suspend fun prepopulate() {

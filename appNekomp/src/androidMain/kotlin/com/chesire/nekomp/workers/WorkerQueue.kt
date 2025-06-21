@@ -13,6 +13,8 @@ private const val AIRING_REFRESH_TAG = "AiringRefresh"
 private const val AIRING_UNIQUE_NAME = "AiringSync"
 private const val LIBRARY_REFRESH_TAG = "LibraryRefresh"
 private const val LIBRARY_UNIQUE_NAME = "LibrarySync"
+private const val MAPPING_REFRESH_TAG = "MappingRefresh"
+private const val MAPPING_UNIQUE_NAME = "MappingSync"
 private const val TRENDING_REFRESH_TAG = "TrendingRefresh"
 private const val TRENDING_UNIQUE_NAME = "TrendingSync"
 private const val USER_REFRESH_TAG = "UserRefresh"
@@ -45,6 +47,19 @@ class WorkerQueue(private val workManager: WorkManager) {
 
         workManager.enqueueUniquePeriodicWork(
             LIBRARY_UNIQUE_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            request
+        )
+    }
+
+    fun enqueueMappingRefresh() {
+        val request = PeriodicWorkRequestBuilder<RefreshMappingWorker>(12, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .addTag(MAPPING_REFRESH_TAG)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            MAPPING_UNIQUE_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             request
         )
