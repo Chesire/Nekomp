@@ -37,6 +37,11 @@ class FavoriteStorage(private val favoriteDao: FavoriteDao) {
 
     suspend fun updateFavorites(newFavorites: List<Favorite>) {
         val models = newFavorites.map { it.toFavoriteEntity() }
+        if (models.count() > 0) {
+            Logger.d("FavoriteStorage") {
+                "Storing ${models.count()} new models for type [${models.first().type}]"
+            }
+        }
         favoriteDao.upsert(models)
     }
 
