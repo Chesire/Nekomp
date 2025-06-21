@@ -67,6 +67,7 @@ kotlin {
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.favorite)
             implementation(projects.library.datasource.library)
+            implementation(projects.library.datasource.mapping)
             implementation(projects.library.datasource.search)
             implementation(projects.library.datasource.stats)
             implementation(projects.library.datasource.trending)
