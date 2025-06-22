@@ -29,7 +29,14 @@ class MappingLocalDataSource(private val mappingDao: MappingDao) {
 
     suspend fun updateMappings(newMappings: List<MappingDto>) {
         Logger.d("MappingLocalDataSource") { "Updating dao mappings" }
-        mappingDao.upsert(newMappings.toEntities())
+        // can we do as a transaction?
+        val newEntities = newMappings.toEntities()
+        mappingDao.delete()
+        val before = mappingDao.count()
+        mappingDao.upsert(newEntities)
+        val after = mappingDao.count()
+
+        Logger.d("MappingLocalDataSource") { "BEFORE - $before :: AFTER - $after" }
     }
 
     private fun List<MappingDto>.toEntities(): List<MappingEntity> {
