@@ -16,7 +16,7 @@ class RefreshMappingWorker(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        Logger.d("RefreshMappingWorker") { "Starting worker for refreshing library" }
+        Logger.d("RefreshMappingWorker") { "Starting worker for refreshing mappings" }
 
         return mappingRepository.updateMappings()
             .mapBoth(

@@ -4,8 +4,7 @@ import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.database.entity.MappingEntity
 import com.chesire.nekomp.core.resources.NekoRes
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.chesire.nekomp.library.datasource.mapping.dto.MappingDto
 import kotlinx.serialization.json.Json
 
 class MappingLocalDataSource(private val mappingDao: MappingDao) {
@@ -21,22 +20,21 @@ class MappingLocalDataSource(private val mappingDao: MappingDao) {
                 .readBytes("files/anime-list-mini.json")
                 .decodeToString()
             val items = json
-                .decodeFromString<List<Mapping>>(value)
-                .map {
-                    MappingEntity(malId = it.malId, kitsuId = it.kitsuId, aniListId = it.aniListId)
-                }
+                .decodeFromString<List<MappingDto>>(value)
+                .toEntities()
             mappingDao.upsert(items)
             Logger.d("MappingLocalDataSource") { "MapperDao now populated" }
         }
     }
 
-    @Serializable
-    data class Mapping(
-        @SerialName("mal_id")
-        val malId: Int?,
-        @SerialName("kitsu_id")
-        val kitsuId: Int?,
-        @SerialName("anilist_id")
-        val aniListId: Int?
-    )
+    suspend fun updateMappings(newMappings: List<MappingDto>) {
+        Logger.d("MappingLocalDataSource") { "Updating dao mappings" }
+        mappingDao.upsert(newMappings.toEntities())
+    }
+
+    private fun List<MappingDto>.toEntities(): List<MappingEntity> {
+        return map {
+            MappingEntity(malId = it.malId, kitsuId = it.kitsuId, aniListId = it.aniListId)
+        }
+    }
 }
