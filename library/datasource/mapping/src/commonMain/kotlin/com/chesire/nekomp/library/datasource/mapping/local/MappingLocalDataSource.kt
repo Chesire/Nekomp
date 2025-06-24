@@ -30,7 +30,7 @@ class MappingLocalDataSource(private val mappingDao: MappingDao) {
 
     suspend fun updateMappings(newMappings: List<MappingDto>) {
         val newEntities = newMappings.filterNot { it.kitsuId == null }.toEntities()
-        mappingDao.replaceWithNew(newEntities)
+        mappingDao.update(newEntities)
     }
 
     private fun List<MappingDto>.toEntities(): List<MappingEntity> {

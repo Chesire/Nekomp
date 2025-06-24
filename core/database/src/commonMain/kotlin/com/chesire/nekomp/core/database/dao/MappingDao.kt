@@ -29,7 +29,7 @@ interface MappingDao {
     suspend fun upsert(mappings: List<MappingEntity>)
 
     @Transaction
-    suspend fun replaceWithNew(mappings: List<MappingEntity>) {
+    suspend fun update(mappings: List<MappingEntity>) {
         Logger.d("MappingDao") { "Executing call to clear mapping dao" }
         val clearAmount = delete()
         Logger.d("MappingDao") { "Finished delete call, cleared $clearAmount entries" }
