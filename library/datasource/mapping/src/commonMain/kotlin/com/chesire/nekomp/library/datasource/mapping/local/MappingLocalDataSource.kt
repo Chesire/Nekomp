@@ -21,6 +21,7 @@ class MappingLocalDataSource(private val mappingDao: MappingDao) {
                 .decodeToString()
             val items = json
                 .decodeFromString<List<MappingDto>>(value)
+                .filterNot { it.kitsuId == null }
                 .toEntities()
             mappingDao.upsert(items)
             Logger.d("MappingLocalDataSource") { "MapperDao now populated" }
@@ -28,7 +29,7 @@ class MappingLocalDataSource(private val mappingDao: MappingDao) {
     }
 
     suspend fun updateMappings(newMappings: List<MappingDto>) {
-        val newEntities = newMappings.toEntities()
+        val newEntities = newMappings.filterNot { it.kitsuId == null }.toEntities()
         mappingDao.replaceWithNew(newEntities)
     }
 
