@@ -28,7 +28,6 @@ class MappingLocalDataSource(private val mappingDao: MappingDao) {
     }
 
     suspend fun updateMappings(newMappings: List<MappingDto>) {
-        Logger.d("MappingLocalDataSource") { "Updating dao mappings" }
         val newEntities = newMappings.toEntities()
         mappingDao.replaceWithNew(newEntities)
     }
