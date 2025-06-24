@@ -1,6 +1,5 @@
 package com.chesire.nekomp.library.datasource.trending.local
 
-import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.dao.TrendingDao
 import com.chesire.nekomp.core.database.entity.TrendingEntity
 import com.chesire.nekomp.core.model.Image
@@ -25,16 +24,8 @@ class TrendingStorage(private val trendingDao: TrendingDao) {
         }
 
     suspend fun updateTrending(newTrending: List<TrendingItem>) {
-        Logger.d("TrendingStorage") { "Storing ${newTrending.count()} trending items" }
         val models = newTrending.map { it.toTrendingEntity() }
-        trendingDao.upsert(models)
-        Logger.d("TrendingStorage") { "Finished storing trending items" }
-    }
-
-    suspend fun clearLegacyData() {
-        Logger.d("TrendingStorage") { "Executing call to clear trending dao" }
-        val clearAmount = trendingDao.delete()
-        Logger.d("TrendingStorage") { "Finished delete call, cleared $clearAmount entries" }
+        trendingDao.update(models)
     }
 
     private fun TrendingEntity.toTrendingItem(): TrendingItem {
