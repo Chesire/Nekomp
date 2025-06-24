@@ -11,13 +11,16 @@ import io.ktor.client.statement.readRawBytes
 import kotlinx.serialization.json.Json
 
 private const val MAPPING_URL =
-    "https://raw.githubusercontent.com/Chesire/Nekomp/refs/heads/master/core/resources/src/commonMain/composeResources/files/anime-list-mini.json"
+    "https://raw.githubusercontent.com/" +
+        "Chesire/Nekomp/" +
+        "refs/heads/master/core/resources/src/commonMain/composeResources/files/anime-list-mini.json"
 
 class MappingRemoteDataSource(
     private val httpClient: HttpClient,
     private val json: Json
 ) {
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun requestNewMappings(): Result<List<MappingDto>, Unit> {
         return try {
             val stringResult = httpClient
