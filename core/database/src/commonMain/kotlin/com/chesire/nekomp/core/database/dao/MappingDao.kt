@@ -2,6 +2,7 @@ package com.chesire.nekomp.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import com.chesire.nekomp.core.database.entity.MappingEntity
 
@@ -25,4 +26,10 @@ interface MappingDao {
 
     @Upsert(entity = MappingEntity::class)
     suspend fun upsert(mappings: List<MappingEntity>)
+
+    @Transaction
+    suspend fun replaceWithNew(mappings: List<MappingEntity>) {
+        delete()
+        upsert(mappings)
+    }
 }
