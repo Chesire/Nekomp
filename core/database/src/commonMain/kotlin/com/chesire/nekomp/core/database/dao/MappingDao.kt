@@ -2,7 +2,9 @@ package com.chesire.nekomp.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
+import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.database.entity.MappingEntity
 
 @Dao
@@ -25,4 +27,15 @@ interface MappingDao {
 
     @Upsert(entity = MappingEntity::class)
     suspend fun upsert(mappings: List<MappingEntity>)
+
+    @Transaction
+    suspend fun update(mappings: List<MappingEntity>) {
+        Logger.d("MappingDao") { "Executing call to clear mapping dao" }
+        val clearAmount = delete()
+        Logger.d("MappingDao") { "Finished delete call, cleared $clearAmount entries" }
+
+        Logger.d("MappingDao") { "Storing ${mappings.count()} mapping items" }
+        upsert(mappings)
+        Logger.d("MappingDao") { "Finished storing mapping items" }
+    }
 }

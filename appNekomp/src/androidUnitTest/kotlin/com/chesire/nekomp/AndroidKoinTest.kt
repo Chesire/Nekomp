@@ -6,9 +6,13 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.work.WorkerParameters
 import com.chesire.nekomp.di.koinAndroidModules
+import com.chesire.nekomp.library.datasource.mapping.remote.MappingRemoteDataSource
 import io.kotest.core.spec.style.FunSpec
+import io.ktor.client.HttpClient
+import kotlinx.serialization.json.Json
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
+import org.koin.test.verify.definition
 import org.koin.test.verify.injectedParameters
 import org.koin.test.verify.verify
 
@@ -32,7 +36,9 @@ class AndroidKoinTest : FunSpec({
                 DataStore::class, // Built as needed
                 WorkerParameters::class // Injected as part of WorkManager
             ),
-            injections = injectedParameters()
+            injections = injectedParameters(
+                definition<MappingRemoteDataSource>(HttpClient::class, Json::class)
+            )
         )
     }
 })

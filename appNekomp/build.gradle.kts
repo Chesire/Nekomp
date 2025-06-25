@@ -67,6 +67,7 @@ kotlin {
             implementation(projects.library.datasource.auth)
             implementation(projects.library.datasource.favorite)
             implementation(projects.library.datasource.library)
+            implementation(projects.library.datasource.mapping)
             implementation(projects.library.datasource.search)
             implementation(projects.library.datasource.stats)
             implementation(projects.library.datasource.trending)
@@ -92,6 +93,10 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.serialization)
             implementation(libs.touchlab.kermit)
         }
         commonTest.dependencies {

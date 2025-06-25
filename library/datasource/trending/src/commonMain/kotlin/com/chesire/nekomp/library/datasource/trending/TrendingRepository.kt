@@ -135,7 +135,6 @@ class TrendingRepository(
                                 .map { it.firstOrNull { it.trendingRank != -1 } ?: it.first() }
                         }
                         .apply {
-                            trendingStorage.clearLegacyData()
                             trendingStorage.updateTrending(this)
                         }
                 }

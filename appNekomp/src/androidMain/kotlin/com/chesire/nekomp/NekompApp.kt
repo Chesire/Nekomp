@@ -46,6 +46,7 @@ class NekompApp : Application() {
         get<WorkerQueue>().apply {
             enqueueAiringRefresh()
             enqueueLibraryRefresh()
+            enqueueMappingRefresh()
             enqueueTrendingRefresh()
             enqueueUserRefresh()
         }
