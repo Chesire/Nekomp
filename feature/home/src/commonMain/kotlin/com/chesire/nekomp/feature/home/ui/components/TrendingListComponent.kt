@@ -179,7 +179,7 @@ private fun TrendItemComponent(
     ) {
         Card(
             onClick = { onTrendItemClick(trendItem) },
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier.wrapContentSize()
         ) {
             AsyncImage(
                 model = trendItem.posterImage,
