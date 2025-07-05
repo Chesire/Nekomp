@@ -36,6 +36,7 @@ kotlin {
             implementation(compose.preview)
         }
         commonMain.dependencies {
+            implementation(projects.core.resources)
             implementation(compose.animationGraphics)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -45,6 +46,8 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.runtime)
             implementation(compose.ui)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
             implementation(libs.kotlinx.collections.immutable)
         }
     }
