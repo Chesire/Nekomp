@@ -7,10 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -41,6 +40,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.chesire.nekomp.core.ui.theme.Values
 import com.chesire.nekomp.feature.home.ui.TrendItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
@@ -173,7 +173,7 @@ private fun TrendItemComponent(
     onTrendItemClick: (TrendItem) -> Unit
 ) {
     Column(
-        modifier = modifier.width(IntrinsicSize.Min),
+        modifier = modifier.size(width = Values.GridItemWidth, height = Values.GridItemHeight),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
