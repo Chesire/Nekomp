@@ -15,9 +15,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlusOne
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -77,13 +77,16 @@ fun SeriesGridItem(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp)
                     ) {
                         Text(
                             text = progress,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.titleSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                        OutlinedIconButton(onClick = onPlusClick) {
+                        IconButton(onClick = onPlusClick) {
                             Icon(
                                 imageVector = Icons.Default.PlusOne,
                                 contentDescription = stringResource(NekoRes.string.grid_item_plus_one)
