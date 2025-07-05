@@ -20,7 +20,8 @@ data class WatchItem(
     val title: String,
     val posterImage: String,
     val progressPercent: Float,
-    val progress: Int
+    val progress: Int,
+    val progressDisplay: String
 )
 
 @Stable

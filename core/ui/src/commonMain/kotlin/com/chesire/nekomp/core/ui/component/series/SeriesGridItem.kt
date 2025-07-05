@@ -5,9 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -35,7 +36,8 @@ import org.jetbrains.compose.resources.stringResource
 fun SeriesGridItem(
     title: String,
     backgroundImage: String,
-    progress: Float,
+    progress: String,
+    progressPercent: Float,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onPlusClick: () -> Unit
@@ -46,14 +48,14 @@ fun SeriesGridItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(
-            onClick = { onClick() },
+            onClick = onClick,
             modifier = Modifier.size(width = Values.GridItemWidth, height = Values.GridItemHeight),
         ) {
             Box {
                 AsyncImage(
                     model = backgroundImage,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier.fillMaxSize()
                 )
                 Box(
                     modifier = Modifier
@@ -68,18 +70,28 @@ fun SeriesGridItem(
                         )
                 )
                 Column(
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    OutlinedIconButton(onClick = { onPlusClick() }) {
-                        Icon(
-                            imageVector = Icons.Default.PlusOne,
-                            contentDescription = stringResource(NekoRes.string.grid_item_plus_one)
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    ) {
+                        Text(
+                            text = progress,
+                            modifier = Modifier.weight(1f)
                         )
+                        OutlinedIconButton(onClick = onPlusClick) {
+                            Icon(
+                                imageVector = Icons.Default.PlusOne,
+                                contentDescription = stringResource(NekoRes.string.grid_item_plus_one)
+                            )
+                        }
                     }
                     LinearProgressIndicator(
-                        progress = { progress },
+                        progress = { progressPercent },
                         modifier = Modifier.height(4.dp),
                         gapSize = 0.dp,
                         drawStopIndicator = {}

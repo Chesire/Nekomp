@@ -34,7 +34,8 @@ internal fun GridItemsPane(
             SeriesGridItem(
                 title = it.title,
                 backgroundImage = it.posterImage,
-                progress = it.progressPercent,
+                progress = it.progressDisplay,
+                progressPercent = it.progressPercent,
                 modifier = Modifier.animateItem(),
                 onClick = { onEntryClick(it) },
                 onPlusClick = { onPlusOneClick(it) }

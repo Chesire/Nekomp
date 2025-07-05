@@ -26,4 +26,19 @@ data class LibraryEntry(
     val coverImage: Image,
     val startDate: String,
     val endDate: String
-)
+) {
+
+    /**
+     * Gets a string that can be used to display the total length to the user.
+     */
+    val displayTotalLength = if (totalLength == 0) "-" else totalLength
+
+    /**
+     * Gets the percent of the way through the entry the user is.
+     */
+    val progressPercent = if (totalLength == 0) {
+        0f
+    } else {
+        (progress.toFloat() / totalLength.toFloat())
+    }
+}

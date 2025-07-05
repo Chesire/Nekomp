@@ -177,8 +177,8 @@ private fun BottomSheetEventHandler(
 @Preview
 private fun Preview() {
     val state = UIState(
-        entries = persistentListOf<Entry>(
-            Entry(0, "Title1", "", "", 0f, "", 0)
+        entries = persistentListOf(
+            Entry(0, "Title1", "", "", 0f, 0, "0 / -")
         )
     )
     Render(

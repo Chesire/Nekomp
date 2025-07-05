@@ -152,12 +152,9 @@ class HomeViewModel(
             entryId = entryId,
             title = titles.toChosenLanguage(titleLanguage),
             posterImage = posterImage.toBestImage(imageQuality),
-            progressPercent = if (totalLength == 0) {
-                0f
-            } else {
-                (progress.toFloat() / totalLength.toFloat())
-            },
-            progress = progress
+            progressPercent = progressPercent,
+            progress = progress,
+            progressDisplay = "$progress / $displayTotalLength"
         )
     }
 

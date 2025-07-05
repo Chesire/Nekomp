@@ -32,7 +32,8 @@ fun WatchListComponent(
                 SeriesGridItem(
                     title = it.title,
                     backgroundImage = it.posterImage,
-                    progress = it.progressPercent,
+                    progress = it.progressDisplay,
+                    progressPercent = it.progressPercent,
                     modifier = Modifier.animateItem(),
                     onClick = { onWatchItemClick(it) },
                     onPlusClick = { onPlusOneClick(it) }

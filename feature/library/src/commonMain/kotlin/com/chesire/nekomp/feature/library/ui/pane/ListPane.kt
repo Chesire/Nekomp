@@ -145,8 +145,8 @@ private fun Preview() {
     ListPane(
         typeFilters = persistentMapOf(),
         statusFilters = persistentMapOf(),
-        entries = persistentListOf<Entry>(
-            Entry(0, "Title1", "", "", 0f, "", 0)
+        entries = persistentListOf(
+            Entry(0, "Title1", "", "", 0f, 0, "1 / -")
         ),
         currentViewType = ViewType.Card,
         execute = {},

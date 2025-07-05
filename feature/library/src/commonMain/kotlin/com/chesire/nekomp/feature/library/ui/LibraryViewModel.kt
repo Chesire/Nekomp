@@ -220,13 +220,9 @@ class LibraryViewModel(
             title = titles.toChosenLanguage(titleLanguage),
             posterImage = posterImage.toBestImage(imageQuality),
             coverImage = coverImage.toBestImage(imageQuality),
-            progressPercent = if (totalLength == 0) {
-                0f
-            } else {
-                (progress.toFloat() / totalLength.toFloat())
-            },
-            displayProgress = "$progress / ${totalLength.takeIf { it != 0 } ?: "ongoing"}",
-            progress = progress
+            progressPercent = progressPercent,
+            progress = progress,
+            progressDisplay = "$progress / $displayTotalLength"
         )
     }
 }
