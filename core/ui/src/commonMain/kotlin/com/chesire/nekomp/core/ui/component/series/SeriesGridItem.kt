@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlusOne
 import androidx.compose.material3.Card
@@ -19,19 +19,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.core.ui.theme.Values
 import nekomp.core.resources.generated.resources.grid_item_plus_one
 import org.jetbrains.compose.resources.stringResource
 
@@ -44,9 +40,6 @@ fun SeriesGridItem(
     onClick: () -> Unit,
     onPlusClick: () -> Unit
 ) {
-    var width by remember { mutableStateOf(0.dp) }
-    val density = LocalDensity.current
-
     Column(
         modifier = modifier.width(IntrinsicSize.Min),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -54,22 +47,13 @@ fun SeriesGridItem(
     ) {
         Card(
             onClick = { onClick() },
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier.size(width = Values.GridItemWidth, height = Values.GridItemHeight),
         ) {
-            Box(
-                modifier = Modifier
-                    .height(IntrinsicSize.Min)
-                    .width(IntrinsicSize.Min)
-            ) {
+            Box {
                 AsyncImage(
                     model = backgroundImage,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxHeight(),
-                    onState = {
-                        width = with(density) {
-                            it.painter?.intrinsicSize?.width?.toInt()?.toDp() ?: 0.dp
-                        }
-                    }
+                    modifier = Modifier.fillMaxHeight()
                 )
                 Box(
                     modifier = Modifier
@@ -84,7 +68,7 @@ fun SeriesGridItem(
                         )
                 )
                 Column(
-                    modifier = Modifier.fillMaxHeight().width(width),
+                    modifier = Modifier.fillMaxHeight(),
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
