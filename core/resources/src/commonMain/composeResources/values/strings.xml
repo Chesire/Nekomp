@@ -1,6 +1,7 @@
 <resources>
     <!-- Generic -->
     <string name="app_name">Nekomp</string>
+    <string name="grid_item_plus_one">Increment series by 1</string>
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>

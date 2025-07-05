@@ -2,6 +2,7 @@ package com.chesire.nekomp.feature.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chesire.nekomp.core.coroutines.combine
 import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.model.EntryStatus
@@ -78,6 +79,7 @@ class HomeViewModel(
         )
     }
     private val _airingSeries = showAiringSeries().map { it.toPersistentList() }
+    private val _pendingUpdates = MutableStateFlow<List<Int>>(emptyList())
     private val _viewEvent = MutableStateFlow<ViewEvent?>(null)
 
     val uiState = combine(
@@ -85,11 +87,18 @@ class HomeViewModel(
         _libraryEntries,
         _airingSeries,
         _trendingEntries,
+        _pendingUpdates,
         _viewEvent,
-    ) { userName, libraryEntries, airingSeries, trending, viewEvent ->
+    ) { userName, libraryEntries, airingSeries, trending, pendingUpdates, viewEvent ->
         UIState(
             username = userName,
-            watchList = libraryEntries,
+            watchList = libraryEntries.map {
+                if (pendingUpdates.contains(it.entryId)) {
+                    it.copy(isUpdating = true)
+                } else {
+                    it
+                }
+            }.toPersistentList(),
             airing = airingSeries,
             trendingAll = trending.trendingAll,
             trendingAnime = trending.trendingAnime,
@@ -119,12 +128,18 @@ class HomeViewModel(
     }
 
     private fun onWatchItemPlusOneClick(watchItem: WatchItem) {
-        // TODO: Update UI in some way?
+        _pendingUpdates.update {
+            it + watchItem.entryId
+        }
         viewModelScope.launch(Dispatchers.IO) {
             libraryRepository.updateEntry(
                 entryId = watchItem.entryId,
                 newProgress = watchItem.progress + 1
             )
+        }.invokeOnCompletion {
+            _pendingUpdates.update {
+                it - watchItem.entryId
+            }
         }
     }
 
@@ -152,12 +167,10 @@ class HomeViewModel(
             entryId = entryId,
             title = titles.toChosenLanguage(titleLanguage),
             posterImage = posterImage.toBestImage(imageQuality),
-            progressPercent = if (totalLength == 0) {
-                0f
-            } else {
-                (progress.toFloat() / totalLength.toFloat())
-            },
-            progress = progress
+            progressPercent = progressPercent,
+            progress = progress,
+            progressDisplay = "$progress / $displayTotalLength",
+            isUpdating = false
         )
     }
 
