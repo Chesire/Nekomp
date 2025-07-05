@@ -1,7 +1,8 @@
 @file:OptIn(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
-    ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class
+    ExperimentalMaterial3Api::class,
+    ExperimentalSharedTransitionApi::class
 )
 
 package com.chesire.nekomp.feature.library.ui
@@ -178,7 +179,17 @@ private fun BottomSheetEventHandler(
 private fun Preview() {
     val state = UIState(
         entries = persistentListOf(
-            Entry(0, "Title1", "", "", 0f, 0, "0 / -")
+            Entry(
+                entryId = 0,
+                title = "Title1",
+                posterImage = "",
+                coverImage = "",
+                progressPercent = 0f,
+                progress = 0,
+                progressDisplay = "0 / -",
+                isUpdating = false,
+                canUpdate = true
+            )
         )
     )
     Render(

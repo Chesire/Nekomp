@@ -34,6 +34,7 @@ fun WatchListComponent(
                     backgroundImage = it.posterImage,
                     progress = it.progressDisplay,
                     progressPercent = it.progressPercent,
+                    isUpdating = it.isUpdating,
                     modifier = Modifier.animateItem(),
                     onClick = { onWatchItemClick(it) },
                     onPlusClick = { onPlusOneClick(it) }

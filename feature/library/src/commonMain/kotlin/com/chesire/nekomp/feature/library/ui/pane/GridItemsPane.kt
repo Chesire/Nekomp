@@ -36,7 +36,9 @@ internal fun GridItemsPane(
                 backgroundImage = it.posterImage,
                 progress = it.progressDisplay,
                 progressPercent = it.progressPercent,
+                isUpdating = it.isUpdating,
                 modifier = Modifier.animateItem(),
+                showPlusButton = it.canUpdate,
                 onClick = { onEntryClick(it) },
                 onPlusClick = { onPlusOneClick(it) }
             )

@@ -41,5 +41,7 @@ data class Entry(
     val coverImage: String,
     val progressPercent: Float,
     val progress: Int,
-    val progressDisplay: String
+    val progressDisplay: String,
+    val isUpdating: Boolean,
+    val canUpdate: Boolean
 )

@@ -1,5 +1,6 @@
 package com.chesire.nekomp.core.ui.component.series
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,8 +19,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -28,9 +31,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.core.ui.theme.Values
 import nekomp.core.resources.generated.resources.grid_item_plus_one
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SeriesGridItem(
@@ -38,10 +43,16 @@ fun SeriesGridItem(
     backgroundImage: String,
     progress: String,
     progressPercent: Float,
+    isUpdating: Boolean,
     modifier: Modifier = Modifier,
+    showPlusButton: Boolean = true,
     onClick: () -> Unit,
     onPlusClick: () -> Unit
 ) {
+    val progressBarValue by animateFloatAsState(
+        targetValue = progressPercent,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    )
     Column(
         modifier = modifier.width(IntrinsicSize.Min),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -86,15 +97,20 @@ fun SeriesGridItem(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        IconButton(onClick = onPlusClick) {
-                            Icon(
-                                imageVector = Icons.Default.PlusOne,
-                                contentDescription = stringResource(NekoRes.string.grid_item_plus_one)
-                            )
+                        if (showPlusButton) {
+                            IconButton(
+                                onClick = onPlusClick,
+                                enabled = !isUpdating
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PlusOne,
+                                    contentDescription = stringResource(NekoRes.string.grid_item_plus_one)
+                                )
+                            }
                         }
                     }
                     LinearProgressIndicator(
-                        progress = { progressPercent },
+                        progress = { progressBarValue },
                         modifier = Modifier.height(4.dp),
                         gapSize = 0.dp,
                         drawStopIndicator = {}
@@ -108,6 +124,42 @@ fun SeriesGridItem(
             minLines = 2,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun DefaultSeriesGridItemPreview() {
+    NekompTheme {
+        SeriesGridItem(
+            title = "Title",
+            backgroundImage = "",
+            progress = "6 / 12",
+            progressPercent = 0.5f,
+            isUpdating = false,
+            modifier = Modifier,
+            showPlusButton = true,
+            onClick = {},
+            onPlusClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun UpdatingSeriesGridItemPreview() {
+    NekompTheme {
+        SeriesGridItem(
+            title = "Title",
+            backgroundImage = "",
+            progress = "1 / 12",
+            progressPercent = 0.1f,
+            isUpdating = true,
+            modifier = Modifier,
+            showPlusButton = true,
+            onClick = {},
+            onPlusClick = {}
         )
     }
 }

@@ -41,4 +41,9 @@ data class LibraryEntry(
     } else {
         (progress.toFloat() / totalLength.toFloat())
     }
+
+    /**
+     * Gets if the progress for this series can be incremented.
+     */
+    val canIncrementProgress = if (totalLength == 0) true else progress < totalLength
 }
