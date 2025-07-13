@@ -73,7 +73,7 @@ class ShowAiringSeriesUseCase(
     }
 
     private fun AiringTime.timeTillShowing(): Duration {
-        val instant = airingAt().toInstant(TimeZone.of(timeZone))
+        val instant = airingAt().toInstant(TimeZone.currentSystemDefault())
         return instant.minus(Clock.System.now())
     }
 
