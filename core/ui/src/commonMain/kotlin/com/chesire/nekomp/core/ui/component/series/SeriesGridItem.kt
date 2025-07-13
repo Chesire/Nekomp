@@ -1,7 +1,6 @@
 package com.chesire.nekomp.core.ui.component.series
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,14 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.core.ui.theme.Values
+import com.chesire.nekomp.core.ui.util.transparentBacking
 import nekomp.core.resources.generated.resources.grid_item_plus_one
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -68,18 +66,7 @@ fun SeriesGridItem(
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                .5F to Color.Transparent,
-                                .7f to MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
-                                .8f to MaterialTheme.colorScheme.background.copy(alpha = 0.9f),
-                                1F to MaterialTheme.colorScheme.background.copy(alpha = 1f)
-                            )
-                        )
-                )
+                Box(modifier = Modifier.transparentBacking())
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Bottom,
