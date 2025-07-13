@@ -1,23 +1,15 @@
 package com.chesire.nekomp.feature.home.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import com.chesire.nekomp.core.ui.util.transparentBacking
+import com.chesire.nekomp.core.ui.component.series.SeriesAiringItem
 import com.chesire.nekomp.feature.home.ui.AiringItem
 import kotlinx.collections.immutable.ImmutableList
 
@@ -36,38 +28,13 @@ fun AiringListComponent(
                 items = airingItems,
                 key = { it.entryId }
             ) {
-                AiringItemComponent(
-                    airingItem = it,
-                    onAiringItemClick = onAiringItemClick,
-                    modifier = Modifier.animateItem()
+                SeriesAiringItem(
+                    text = it.title,
+                    coverImage = it.coverImage,
+                    modifier = Modifier.animateItem(),
+                    onClick = { onAiringItemClick(it) }
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun AiringItemComponent(
-    airingItem: AiringItem,
-    onAiringItemClick: (AiringItem) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        onClick = { onAiringItemClick(airingItem) },
-        modifier = modifier.width(280.dp).height(80.dp),
-    ) {
-        Box {
-            AsyncImage(
-                model = airingItem.coverImage,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
-            Box(modifier = Modifier.transparentBacking())
-            Text(
-                text = airingItem.airingAt,
-                modifier = Modifier.align(Alignment.BottomEnd)
-            )
         }
     }
 }
