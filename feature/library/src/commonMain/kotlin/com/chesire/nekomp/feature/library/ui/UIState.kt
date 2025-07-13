@@ -40,6 +40,8 @@ data class Entry(
     val posterImage: String,
     val coverImage: String,
     val progressPercent: Float,
-    val displayProgress: String,
-    val progress: Int
+    val progress: Int,
+    val progressDisplay: String,
+    val isUpdating: Boolean,
+    val canUpdate: Boolean
 )

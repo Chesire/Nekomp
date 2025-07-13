@@ -88,7 +88,7 @@ private fun CardItem(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = entry.displayProgress)
+                    Text(text = entry.progressDisplay)
                     OutlinedIconButton(onClick = { onPlusOneClick(entry) }) {
                         Icon(
                             imageVector = Icons.Default.PlusOne,

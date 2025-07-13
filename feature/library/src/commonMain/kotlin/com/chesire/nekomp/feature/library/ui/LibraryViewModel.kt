@@ -198,7 +198,17 @@ class LibraryViewModel(
     }
 
     private fun onItemPlusOneClick(entry: Entry) = viewModelScope.launch(Dispatchers.IO) {
-        // TODO: Update UI in some way?
+        _uiState.update { state ->
+            val newEntries = state.entries.map {
+                if (it.entryId == entry.entryId) {
+                    it.copy(isUpdating = true)
+                } else {
+                    it
+                }
+            }
+
+            state.copy(entries = newEntries.toPersistentList())
+        }
         libraryRepository.updateEntry(
             entryId = entry.entryId,
             newProgress = entry.progress + 1
@@ -220,13 +230,11 @@ class LibraryViewModel(
             title = titles.toChosenLanguage(titleLanguage),
             posterImage = posterImage.toBestImage(imageQuality),
             coverImage = coverImage.toBestImage(imageQuality),
-            progressPercent = if (totalLength == 0) {
-                0f
-            } else {
-                (progress.toFloat() / totalLength.toFloat())
-            },
-            displayProgress = "$progress / ${totalLength.takeIf { it != 0 } ?: "ongoing"}",
-            progress = progress
+            progressPercent = progressPercent,
+            progress = progress,
+            progressDisplay = "$progress / $displayTotalLength",
+            isUpdating = false,
+            canUpdate = canIncrementProgress
         )
     }
 }

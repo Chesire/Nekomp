@@ -145,8 +145,18 @@ private fun Preview() {
     ListPane(
         typeFilters = persistentMapOf(),
         statusFilters = persistentMapOf(),
-        entries = persistentListOf<Entry>(
-            Entry(0, "Title1", "", "", 0f, "", 0)
+        entries = persistentListOf(
+            Entry(
+                entryId = 0,
+                title = "Title1",
+                posterImage = "",
+                coverImage = "",
+                progressPercent = 0f,
+                progress = 0,
+                progressDisplay = "1 / -",
+                isUpdating = false,
+                canUpdate = true
+            )
         ),
         currentViewType = ViewType.Card,
         execute = {},
