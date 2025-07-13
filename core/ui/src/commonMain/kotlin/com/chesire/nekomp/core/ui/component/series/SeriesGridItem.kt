@@ -87,7 +87,7 @@ fun SeriesGridItem(
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.Bottom,
                         modifier = Modifier.padding(start = 8.dp)
                     ) {
                         Text(
