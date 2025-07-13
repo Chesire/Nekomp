@@ -73,9 +73,9 @@ fun SeriesGridItem(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
+                        modifier = Modifier.padding(start = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.Bottom,
-                        modifier = Modifier.padding(start = 8.dp)
+                        verticalAlignment = Alignment.Bottom
                     ) {
                         Text(
                             text = progress,
