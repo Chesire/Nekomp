@@ -7,8 +7,8 @@ import com.chesire.nekomp.core.ext.airingAt
 import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
-import com.chesire.nekomp.core.preferences.ImageQuality
-import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.core.preferences.models.ImageQuality
+import com.chesire.nekomp.core.preferences.models.TitleLanguage
 import com.chesire.nekomp.library.datasource.airing.AiringAnime
 import com.chesire.nekomp.library.datasource.airing.AiringRepository
 import kotlinx.collections.immutable.toPersistentList
