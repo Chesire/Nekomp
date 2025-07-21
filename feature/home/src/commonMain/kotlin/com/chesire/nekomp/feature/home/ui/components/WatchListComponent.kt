@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.ui.component.series.SeriesGridItem
 import com.chesire.nekomp.feature.home.ui.WatchItem
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.delay
 
 @Composable
 fun WatchListComponent(
@@ -23,6 +24,7 @@ fun WatchListComponent(
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(watchItems) {
+        delay(100)
         lazyListState.animateScrollToItem(0)
     }
     Column {
