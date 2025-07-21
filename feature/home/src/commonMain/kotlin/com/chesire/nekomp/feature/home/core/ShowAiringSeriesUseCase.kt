@@ -73,8 +73,9 @@ class ShowAiringSeriesUseCase(
     }
 
     private fun AiringTime.timeTillShowing(): Duration {
-        val instant = airingAt().toInstant(TimeZone.of(timeZone))
-        return instant.minus(Clock.System.now())
+        return airingAt()
+            .toInstant(TimeZone.currentSystemDefault())
+            .minus(Clock.System.now())
     }
 
     @Suppress("MagicNumber")
