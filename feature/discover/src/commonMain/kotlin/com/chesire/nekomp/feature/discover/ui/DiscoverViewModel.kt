@@ -7,8 +7,8 @@ import com.chesire.nekomp.core.database.dao.MappingDao
 import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.preferences.ApplicationSettings
-import com.chesire.nekomp.core.preferences.ImageQuality
-import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.core.preferences.models.ImageQuality
+import com.chesire.nekomp.core.preferences.models.TitleLanguage
 import com.chesire.nekomp.feature.discover.core.AddItemToTrackingUseCase
 import com.chesire.nekomp.feature.discover.core.DeleteItemUseCase
 import com.chesire.nekomp.feature.discover.core.RecentSearchesUseCase

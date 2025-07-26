@@ -32,7 +32,7 @@ import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.preferences.ApplicationSettings
-import com.chesire.nekomp.core.preferences.Theme
+import com.chesire.nekomp.core.preferences.models.Theme
 import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.feature.airing.ui.AiringScreen
 import com.chesire.nekomp.feature.discover.ui.DiscoverScreen

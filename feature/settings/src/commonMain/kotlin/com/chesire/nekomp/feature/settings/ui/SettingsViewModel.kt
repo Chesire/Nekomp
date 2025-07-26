@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.coroutines.combine
 import com.chesire.nekomp.core.preferences.ApplicationSettings
-import com.chesire.nekomp.core.preferences.ImageQuality
-import com.chesire.nekomp.core.preferences.Theme
-import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.core.preferences.models.ImageQuality
+import com.chesire.nekomp.core.preferences.models.Theme
+import com.chesire.nekomp.core.preferences.models.TitleLanguage
 import com.chesire.nekomp.feature.settings.core.LogoutExecutor
 import com.chesire.nekomp.feature.settings.data.ApplicationVersionInfo
 import com.chesire.nekomp.feature.settings.ui.SettingsBottomSheet.ImageQualityBottomSheet
@@ -71,10 +71,11 @@ class SettingsViewModel(
     }
 
     private fun onThemeClick() = viewModelScope.launch {
+        val currentTheme = applicationSettings.theme.first()
         _bottomSheet.update {
             SettingsBottomSheet.ThemeBottomSheet(
                 themes = Theme.entries.toPersistentList(),
-                selectedTheme = applicationSettings.theme.first()
+                selectedTheme = currentTheme
             )
         }
     }
@@ -88,10 +89,11 @@ class SettingsViewModel(
     }
 
     private fun onTitleLanguageClick() = viewModelScope.launch {
+        val currentTitleLanguage = applicationSettings.titleLanguage.first()
         _bottomSheet.update {
             SettingsBottomSheet.TitleLanguageBottomSheet(
                 languages = TitleLanguage.entries.toPersistentList(),
-                selectedLanguage = applicationSettings.titleLanguage.first()
+                selectedLanguage = currentTitleLanguage
             )
         }
     }
@@ -105,10 +107,11 @@ class SettingsViewModel(
     }
 
     private fun onImageQualityClick() = viewModelScope.launch {
+        val currentImageQuality = applicationSettings.imageQuality.first()
         _bottomSheet.update {
             ImageQualityBottomSheet(
                 qualities = ImageQuality.entries.toPersistentList(),
-                selectedQuality = applicationSettings.imageQuality.first()
+                selectedQuality = currentImageQuality
             )
         }
     }

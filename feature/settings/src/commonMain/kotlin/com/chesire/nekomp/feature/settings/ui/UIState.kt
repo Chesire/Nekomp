@@ -1,8 +1,8 @@
 package com.chesire.nekomp.feature.settings.ui
 
-import com.chesire.nekomp.core.preferences.ImageQuality
-import com.chesire.nekomp.core.preferences.Theme
-import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.core.preferences.models.ImageQuality
+import com.chesire.nekomp.core.preferences.models.Theme
+import com.chesire.nekomp.core.preferences.models.TitleLanguage
 import kotlinx.collections.immutable.ImmutableList
 
 data class UIState(

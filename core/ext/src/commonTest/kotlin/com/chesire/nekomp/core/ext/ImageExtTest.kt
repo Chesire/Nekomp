@@ -1,7 +1,7 @@
 package com.chesire.nekomp.core.ext
 
 import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.preferences.ImageQuality
+import com.chesire.nekomp.core.preferences.models.ImageQuality
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 

@@ -6,6 +6,8 @@ private const val APPLICATION_SETTINGS_DATASTORE_NAME = "nekomp.applicationsetti
 
 val preferencesModule = module {
     single<ApplicationSettings> {
-        ApplicationSettings(createDataStore(APPLICATION_SETTINGS_DATASTORE_NAME))
+        ApplicationSettingsImpl(
+            createDataStore(APPLICATION_SETTINGS_DATASTORE_NAME)
+        )
     }
 }

@@ -1,7 +1,7 @@
 package com.chesire.nekomp.core.ext
 
 import com.chesire.nekomp.core.model.Image
-import com.chesire.nekomp.core.preferences.ImageQuality
+import com.chesire.nekomp.core.preferences.models.ImageQuality
 
 /**
  * Gets the best matching [Image] value based on the preferred [imageQuality].

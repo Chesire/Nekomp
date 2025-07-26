@@ -1,7 +1,7 @@
 package com.chesire.nekomp.core.ext
 
 import com.chesire.nekomp.core.model.Titles
-import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.core.preferences.models.TitleLanguage
 
 /**
  * Gets the best title from [Titles] based on the passed in [titleLanguage].
