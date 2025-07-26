@@ -33,6 +33,16 @@
     <string name="login_error_invalid_credentials">Failed to login, invalid credentials provided</string>
     <string name="login_error_generic">Failed to login, please check your internet and try again</string>
 
+    <!-- Library -->
+    <string name="library_sort_default">Default</string>
+    <string name="library_sort_title">Title</string>
+    <string name="library_sort_start_date">Start date</string>
+    <string name="library_sort_end_date">End date</string>
+    <string name="library_sort_rating">Rating</string>
+    <string name="library_view_type_card">Card</string>
+    <string name="library_view_type_list">List</string>
+    <string name="library_view_type_grid">Grid</string>
+
     <!-- Discover -->
     <string name="discover_detail_kitsu_link">https://kitsu.app/%1$s/%2$s</string>
     <string name="discover_detail_mal_link">https://myanimelist.net/%1$s/%2$s</string>
@@ -70,8 +80,20 @@
     <string name="settings_section_account">Account</string>
     <string name="settings_section_support">Support</string>
     <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
     <string name="settings_title_language_title">Title Language</string>
+    <string name="settings_title_language_canonical">Canonical</string>
+    <string name="settings_title_language_english">English</string>
+    <string name="settings_title_language_romaji">Romaji</string>
+    <string name="settings_title_language_cjk">CJK</string>
     <string name="settings_image_quality_title">Image Quality</string>
+    <string name="settings_image_quality_lowest">Lowest</string>
+    <string name="settings_image_quality_low">Low</string>
+    <string name="settings_image_quality_medium">Medium</string>
+    <string name="settings_image_quality_high">High</string>
+    <string name="settings_image_quality_highest">Highest</string>
     <string name="settings_rate_series_title">Rate Series</string>
     <string name="settings_rate_series_body">Prompt to rate series when finishing it</string>
     <string name="settings_logout_title">Logout</string>

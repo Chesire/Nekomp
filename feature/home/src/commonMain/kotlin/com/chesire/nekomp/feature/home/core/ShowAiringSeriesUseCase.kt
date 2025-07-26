@@ -6,6 +6,7 @@ import com.chesire.nekomp.core.ext.airingAt
 import com.chesire.nekomp.core.ext.toBestImage
 import com.chesire.nekomp.core.ext.toChosenLanguage
 import com.chesire.nekomp.core.model.AiringTime
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.feature.home.ui.AiringItem
@@ -69,6 +70,7 @@ class ShowAiringSeriesUseCase(
     private fun AiringAnime.isTrackedSeries(libraryEntries: List<LibraryEntry>): Boolean {
         return libraryEntries
             .filter { it.type == Type.Anime }
+            .filter { it.entryStatus == EntryStatus.Current || it.entryStatus == EntryStatus.Planned }
             .any { it.id == this.kitsuId }
     }
 

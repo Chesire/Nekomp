@@ -29,7 +29,7 @@ fun AiringListComponent(
                 key = { it.entryId }
             ) {
                 SeriesAiringItem(
-                    text = it.title,
+                    text = it.airingAt,
                     coverImage = it.coverImage,
                     modifier = Modifier.animateItem(),
                     onClick = { onAiringItemClick(it) }
