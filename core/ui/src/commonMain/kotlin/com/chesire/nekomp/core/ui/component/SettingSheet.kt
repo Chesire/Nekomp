@@ -17,12 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 
 @Composable
 fun <T : Enum<T>> SettingSheet(
     sheetState: SheetState,
     title: String,
-    entries: ImmutableList<T>,
+    entries: ImmutableMap<T, String>,
     selectedEntry: T,
     execute: (T?) -> Unit
 ) {
@@ -42,14 +43,14 @@ fun <T : Enum<T>> SettingSheet(
                         modifier = Modifier
                             .clickable(
                                 enabled = true,
-                                onClick = { execute(entry) }
+                                onClick = { execute(entry.key) }
                             )
                             .padding(vertical = 8.dp, horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = entry.name,
+                            text = entry.value,
                             modifier = Modifier.weight(1f)
                         )
                         RadioButton(
