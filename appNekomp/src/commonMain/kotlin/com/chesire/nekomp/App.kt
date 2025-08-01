@@ -15,6 +15,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -42,6 +43,7 @@ import com.chesire.nekomp.feature.login.ui.LoginScreen
 import com.chesire.nekomp.feature.profile.ui.ProfileScreen
 import com.chesire.nekomp.feature.settings.ui.SettingsScreen
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
+import com.chesire.nekomp.navigation.AuthEventHandler
 import com.chesire.nekomp.navigation.DashboardDestination
 import com.chesire.nekomp.navigation.OriginScreen
 import org.jetbrains.compose.resources.stringResource
@@ -67,6 +69,17 @@ fun App() {
     NekompTheme(useDarkTheme) {
         val appNavController = rememberNavController()
         val isLoggedIn = !koinInject<AuthRepository>().accessTokenSync().isNullOrBlank()
+        val authEventHandler = koinInject<AuthEventHandler>()
+
+        LaunchedEffect(Unit) {
+            authEventHandler.userLoggedOutEvent.collect {
+                Logger.i("App") { "Auth failed event received, navigating to login" }
+                appNavController.navigate(OriginScreen.Login.name) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+        }
+
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

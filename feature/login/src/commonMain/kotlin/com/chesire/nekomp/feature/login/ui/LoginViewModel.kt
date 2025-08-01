@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.login.core.LoadDataUseCase
 import com.chesire.nekomp.feature.login.core.PerformLoginUseCase
+import com.chesire.nekomp.feature.login.ui.ViewEvent.LoginFailure
 import com.chesire.nekomp.library.datasource.auth.AuthFailure
 import com.github.michaelbull.result.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,12 +57,16 @@ class LoginViewModel(
                     ViewEvent.LoginSuccessful
                 } else {
                     when (loginResult.error) {
-                        AuthFailure.BadRequest -> ViewEvent.LoginFailure(
+                        AuthFailure.BadRequest -> LoginFailure(
                             getString(NekoRes.string.login_error_generic)
                         )
 
-                        AuthFailure.InvalidCredentials -> ViewEvent.LoginFailure(
+                        AuthFailure.InvalidCredentials -> LoginFailure(
                             getString(NekoRes.string.login_error_invalid_credentials)
+                        )
+
+                        AuthFailure.BadToken -> LoginFailure(
+                            getString(NekoRes.string.login_error_generic)
                         )
                     }
                 }

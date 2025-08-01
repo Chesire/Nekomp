@@ -35,7 +35,8 @@ val libraryUserModule = module {
                             )
                         },
                         refreshTokens = {
-                            get<AuthRepository>().refresh().error is AuthFailure.InvalidCredentials
+                            val result = get<AuthRepository>().refresh()
+                            result.error is AuthFailure.BadToken
                         },
                         onRefreshError = {
                             get<RefreshErrorExecutor>().invoke()

@@ -44,6 +44,7 @@ class AuthRepository(
                     val type = when (it) {
                         is NetworkError.ApiError -> when (it.code) {
                             HttpStatusCode.Unauthorized.value -> AuthFailure.InvalidCredentials
+                            HttpStatusCode.BadRequest.value -> AuthFailure.BadToken
                             else -> AuthFailure.BadRequest
                         }
 
@@ -60,7 +61,7 @@ class AuthRepository(
             .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
             .mapBoth(
                 success = {
-                    Logger.e("AuthRepository") { "Token refresh successful" }
+                    Logger.i("AuthRepository") { "Token refresh successful" }
                     Ok(it.accessToken)
                 },
                 failure = {
@@ -70,6 +71,7 @@ class AuthRepository(
                     val type = when (it) {
                         is NetworkError.ApiError -> when (it.code) {
                             HttpStatusCode.Unauthorized.value -> AuthFailure.InvalidCredentials
+                            HttpStatusCode.BadRequest.value -> AuthFailure.BadToken
                             else -> AuthFailure.BadRequest
                         }
 
@@ -89,5 +91,6 @@ class AuthRepository(
 
 sealed interface AuthFailure {
     data object InvalidCredentials : AuthFailure
+    data object BadToken : AuthFailure
     data object BadRequest : AuthFailure
 }
