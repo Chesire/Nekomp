@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,9 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.core.ui.theme.Values
 import com.chesire.nekomp.feature.profile.ui.FavoritesData
 import kotlinx.collections.immutable.ImmutableList
 import nekomp.core.resources.generated.resources.profile_favorites_favorite_anime
@@ -34,20 +37,29 @@ fun FavoritesComponent(favoritesData: FavoritesData) {
         if (favoritesData.favoriteAnime.isNotEmpty()) {
             FavoriteSection(
                 title = stringResource(NekoRes.string.profile_favorites_favorite_anime),
-                listData = favoritesData.favoriteAnime
+                listData = favoritesData.favoriteAnime,
+                itemWidth = Values.GridItemWidth,
+                itemHeight = Values.GridItemHeight
             )
         }
         if (favoritesData.favoriteManga.isNotEmpty()) {
             FavoriteSection(
                 title = stringResource(NekoRes.string.profile_favorites_favorite_manga),
-                listData = favoritesData.favoriteManga
+                listData = favoritesData.favoriteManga,
+                itemWidth = Values.GridItemWidth,
+                itemHeight = Values.GridItemHeight
             )
         }
     }
 }
 
 @Composable
-private fun FavoriteSection(title: String, listData: ImmutableList<String>) {
+private fun FavoriteSection(
+    title: String,
+    listData: ImmutableList<String>,
+    itemWidth: Dp = Dp.Unspecified,
+    itemHeight: Dp = Dp.Unspecified
+) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             text = title,
@@ -63,7 +75,9 @@ private fun FavoriteSection(title: String, listData: ImmutableList<String>) {
                 AsyncImage(
                     model = item,
                     contentDescription = null,
-                    modifier = Modifier.clip(RoundedCornerShape(4.dp))
+                    modifier = Modifier
+                        .size(width = itemWidth, height = itemHeight)
+                        .clip(RoundedCornerShape(4.dp))
                 )
             }
         }

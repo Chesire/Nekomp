@@ -53,6 +53,8 @@ import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.component.SettingSheet
 import com.chesire.nekomp.core.ui.util.ifTrue
+import com.chesire.nekomp.feature.settings.ext.displayString
+import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import nekomp.core.resources.generated.resources.nav_settings
@@ -384,7 +386,10 @@ private fun BottomSheetEventHandler(
         is SettingsBottomSheet.ThemeBottomSheet -> SettingSheet(
             sheetState = sheetState,
             title = stringResource(NekoRes.string.settings_theme_title),
-            entries = sheet.themes,
+            entries = sheet
+                .themes
+                .associateWith { stringResource(it.displayString) }
+                .toPersistentMap(),
             selectedEntry = sheet.selectedTheme,
             execute = { execute(ViewAction.ThemeChosen(it)) }
         )
@@ -392,7 +397,10 @@ private fun BottomSheetEventHandler(
         is SettingsBottomSheet.TitleLanguageBottomSheet -> SettingSheet(
             sheetState = sheetState,
             title = stringResource(NekoRes.string.settings_title_language_title),
-            entries = sheet.languages,
+            entries = sheet
+                .languages
+                .associateWith { stringResource(it.displayString) }
+                .toPersistentMap(),
             selectedEntry = sheet.selectedLanguage,
             execute = { execute(ViewAction.TitleLanguageChosen(it)) }
         )
@@ -400,7 +408,10 @@ private fun BottomSheetEventHandler(
         is SettingsBottomSheet.ImageQualityBottomSheet -> SettingSheet(
             sheetState = sheetState,
             title = stringResource(NekoRes.string.settings_image_quality_title),
-            entries = sheet.qualities,
+            entries = sheet
+                .qualities
+                .associateWith { stringResource(it.displayString) }
+                .toPersistentMap(),
             selectedEntry = sheet.selectedQuality,
             execute = { execute(ViewAction.ImageQualityChosen(it)) }
         )

@@ -37,7 +37,9 @@ import com.chesire.nekomp.core.ui.component.SettingSheet
 import com.chesire.nekomp.feature.library.ui.pane.DetailPane
 import com.chesire.nekomp.feature.library.ui.pane.ListPane
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -157,7 +159,10 @@ private fun BottomSheetEventHandler(
         is LibraryBottomSheet.ViewTypeBottomSheet -> SettingSheet(
             sheetState = sheetState,
             title = "View type",
-            entries = sheet.types,
+            entries = sheet
+                .types
+                .associateWith { stringResource(it.displayString) }
+                .toPersistentMap(),
             selectedEntry = sheet.selectedType,
             execute = { execute(ViewAction.ViewTypeChosen(it)) }
         )
@@ -165,7 +170,10 @@ private fun BottomSheetEventHandler(
         is LibraryBottomSheet.SortBottomSheet -> SettingSheet(
             sheetState = sheetState,
             title = "Sort by",
-            entries = sheet.options,
+            entries = sheet
+                .options
+                .associateWith { stringResource(it.displayString) }
+                .toPersistentMap(),
             selectedEntry = sheet.selectedOption,
             execute = { execute(ViewAction.SortChosen(it)) }
         )

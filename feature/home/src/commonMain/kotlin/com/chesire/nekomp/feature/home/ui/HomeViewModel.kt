@@ -48,7 +48,7 @@ class HomeViewModel(
         libraryEntries
             .asSequence()
             .filter { it.type == Type.Anime }
-            .filter { it.entryStatus != EntryStatus.Completed }
+            .filter { it.entryStatus == EntryStatus.Current }
             .filter { it.progress != it.totalLength }
             .sortedByDescending { it.updatedAt }
             .take(WATCH_LIST_LIMIT)
