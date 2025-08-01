@@ -1,9 +1,11 @@
 package com.chesire.nekomp.library.datasource.library
 
+import com.chesire.nekomp.core.network.RefreshErrorExecutor
 import com.chesire.nekomp.core.network.ResultConverterFactory
 import com.chesire.nekomp.core.network.plugin.installAuth
 import com.chesire.nekomp.core.network.plugin.installContentNegotiation
 import com.chesire.nekomp.core.network.plugin.installLogging
+import com.chesire.nekomp.library.datasource.auth.AuthFailure
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import com.chesire.nekomp.library.datasource.library.local.LibraryStorage
 import com.chesire.nekomp.library.datasource.library.remote.LibraryApi
@@ -31,7 +33,10 @@ val libraryLibraryModule = module {
                             )
                         },
                         refreshTokens = {
-                            get<AuthRepository>().refresh().isOk
+                            get<AuthRepository>().refresh().error is AuthFailure.InvalidCredentials
+                        },
+                        onRefreshError = {
+                            get<RefreshErrorExecutor>().invoke()
                         }
                     )
                 }

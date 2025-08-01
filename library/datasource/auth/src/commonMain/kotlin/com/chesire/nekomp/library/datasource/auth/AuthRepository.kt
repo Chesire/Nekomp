@@ -2,7 +2,6 @@ package com.chesire.nekomp.library.datasource.auth
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.network.NetworkError
-import com.chesire.nekomp.core.network.RefreshErrorExecutor
 import com.chesire.nekomp.library.datasource.auth.local.AuthStorage
 import com.chesire.nekomp.library.datasource.auth.remote.AuthApi
 import com.chesire.nekomp.library.datasource.auth.remote.model.GRANT_TYPE_PASSWORD
@@ -20,8 +19,7 @@ import kotlinx.coroutines.runBlocking
 // TODO: Add a remote data source to handle all this parsing etc
 class AuthRepository(
     private val authApi: AuthApi,
-    private val authStorage: AuthStorage,
-    private val refreshErrorExecutor: RefreshErrorExecutor
+    private val authStorage: AuthStorage
 ) {
 
     // This will do for now
@@ -71,12 +69,7 @@ class AuthRepository(
                     }
                     val type = when (it) {
                         is NetworkError.ApiError -> when (it.code) {
-                            HttpStatusCode.Unauthorized.value -> {
-                                // Unauthorized means the refresh token wasn't valid, execute logout
-                                //refreshErrorExecutor()
-                                AuthFailure.InvalidCredentials
-                            }
-
+                            HttpStatusCode.Unauthorized.value -> AuthFailure.InvalidCredentials
                             else -> AuthFailure.BadRequest
                         }
 
