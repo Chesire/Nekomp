@@ -73,7 +73,7 @@ fun App() {
 
         LaunchedEffect(Unit) {
             authEventHandler.userLoggedOutEvent.collect {
-                Logger.i("App") { "Auth failed event received, navigating to login" }
+                Logger.i("App") { "User logged out event received, navigating to login" }
                 appNavController.navigate(OriginScreen.Login.name) {
                     popUpTo(0) { inclusive = true }
                 }
