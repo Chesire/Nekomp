@@ -31,7 +31,7 @@ val libraryFavoriteModule = module {
                             )
                         },
                         refreshTokens = {
-                            get<AuthRepository>().refresh()
+                            get<AuthRepository>().refresh().isOk
                         }
                     )
                 }

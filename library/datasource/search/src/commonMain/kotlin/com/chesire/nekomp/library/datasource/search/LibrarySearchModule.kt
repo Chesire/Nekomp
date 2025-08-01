@@ -30,7 +30,7 @@ val librarySearchModule = module {
                             )
                         },
                         refreshTokens = {
-                            get<AuthRepository>().refresh()
+                            get<AuthRepository>().refresh().isOk
                         }
                     )
                 }

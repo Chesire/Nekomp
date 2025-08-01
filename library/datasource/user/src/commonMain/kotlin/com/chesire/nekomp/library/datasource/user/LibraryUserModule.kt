@@ -33,7 +33,7 @@ val libraryUserModule = module {
                             )
                         },
                         refreshTokens = {
-                            get<AuthRepository>().refresh()
+                            get<AuthRepository>().refresh().isOk
                         }
                     )
                 }

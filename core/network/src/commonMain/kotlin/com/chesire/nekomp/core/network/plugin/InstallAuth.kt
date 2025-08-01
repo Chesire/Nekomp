@@ -9,7 +9,7 @@ import io.ktor.http.HttpStatusCode
 
 fun HttpClientConfig<*>.installAuth(
     getTokens: suspend () -> BearerTokens,
-    refreshTokens: suspend () -> Unit
+    refreshTokens: suspend () -> Boolean
 ) {
     install(Auth) {
         reAuthorizeOnResponse { response ->
@@ -23,8 +23,13 @@ fun HttpClientConfig<*>.installAuth(
 
             refreshTokens {
                 Logger.i("HttpClient") { "Refreshing auth tokens" }
-                refreshTokens()
-                getTokens()
+                val tokensRefreshed = refreshTokens()
+                if (tokensRefreshed) {
+                    getTokens()
+                } else {
+                    // Execute logout in some way
+                    error()
+                }
             }
         }
     }

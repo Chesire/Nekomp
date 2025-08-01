@@ -130,7 +130,7 @@ class SettingsViewModel(
     }
 
     private fun onLogoutClick() = viewModelScope.launch {
-        logout.execute()
+        logout.invoke()
         _viewEvent.update { ViewEvent.LoggedOut }
     }
 

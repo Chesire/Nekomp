@@ -31,7 +31,7 @@ val libraryStatsModule = module {
                             )
                         },
                         refreshTokens = {
-                            get<AuthRepository>().refresh()
+                            get<AuthRepository>().refresh().isOk
                         }
                     )
                 }

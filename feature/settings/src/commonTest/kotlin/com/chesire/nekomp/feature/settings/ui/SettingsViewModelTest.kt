@@ -170,7 +170,7 @@ class SettingsViewModelTest : FunSpec({
     test("When onLogoutClick, Then logout is executed") {
         viewModel.execute(ViewAction.LogoutClick)
 
-        verifySuspend { logout.execute() }
+        verifySuspend { logout.invoke() }
     }
 
     test("When onObservedViewEvent, Then viewEvent is reset") {
