@@ -63,7 +63,6 @@ class SettingsViewModelTest : FunSpec({
                 imageQuality.shouldBe("High")
                 rateChecked.shouldBe(true)
                 version.shouldBe("0.0.0 (0)")
-                viewEvent.shouldBeNull()
                 bottomSheet.shouldBeNull()
             }
         }
@@ -171,17 +170,5 @@ class SettingsViewModelTest : FunSpec({
         viewModel.execute(ViewAction.LogoutClick)
 
         verifySuspend { logout.invoke() }
-    }
-
-    test("When onObservedViewEvent, Then viewEvent is reset") {
-        viewModel.uiState.test {
-            skipItems(1)
-            viewModel.execute(ViewAction.LogoutClick)
-            awaitItem().viewEvent.shouldBe(ViewEvent.LoggedOut)
-
-            viewModel.execute(ViewAction.ObservedViewEvent)
-
-            awaitItem().viewEvent.shouldBeNull()
-        }
     }
 })
