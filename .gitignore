@@ -97,3 +97,4 @@ lint/tmp/
 /.kotlin
 **/swiftpackage/
 /.build
+CLAUDE.md
