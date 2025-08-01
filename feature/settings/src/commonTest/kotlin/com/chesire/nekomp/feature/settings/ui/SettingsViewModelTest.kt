@@ -43,6 +43,11 @@ class SettingsViewModelTest : FunSpec({
         resetAnswers()
         Dispatchers.setMain(UnconfinedTestDispatcher())
 
+        every { applicationSettings.theme } returns flowOf(Theme.System)
+        every { applicationSettings.titleLanguage } returns flowOf(TitleLanguage.CJK)
+        every { applicationSettings.imageQuality } returns flowOf(ImageQuality.High)
+        every { applicationSettings.rateOnFinish } returns flowOf(true)
+
         viewModel = SettingsViewModel(
             applicationSettings,
             applicationVersionInfo,
@@ -51,13 +56,23 @@ class SettingsViewModelTest : FunSpec({
     }
 
     test("When initialize, Then UI is default state") {
-
+        viewModel.uiState.test {
+            awaitItem().apply {
+                currentTheme.shouldBe("System")
+                titleLanguage.shouldBe("CJK")
+                imageQuality.shouldBe("High")
+                rateChecked.shouldBe(true)
+                version.shouldBe("0.0.0 (0)")
+                viewEvent.shouldBeNull()
+                bottomSheet.shouldBeNull()
+            }
+        }
     }
 
     test("When onThemeClick, Then theme bottom sheet is shown") {
-        every { applicationSettings.theme } returns flowOf(Theme.System)
-
         viewModel.uiState.test {
+            skipItems(1)
+
             viewModel.execute(ViewAction.ThemeClick)
 
             awaitItem().bottomSheet.shouldBeInstanceOf<SettingsBottomSheet.ThemeBottomSheet>()
@@ -73,9 +88,8 @@ class SettingsViewModelTest : FunSpec({
     }
 
     test("When onThemeChosen, Then bottom sheet is reset") {
-        every { applicationSettings.theme } returns flowOf(Theme.System)
-
         viewModel.uiState.test {
+            skipItems(1)
             viewModel.execute(ViewAction.ThemeClick)
             awaitItem().bottomSheet.shouldBeInstanceOf<SettingsBottomSheet.ThemeBottomSheet>()
 
@@ -86,9 +100,9 @@ class SettingsViewModelTest : FunSpec({
     }
 
     test("When onTitleLanguageClick, Then title bottom sheet is shown") {
-        every { applicationSettings.titleLanguage } returns flowOf(TitleLanguage.CJK)
-
         viewModel.uiState.test {
+            skipItems(1)
+
             viewModel.execute(ViewAction.TitleLanguageClick)
 
             awaitItem().bottomSheet.shouldBeInstanceOf<SettingsBottomSheet.TitleLanguageBottomSheet>()
@@ -104,9 +118,8 @@ class SettingsViewModelTest : FunSpec({
     }
 
     test("When onTitleLanguageChosen, Then bottom sheet is reset") {
-        every { applicationSettings.titleLanguage } returns flowOf(TitleLanguage.CJK)
-
         viewModel.uiState.test {
+            skipItems(1)
             viewModel.execute(ViewAction.TitleLanguageClick)
             awaitItem().bottomSheet.shouldBeInstanceOf<SettingsBottomSheet.TitleLanguageBottomSheet>()
 
@@ -117,9 +130,9 @@ class SettingsViewModelTest : FunSpec({
     }
 
     test("When onImageQualityClick, Then quality bottom sheet is shown") {
-        every { applicationSettings.imageQuality } returns flowOf(ImageQuality.High)
-
         viewModel.uiState.test {
+            skipItems(1)
+
             viewModel.execute(ViewAction.ImageQualityClick)
 
             awaitItem().bottomSheet.shouldBeInstanceOf<SettingsBottomSheet.ImageQualityBottomSheet>()
@@ -135,9 +148,8 @@ class SettingsViewModelTest : FunSpec({
     }
 
     test("When onImageQualityChosen, Then bottom sheet is reset") {
-        every { applicationSettings.imageQuality } returns flowOf(ImageQuality.High)
-
         viewModel.uiState.test {
+            skipItems(1)
             viewModel.execute(ViewAction.ImageQualityClick)
             awaitItem().bottomSheet.shouldBeInstanceOf<SettingsBottomSheet.ImageQualityBottomSheet>()
 
@@ -152,7 +164,7 @@ class SettingsViewModelTest : FunSpec({
 
         viewModel.execute(ViewAction.RateChanged)
 
-        verifySuspend { applicationSettings.updateRateOnFinish(true) }
+        verifySuspend { applicationSettings.updateRateOnFinish(false) }
     }
 
     test("When onLogoutClick, Then logout is executed") {
@@ -163,10 +175,12 @@ class SettingsViewModelTest : FunSpec({
 
     test("When onObservedViewEvent, Then viewEvent is reset") {
         viewModel.uiState.test {
+            skipItems(1)
             viewModel.execute(ViewAction.LogoutClick)
             awaitItem().viewEvent.shouldBe(ViewEvent.LoggedOut)
 
             viewModel.execute(ViewAction.ObservedViewEvent)
+
             awaitItem().viewEvent.shouldBeNull()
         }
     }

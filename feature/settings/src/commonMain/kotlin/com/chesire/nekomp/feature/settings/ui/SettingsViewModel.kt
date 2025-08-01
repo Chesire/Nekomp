@@ -125,7 +125,8 @@ class SettingsViewModel(
     }
 
     private fun onRateChanged() = viewModelScope.launch {
-        applicationSettings.updateRateOnFinish(!uiState.value.rateChecked)
+        val currentRate = applicationSettings.rateOnFinish.first()
+        applicationSettings.updateRateOnFinish(!currentRate)
     }
 
     private fun onLogoutClick() = viewModelScope.launch {
