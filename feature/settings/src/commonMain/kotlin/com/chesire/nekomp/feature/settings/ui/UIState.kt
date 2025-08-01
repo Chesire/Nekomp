@@ -11,7 +11,6 @@ data class UIState(
     val imageQuality: String = "",
     val rateChecked: Boolean = false,
     val version: String = "",
-    val viewEvent: ViewEvent? = null,
     val bottomSheet: SettingsBottomSheet? = null
 )
 

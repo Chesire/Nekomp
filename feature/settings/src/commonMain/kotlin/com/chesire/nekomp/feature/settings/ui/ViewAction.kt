@@ -18,6 +18,4 @@ sealed interface ViewAction {
     data object RateChanged : ViewAction
 
     data object LogoutClick : ViewAction
-
-    data object ObservedViewEvent : ViewAction
 }
