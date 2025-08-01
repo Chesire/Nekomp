@@ -2,6 +2,7 @@ package com.chesire.nekomp.library.datasource.auth
 
 import co.touchlab.kermit.Logger
 import com.chesire.nekomp.core.network.NetworkError
+import com.chesire.nekomp.core.network.RefreshErrorExecutor
 import com.chesire.nekomp.library.datasource.auth.local.AuthStorage
 import com.chesire.nekomp.library.datasource.auth.remote.AuthApi
 import com.chesire.nekomp.library.datasource.auth.remote.model.GRANT_TYPE_PASSWORD
@@ -19,7 +20,8 @@ import kotlinx.coroutines.runBlocking
 // TODO: Add a remote data source to handle all this parsing etc
 class AuthRepository(
     private val authApi: AuthApi,
-    private val authStorage: AuthStorage
+    private val authStorage: AuthStorage,
+    private val refreshErrorExecutor: RefreshErrorExecutor
 ) {
 
     // This will do for now
@@ -59,16 +61,28 @@ class AuthRepository(
             .refresh(RefreshRequestDto(refreshToken() ?: "", GRANT_TYPE_REFRESH))
             .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
             .mapBoth(
-                success = { Ok(it.accessToken) },
+                success = {
+                    Logger.e("AuthRepository") { "Token refresh successful" }
+                    Ok(it.accessToken)
+                },
                 failure = {
+                    Logger.e("AuthRepository") {
+                        "Got error while attempting to refresh tokens - $it"
+                    }
                     val type = when (it) {
                         is NetworkError.ApiError -> when (it.code) {
-                            HttpStatusCode.Unauthorized.value -> AuthFailure.InvalidCredentials
+                            HttpStatusCode.Unauthorized.value -> {
+                                // Unauthorized means the refresh token wasn't valid, execute logout
+                                //refreshErrorExecutor()
+                                AuthFailure.InvalidCredentials
+                            }
+
                             else -> AuthFailure.BadRequest
                         }
 
                         is NetworkError.GenericError -> AuthFailure.BadRequest
                     }
+
                     Err(type)
                 }
             )

@@ -27,8 +27,7 @@ fun HttpClientConfig<*>.installAuth(
                 if (tokensRefreshed) {
                     getTokens()
                 } else {
-                    // Execute logout in some way
-                    error()
+                    error("Could not refresh, throwing an error")
                 }
             }
         }
