@@ -42,17 +42,20 @@ fun DetailPane(
     goBack: () -> Unit
 ) {
     if (entry != null) {
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SubcomposeAsyncImage(
                     model = entry.coverImage,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize().heightIn(min = 120.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 120.dp),
                     contentScale = ContentScale.Crop,
                     loading = { ImageLoadingOrError() },
                     error = { ImageLoadingOrError() }
