@@ -1,8 +1,8 @@
 package com.chesire.nekomp.feature.settings.ext
 
-import com.chesire.nekomp.core.preferences.ImageQuality
-import com.chesire.nekomp.core.preferences.Theme
-import com.chesire.nekomp.core.preferences.TitleLanguage
+import com.chesire.nekomp.core.preferences.models.ImageQuality
+import com.chesire.nekomp.core.preferences.models.Theme
+import com.chesire.nekomp.core.preferences.models.TitleLanguage
 import com.chesire.nekomp.core.resources.NekoRes
 import nekomp.core.resources.generated.resources.settings_image_quality_high
 import nekomp.core.resources.generated.resources.settings_image_quality_highest

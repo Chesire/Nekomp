@@ -1,9 +1,11 @@
 package com.chesire.nekomp.library.datasource.user
 
+import com.chesire.nekomp.core.network.RefreshErrorExecutor
 import com.chesire.nekomp.core.network.ResultConverterFactory
 import com.chesire.nekomp.core.network.plugin.installAuth
 import com.chesire.nekomp.core.network.plugin.installContentNegotiation
 import com.chesire.nekomp.core.network.plugin.installLogging
+import com.chesire.nekomp.library.datasource.auth.AuthFailure
 import com.chesire.nekomp.library.datasource.auth.AuthRepository
 import com.chesire.nekomp.library.datasource.user.local.UserLocalDataSource
 import com.chesire.nekomp.library.datasource.user.local.UserStorage
@@ -33,7 +35,11 @@ val libraryUserModule = module {
                             )
                         },
                         refreshTokens = {
-                            get<AuthRepository>().refresh()
+                            val result = get<AuthRepository>().refresh()
+                            result.error is AuthFailure.BadToken
+                        },
+                        onRefreshError = {
+                            get<RefreshErrorExecutor>().invoke()
                         }
                     )
                 }

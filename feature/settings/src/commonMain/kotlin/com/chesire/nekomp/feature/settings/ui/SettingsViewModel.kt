@@ -27,23 +27,20 @@ class SettingsViewModel(
     private val _appVersion =
         "${applicationVersionInfo.versionName} (${applicationVersionInfo.versionCode})"
     private val _bottomSheet = MutableStateFlow<SettingsBottomSheet?>(null)
-    private val _viewEvent = MutableStateFlow<ViewEvent?>(null)
 
     val uiState = combine(
         applicationSettings.theme,
         applicationSettings.titleLanguage,
         applicationSettings.imageQuality,
         applicationSettings.rateOnFinish,
-        _viewEvent,
         _bottomSheet
-    ) { theme, titleLanguage, imageQuality, rateOnFinish, viewEvent, bottomSheet ->
+    ) { theme, titleLanguage, imageQuality, rateOnFinish, bottomSheet ->
         UIState(
             currentTheme = theme.name,
             titleLanguage = titleLanguage.name,
             imageQuality = imageQuality.name,
             rateChecked = rateOnFinish,
             version = _appVersion,
-            viewEvent = viewEvent,
             bottomSheet = bottomSheet
         )
     }.stateIn(
@@ -66,7 +63,6 @@ class SettingsViewModel(
             ViewAction.RateChanged -> onRateChanged()
 
             ViewAction.LogoutClick -> onLogoutClick()
-            ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
 
@@ -130,9 +126,7 @@ class SettingsViewModel(
     }
 
     private fun onLogoutClick() = viewModelScope.launch {
-        logout.execute()
-        _viewEvent.update { ViewEvent.LoggedOut }
+        // the app module will handle navigating the user after this call
+        logout.invoke()
     }
-
-    private fun onObservedViewEvent() = _viewEvent.update { null }
 }

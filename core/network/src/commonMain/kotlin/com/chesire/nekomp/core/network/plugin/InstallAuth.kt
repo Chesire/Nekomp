@@ -7,9 +7,15 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.http.HttpStatusCode
 
+/**
+ * [refreshTokens] is a lambda that if true means that the tokens could not be refreshed so a logout
+ * will occur.
+ * [onRefreshError] is called when tokens cannot be refreshed and logout should occur.
+ */
 fun HttpClientConfig<*>.installAuth(
     getTokens: suspend () -> BearerTokens,
-    refreshTokens: suspend () -> Unit
+    refreshTokens: suspend () -> Boolean,
+    onRefreshError: suspend () -> Unit
 ) {
     install(Auth) {
         reAuthorizeOnResponse { response ->
@@ -23,8 +29,14 @@ fun HttpClientConfig<*>.installAuth(
 
             refreshTokens {
                 Logger.i("HttpClient") { "Refreshing auth tokens" }
-                refreshTokens()
-                getTokens()
+                val invalidTokens = refreshTokens()
+                if (invalidTokens) {
+                    Logger.e("HttpClient") { "Token refresh failed, executing logout" }
+                    onRefreshError()
+                    error("Could not refresh tokens, logout executed")
+                } else {
+                    getTokens()
+                }
             }
         }
     }

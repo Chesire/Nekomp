@@ -83,15 +83,13 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
-    goBack: () -> Unit,
-    onLoggedOut: () -> Unit
+    goBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     Render(
         state = state,
         goBack = goBack,
-        onLoggedOut = onLoggedOut,
         execute = { viewModel.execute(it) }
     )
 }
@@ -101,20 +99,9 @@ fun SettingsScreen(
 private fun Render(
     state: UIState,
     goBack: () -> Unit,
-    onLoggedOut: () -> Unit,
     execute: (ViewAction) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    LaunchedEffect(state.viewEvent) {
-        when (state.viewEvent) {
-            ViewEvent.LoggedOut -> onLoggedOut()
-            null -> Unit
-        }
-
-        if (state.viewEvent != null) {
-            execute(ViewAction.ObservedViewEvent)
-        }
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -433,7 +420,6 @@ private fun Preview() {
     Render(
         state = state,
         goBack = {},
-        onLoggedOut = {},
         execute = {}
     )
 }

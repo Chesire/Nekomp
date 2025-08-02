@@ -44,6 +44,7 @@ class AuthRepository(
                     val type = when (it) {
                         is NetworkError.ApiError -> when (it.code) {
                             HttpStatusCode.Unauthorized.value -> AuthFailure.InvalidCredentials
+                            HttpStatusCode.BadRequest.value -> AuthFailure.BadToken
                             else -> AuthFailure.BadRequest
                         }
 
@@ -59,16 +60,24 @@ class AuthRepository(
             .refresh(RefreshRequestDto(refreshToken() ?: "", GRANT_TYPE_REFRESH))
             .onSuccess { updateTokens(it.accessToken, it.refreshToken) }
             .mapBoth(
-                success = { Ok(it.accessToken) },
+                success = {
+                    Logger.i("AuthRepository") { "Token refresh successful" }
+                    Ok(it.accessToken)
+                },
                 failure = {
+                    Logger.e("AuthRepository") {
+                        "Got error while attempting to refresh tokens - $it"
+                    }
                     val type = when (it) {
                         is NetworkError.ApiError -> when (it.code) {
                             HttpStatusCode.Unauthorized.value -> AuthFailure.InvalidCredentials
+                            HttpStatusCode.BadRequest.value -> AuthFailure.BadToken
                             else -> AuthFailure.BadRequest
                         }
 
                         is NetworkError.GenericError -> AuthFailure.BadRequest
                     }
+
                     Err(type)
                 }
             )
@@ -82,5 +91,6 @@ class AuthRepository(
 
 sealed interface AuthFailure {
     data object InvalidCredentials : AuthFailure
+    data object BadToken : AuthFailure
     data object BadRequest : AuthFailure
 }

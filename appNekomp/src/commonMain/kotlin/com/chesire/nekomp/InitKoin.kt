@@ -6,6 +6,7 @@ import com.chesire.nekomp.core.coroutines.coroutinesModule
 import com.chesire.nekomp.core.database.databaseModule
 import com.chesire.nekomp.core.preferences.preferencesModule
 import com.chesire.nekomp.di.initializersModule
+import com.chesire.nekomp.di.navigationModule
 import com.chesire.nekomp.di.settingsBinderModule
 import com.chesire.nekomp.feature.airing.featureAiringModule
 import com.chesire.nekomp.feature.discover.featureDiscoverModule
@@ -62,6 +63,7 @@ val koinModules = listOf(
     libraryStatsModule,
     libraryTrendingModule,
     libraryUserModule,
+    navigationModule,
     preferencesModule,
     settingsBinderModule
 )
