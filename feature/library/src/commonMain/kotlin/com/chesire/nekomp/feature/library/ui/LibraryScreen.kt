@@ -20,6 +20,7 @@ import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -61,6 +62,9 @@ private fun Render(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val navigator = rememberListDetailPaneScaffoldNavigator<Entry>()
+    val paneState = rememberPaneExpansionState().apply {
+        setFirstPaneProportion(0.65f)
+    }
     val isListAndDetailVisible =
         navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded &&
             navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
@@ -113,7 +117,8 @@ private fun Render(
                         AnimatedPane {
                             DetailPane(
                                 entry = state.selectedEntry,
-                                showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
+                                showBack = !isListAndDetailVisible &&
+                                    navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
                                 goBack = {
                                     scope.launch {
                                         navigator.navigateBack()
@@ -121,7 +126,8 @@ private fun Render(
                                 }
                             )
                         }
-                    }
+                    },
+                    paneExpansionState = paneState
                 )
             }
         }
