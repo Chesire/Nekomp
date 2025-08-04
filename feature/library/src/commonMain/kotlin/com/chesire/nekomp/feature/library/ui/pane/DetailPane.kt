@@ -20,14 +20,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddTask
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.HowToVote
 import androidx.compose.material.icons.filled.LiveTv
 import androidx.compose.material.icons.filled.Movie
-import androidx.compose.material.icons.filled.SsidChart
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
-import androidx.compose.material.icons.filled.StarRate
-import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,6 +45,7 @@ import coil3.compose.SubcomposeAsyncImage
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.feature.library.ui.Entry
+import com.chesire.nekomp.feature.library.ui.ViewAction
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -58,7 +54,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun DetailPane(
     entry: Entry?,
     showBack: Boolean,
-    goBack: () -> Unit
+    goBack: () -> Unit,
+    execute: (ViewAction) -> Unit
 ) {
     if (entry != null) {
         val scrollState = rememberScrollState()
@@ -145,7 +142,7 @@ fun DetailPane(
                     .padding(horizontal = 16.dp)
                     .padding(top = 8.dp, bottom = 8.dp)
             ) {
-                // TODO: Show bottom sheet allowing the progress to be updated
+                execute(ViewAction.ProgressCardClick(entry))
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -161,7 +158,7 @@ fun DetailPane(
                         )
                     }
                 ) {
-                    // TODO: Show status bottom sheet
+                    execute(ViewAction.StatusCardClick(entry))
                 }
                 DetailCard(
                     title = "Rating",
@@ -175,7 +172,7 @@ fun DetailPane(
                         )
                     }
                 ) {
-                    // TODO: Show rating bottom sheet
+                    execute(ViewAction.RatingCardClick(entry))
                 }
             }
         }
@@ -323,7 +320,8 @@ private fun Preview() {
                 canUpdate = true
             ),
             showBack = true,
-            goBack = {}
+            goBack = {},
+            execute = {}
         )
     }
 }

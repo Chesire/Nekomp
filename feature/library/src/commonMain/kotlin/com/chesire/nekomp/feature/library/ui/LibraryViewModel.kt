@@ -121,6 +121,10 @@ class LibraryViewModel(
             is ViewAction.ItemSelect -> onItemSelect(action.entry)
             is ViewAction.ItemPlusOneClick -> onItemPlusOneClick(action.entry)
 
+            is ViewAction.ProgressCardClick -> onProgressCardClick(action.entry)
+            is ViewAction.RatingCardClick -> onRatingCardClick(action.entry)
+            is ViewAction.StatusCardClick -> onStatusCardClick(action.entry)
+
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
     }
@@ -213,6 +217,18 @@ class LibraryViewModel(
             entryId = entry.entryId,
             newProgress = entry.progress + 1
         )
+    }
+
+    private fun onProgressCardClick(entry: Entry) {
+
+    }
+
+    private fun onRatingCardClick(entry: Entry) {
+
+    }
+
+    private fun onStatusCardClick(entry: Entry) {
+
     }
 
     private fun onObservedViewEvent() {
