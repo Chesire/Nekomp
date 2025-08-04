@@ -201,6 +201,7 @@ private fun Preview() {
                 progressPercent = 0f,
                 progress = 0,
                 progressDisplay = "0 / -",
+                airingTimeFrame = "2025 - -",
                 isUpdating = false,
                 canUpdate = true
             )

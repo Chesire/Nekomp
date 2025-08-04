@@ -42,6 +42,7 @@ data class Entry(
     val progressPercent: Float,
     val progress: Int,
     val progressDisplay: String,
+    val airingTimeFrame: String,
     val isUpdating: Boolean,
     val canUpdate: Boolean
 )

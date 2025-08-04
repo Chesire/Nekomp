@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddTask
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
@@ -122,9 +123,11 @@ fun DetailPane(
                         icon = Icons.Default.Star,
                         text = "Finished" // TODO: Series status
                     )
-                    // rating
-                    // shows current status
-                    // start/end dates
+                    DetailText(
+                        icon = Icons.Default.CalendarMonth,
+                        text = entry.airingTimeFrame
+                    )
+                    // Can we get the season?
                 }
             }
 
@@ -307,6 +310,7 @@ private fun Preview() {
                 progressPercent = 0.5f,
                 progress = 5,
                 progressDisplay = "5/10",
+                airingTimeFrame = "2025 - -",
                 isUpdating = false,
                 canUpdate = true
             ),

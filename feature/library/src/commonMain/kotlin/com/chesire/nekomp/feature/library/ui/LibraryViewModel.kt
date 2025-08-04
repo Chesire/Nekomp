@@ -233,6 +233,7 @@ class LibraryViewModel(
             progressPercent = progressPercent,
             progress = progress,
             progressDisplay = "$progress / $displayTotalLength",
+            airingTimeFrame = "$startDate${if (endDate.isNotBlank()) " - $endDate" else ""}",
             isUpdating = false,
             canUpdate = canIncrementProgress
         )
