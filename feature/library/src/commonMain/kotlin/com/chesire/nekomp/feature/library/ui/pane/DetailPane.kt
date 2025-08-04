@@ -20,10 +20,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddTask
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.HowToVote
+import androidx.compose.material.icons.filled.LiveTv
 import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.SsidChart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material.icons.filled.StarRate
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -115,13 +119,16 @@ fun DetailPane(
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold
                     )
+                    /*
+                    Rating is 0-100 on Kitsu, currently not pulled down.
                     DetailText(
                         icon = Icons.Default.StarRate,
-                        text = "4.82 / 5" // TODO: Add rating
+                        text = entry.rating
                     )
+                     */
                     DetailText(
-                        icon = Icons.Default.Star,
-                        text = "Finished" // TODO: Series status
+                        icon = Icons.Default.LiveTv,
+                        text = entry.seriesStatus
                     )
                     DetailText(
                         icon = Icons.Default.CalendarMonth,
@@ -310,7 +317,8 @@ private fun Preview() {
                 progressPercent = 0.5f,
                 progress = 5,
                 progressDisplay = "5/10",
-                airingTimeFrame = "2025 - -",
+                airingTimeFrame = "2025-01-01",
+                seriesStatus = "Airing",
                 isUpdating = false,
                 canUpdate = true
             ),

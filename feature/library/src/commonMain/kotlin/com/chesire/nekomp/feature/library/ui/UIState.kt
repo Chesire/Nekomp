@@ -43,6 +43,7 @@ data class Entry(
     val progress: Int,
     val progressDisplay: String,
     val airingTimeFrame: String,
+    val seriesStatus: String,
     val isUpdating: Boolean,
     val canUpdate: Boolean
 )
