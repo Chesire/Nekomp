@@ -8,6 +8,7 @@ import com.chesire.nekomp.library.datasource.user.UserRepository
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.mapError
+import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -29,6 +30,7 @@ class PerformLoginUseCase(
                 .andThen {
                     userRepository
                         .retrieve()
+                        .onFailure { authRepository.clear() }
                         .mapError { AuthFailure.BadRequest }
                         .onSuccess {
                             awaitAll(
