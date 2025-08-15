@@ -28,6 +28,7 @@ fun <T : Enum<T>> SettingSheet(
 ) {
     ModalBottomSheet(
         onDismissRequest = { execute(null) },
+        sheetState = sheetState,
         content = {
             Column(
                 modifier = Modifier.padding(bottom = 16.dp),
@@ -59,7 +60,6 @@ fun <T : Enum<T>> SettingSheet(
                     }
                 }
             }
-        },
-        sheetState = sheetState
+        }
     )
 }
