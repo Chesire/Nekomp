@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.feature.library.ui.Entry
@@ -308,11 +309,13 @@ private fun Preview() {
         DetailPane(
             entry = Entry(
                 entryId = 1,
+                type = Type.Anime,
                 title = "Title",
                 posterImage = "",
                 coverImage = "",
                 progressPercent = 0.5f,
                 progress = 5,
+                maxProgress = null,
                 progressDisplay = "5/10",
                 airingTimeFrame = "2025-01-01",
                 seriesStatus = "Airing",

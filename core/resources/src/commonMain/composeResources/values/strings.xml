@@ -43,6 +43,21 @@
     <string name="library_view_type_list">List</string>
     <string name="library_view_type_grid">Grid</string>
 
+    <!-- Library Detail -->
+    <string name="library_detail_progress_sheet_title">Update Progress</string>
+    <plurals name="library_detail_progress_sheet_anime_subtitle">
+        <item quantity="one">episode watched</item>
+        <item quantity="other">episodes watched</item>
+    </plurals>
+    <plurals name="library_detail_progress_sheet_manga_subtitle">
+        <item quantity="one">chapter read</item>
+        <item quantity="other">chapters read</item>
+    </plurals>
+    <string name="library_detail_progress_sheet_anime_label">Episodes Watched</string>
+    <string name="library_detail_progress_sheet_manga_label">Chapters Read</string>
+    <string name="library_detail_progress_sheet_cancel_cta">Cancel</string>
+    <string name="library_detail_progress_sheet_update_cta">Update</string>
+
     <!-- Discover -->
     <string name="discover_detail_kitsu_link">https://kitsu.app/%1$s/%2$s</string>
     <string name="discover_detail_mal_link">https://myanimelist.net/%1$s/%2$s</string>

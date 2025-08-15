@@ -34,9 +34,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.ui.component.SettingSheet
+import com.chesire.nekomp.feature.library.ui.ViewAction.SortChosen
+import com.chesire.nekomp.feature.library.ui.ViewAction.ViewTypeChosen
 import com.chesire.nekomp.feature.library.ui.pane.DetailPane
 import com.chesire.nekomp.feature.library.ui.pane.ListPane
+import com.chesire.nekomp.feature.library.ui.sheet.ProgressBottomSheet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.launch
@@ -123,7 +127,8 @@ private fun Render(
                                     scope.launch {
                                         navigator.navigateBack()
                                     }
-                                }
+                                },
+                                execute = execute
                             )
                         }
                     },
@@ -170,7 +175,7 @@ private fun BottomSheetEventHandler(
                 .associateWith { stringResource(it.displayString) }
                 .toPersistentMap(),
             selectedEntry = sheet.selectedType,
-            execute = { execute(ViewAction.ViewTypeChosen(it)) }
+            execute = { execute(ViewTypeChosen(it)) }
         )
 
         is LibraryBottomSheet.SortBottomSheet -> SettingSheet(
@@ -181,7 +186,18 @@ private fun BottomSheetEventHandler(
                 .associateWith { stringResource(it.displayString) }
                 .toPersistentMap(),
             selectedEntry = sheet.selectedOption,
-            execute = { execute(ViewAction.SortChosen(it)) }
+            execute = { execute(SortChosen(it)) }
+        )
+
+        is LibraryBottomSheet.ProgressBottomSheet -> ProgressBottomSheet(
+            sheetState = sheetState,
+            initialProgress = sheet.currentProgress,
+            maxProgress = sheet.maxProgress,
+            seriesTitle = sheet.title,
+            seriesType = sheet.type,
+            execute = {
+                execute(ViewAction.ProgressUpdated(entryId = sheet.entryId, newProgress = it))
+            }
         )
 
         null -> Unit
@@ -195,11 +211,13 @@ private fun Preview() {
         entries = persistentListOf(
             Entry(
                 entryId = 0,
+                type = Type.Anime,
                 title = "Title1",
                 posterImage = "",
                 coverImage = "",
                 progressPercent = 0f,
                 progress = 0,
+                maxProgress = null,
                 progressDisplay = "0 / -",
                 airingTimeFrame = "2025-01-01",
                 seriesStatus = "Airing",

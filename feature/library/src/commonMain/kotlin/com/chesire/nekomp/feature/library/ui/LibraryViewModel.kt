@@ -122,6 +122,7 @@ class LibraryViewModel(
             is ViewAction.ItemPlusOneClick -> onItemPlusOneClick(action.entry)
 
             is ViewAction.ProgressCardClick -> onProgressCardClick(action.entry)
+            is ViewAction.ProgressUpdated -> onProgressUpdated(action.entryId, action.newProgress)
             is ViewAction.RatingCardClick -> onRatingCardClick(action.entry)
             is ViewAction.StatusCardClick -> onStatusCardClick(action.entry)
 
@@ -219,7 +220,23 @@ class LibraryViewModel(
         )
     }
 
-    private fun onProgressCardClick(entry: Entry) {
+    private fun onProgressCardClick(entry: Entry) = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = LibraryBottomSheet.ProgressBottomSheet(
+                    entryId = entry.entryId,
+                    currentProgress = entry.progress,
+                    maxProgress = entry.maxProgress,
+                    title = entry.title,
+                    type = entry.type
+                )
+            )
+        }
+    }
+
+    private fun onProgressUpdated(entryId: Int, newProgress: String?) {
+        // if newProgress = null - then it was cancelled, thats fine.
+        // if newProgress.toIntOrNull() = null - then it was invalid text entered.
 
     }
 
@@ -243,11 +260,13 @@ class LibraryViewModel(
     ): Entry {
         return Entry(
             entryId = entryId,
+            type = type,
             title = titles.toChosenLanguage(titleLanguage),
             posterImage = posterImage.toBestImage(imageQuality),
             coverImage = coverImage.toBestImage(imageQuality),
             progressPercent = progressPercent,
             progress = progress,
+            maxProgress = totalLength.takeIf { it != 0 },
             progressDisplay = "$progress / $displayTotalLength",
             airingTimeFrame = "$startDate${if (endDate.isNotBlank()) " - $endDate" else ""}",
             seriesStatus = seriesStatus,
