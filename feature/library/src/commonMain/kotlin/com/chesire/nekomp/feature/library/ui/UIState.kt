@@ -37,8 +37,16 @@ sealed interface LibraryBottomSheet {
         val currentProgress: Int,
         val maxProgress: Int?,
         val title: String,
-        val type: Type
+        val type: Type,
+        val state: BottomSheetState = BottomSheetState.Default
     ) : LibraryBottomSheet
+
+    sealed interface BottomSheetState {
+        data object Default : BottomSheetState
+        data object Updating : BottomSheetState
+        data object InvalidInput : BottomSheetState
+        data object ApiError : BottomSheetState
+    }
 }
 
 @Stable

@@ -9,6 +9,7 @@ import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.preferences.ApplicationSettings
 import com.chesire.nekomp.core.preferences.models.ImageQuality
 import com.chesire.nekomp.core.preferences.models.TitleLanguage
+import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.library.core.ObserveLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.core.RefreshLibraryEntriesUseCase
 import com.chesire.nekomp.feature.library.data.LibrarySettings
@@ -16,6 +17,8 @@ import com.chesire.nekomp.feature.library.data.SortChoice
 import com.chesire.nekomp.feature.library.data.ViewType
 import com.chesire.nekomp.library.datasource.library.LibraryEntry
 import com.chesire.nekomp.library.datasource.library.LibraryRepository
+import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
@@ -28,6 +31,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nekomp.core.resources.generated.resources.library_detail_progress_sheet_update_success
+import org.jetbrains.compose.resources.getString
 
 @Suppress("TooManyFunctions")
 class LibraryViewModel(
@@ -235,9 +240,51 @@ class LibraryViewModel(
     }
 
     private fun onProgressUpdated(entryId: Int, newProgress: String?) {
-        // if newProgress = null - then it was cancelled, thats fine.
-        // if newProgress.toIntOrNull() = null - then it was invalid text entered.
+        val currentSheet = _uiState.value.bottomSheet as? LibraryBottomSheet.ProgressBottomSheet
+        if (newProgress == null || currentSheet == null) {
+            _uiState.update { state ->
+                state.copy(bottomSheet = null)
+            }
+            return
+        }
 
+        val progress = newProgress.toIntOrNull()?.takeIf { it >= 0 }
+        if (progress == null) {
+            _uiState.update { state ->
+                state.copy(
+                    bottomSheet = currentSheet.copy(state = LibraryBottomSheet.BottomSheetState.InvalidInput)
+                )
+            }
+        } else {
+            _uiState.update { state ->
+                state.copy(
+                    bottomSheet = currentSheet.copy(state = LibraryBottomSheet.BottomSheetState.Updating)
+                )
+            }
+            viewModelScope.launch {
+                libraryRepository.updateEntry(entryId, progress)
+                    .onSuccess {
+                        _uiState.update { state ->
+                            state.copy(
+                                bottomSheet = null,
+                                viewEvent = ViewEvent.SeriesUpdated(
+                                    getString(NekoRes.string.library_detail_progress_sheet_update_success)
+                                )
+                            )
+                        }
+                    }
+                    .onFailure {
+                        // Check again if the bottom sheet is as expected, as we have waited for an api call
+                        _uiState.update { state ->
+                            (_uiState.value.bottomSheet as? LibraryBottomSheet.ProgressBottomSheet)?.let {
+                                state.copy(
+                                    bottomSheet = it.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
+                                )
+                            } ?: state
+                        }
+                    }
+            }
+        }
     }
 
     private fun onRatingCardClick(entry: Entry) {

@@ -75,6 +75,7 @@ private fun Render(
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
+            is ViewEvent.SeriesUpdated -> snackbarHostState.showSnackbar(state.viewEvent.message)
             null -> Unit
         }
 
@@ -195,6 +196,7 @@ private fun BottomSheetEventHandler(
             maxProgress = sheet.maxProgress,
             seriesTitle = sheet.title,
             seriesType = sheet.type,
+            state = sheet.state,
             execute = {
                 execute(ViewAction.ProgressUpdated(entryId = sheet.entryId, newProgress = it))
             }

@@ -1,3 +1,5 @@
 package com.chesire.nekomp.feature.library.ui
 
-sealed interface ViewEvent
+sealed interface ViewEvent {
+    data class SeriesUpdated(val message: String) : ViewEvent
+}

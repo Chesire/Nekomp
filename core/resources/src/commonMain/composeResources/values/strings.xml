@@ -57,6 +57,9 @@
     <string name="library_detail_progress_sheet_manga_label">Chapters Read</string>
     <string name="library_detail_progress_sheet_cancel_cta">Cancel</string>
     <string name="library_detail_progress_sheet_update_cta">Update</string>
+    <string name="library_detail_progress_sheet_update_success">Progress successfully updated</string>
+    <string name="library_detail_progress_sheet_input_error">Please enter a valid number</string>
+    <string name="library_detail_progress_sheet_api_error">Failed to update, please try again</string>
 
     <!-- Discover -->
     <string name="discover_detail_kitsu_link">https://kitsu.app/%1$s/%2$s</string>

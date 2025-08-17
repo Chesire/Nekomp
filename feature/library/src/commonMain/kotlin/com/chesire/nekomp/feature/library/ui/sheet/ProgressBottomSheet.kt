@@ -31,9 +31,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
+import com.chesire.nekomp.feature.library.ui.LibraryBottomSheet
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_anime_label
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_anime_subtitle
+import nekomp.core.resources.generated.resources.library_detail_progress_sheet_api_error
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_cancel_cta
+import nekomp.core.resources.generated.resources.library_detail_progress_sheet_input_error
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_manga_label
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_manga_subtitle
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_title
@@ -48,6 +51,7 @@ internal fun ProgressBottomSheet(
     maxProgress: Int?,
     seriesTitle: String,
     seriesType: Type,
+    state: LibraryBottomSheet.BottomSheetState,
     execute: (String?) -> Unit
 ) {
     var dirtyProgress by remember { mutableStateOf(initialProgress.toString()) }
@@ -68,6 +72,17 @@ internal fun ProgressBottomSheet(
             maxProgress ?: 0
         )
     }
+    val isError = state is LibraryBottomSheet.BottomSheetState.ApiError ||
+        state is LibraryBottomSheet.BottomSheetState.InvalidInput
+    val errorText = when (state) {
+        is LibraryBottomSheet.BottomSheetState.ApiError ->
+            stringResource(NekoRes.string.library_detail_progress_sheet_api_error)
+
+        is LibraryBottomSheet.BottomSheetState.InvalidInput ->
+            stringResource(NekoRes.string.library_detail_progress_sheet_input_error)
+
+        else -> ""
+    }
 
     ModalBottomSheet(
         onDismissRequest = { execute(null) },
@@ -86,9 +101,7 @@ internal fun ProgressBottomSheet(
                     textAlign = TextAlign.Center
                 )
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
                         text = seriesTitle,
                         style = MaterialTheme.typography.titleMedium,
@@ -126,6 +139,15 @@ internal fun ProgressBottomSheet(
                             }
                         )
                     },
+                    supportingText = if (isError) {
+                        {
+                            Text(
+                                text = errorText,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    } else null,
+                    isError = isError,
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     keyboardActions = KeyboardActions(
@@ -148,8 +170,8 @@ internal fun ProgressBottomSheet(
                     }
 
                     Button(
-                        onClick = { execute(dirtyProgress) },
-                        //enabled = !isError && progressText.isNotEmpty() && progressText.toIntOrNull() != null,
+                        onClick = { execute(dirtyProgress.ifBlank { null }) },
+                        enabled = state !is LibraryBottomSheet.BottomSheetState.Updating && dirtyProgress.isNotEmpty(),
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
@@ -159,9 +181,4 @@ internal fun ProgressBottomSheet(
             }
         }
     )
-    // update dirty progress
-    // show bottom sheet with dirty progress to the maxProgress
-    // when clicking save - query the viewmodel on if it can be saved, return an error if not (back through the bottom sheet event)
-    // if successful, show loading, if not then show error on ui
-    // on success of request hide the sheet again
 }
