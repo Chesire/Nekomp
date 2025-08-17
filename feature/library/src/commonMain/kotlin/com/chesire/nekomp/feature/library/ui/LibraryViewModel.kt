@@ -81,10 +81,13 @@ class LibraryViewModel(
                 }
                 .collect { entries ->
                     _uiState.update { state ->
+                        val updatedEntries = entries.map { it.toEntry(imageQuality, titleLanguage) }
+                        val updatedEntry = updatedEntries.find {
+                            it.entryId == state.selectedEntry?.entryId
+                        }
                         state.copy(
-                            entries = entries
-                                .map { it.toEntry(imageQuality, titleLanguage) }
-                                .toImmutableList()
+                            entries = updatedEntries.toImmutableList(),
+                            selectedEntry = updatedEntry
                         )
                     }
                 }
