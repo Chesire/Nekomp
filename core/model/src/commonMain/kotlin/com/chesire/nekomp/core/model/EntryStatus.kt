@@ -7,6 +7,14 @@ enum class EntryStatus {
     Completed,
     Dropped;
 
+    override fun toString(): String {
+        return if (this == OnHold) {
+            "on_hold"
+        } else {
+            this.name.lowercase()
+        }
+    }
+
     companion object {
 
         internal val default: EntryStatus = Current // If no other value
