@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
@@ -319,6 +320,7 @@ private fun Preview() {
                 progressDisplay = "5/10",
                 airingTimeFrame = "2025-01-01",
                 seriesStatus = "Airing",
+                entryStatus = EntryStatus.Current,
                 isUpdating = false,
                 canUpdate = true
             ),

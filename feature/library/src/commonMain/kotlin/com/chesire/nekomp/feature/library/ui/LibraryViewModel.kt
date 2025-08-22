@@ -22,6 +22,7 @@ import com.github.michaelbull.result.onSuccess
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -294,8 +295,22 @@ class LibraryViewModel(
 
     }
 
-    private fun onStatusCardClick(entry: Entry) {
+    private fun onStatusCardClick(entry: Entry) = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = LibraryBottomSheet.StatusBottomSheet(
+                    entryId = entry.entryId,
+                    currentStatus = entry.entryStatus,
+                    allStatus = EntryStatus.entries.toPersistentSet(),
+                    title = entry.title,
+                    type = entry.type
+                )
+            )
+        }
+    }
 
+    private fun onStatusUpdated(entryId: Int, newStatus: EntryStatus?) {
+        
     }
 
     private fun onObservedViewEvent() {
@@ -319,6 +334,7 @@ class LibraryViewModel(
             maxProgress = totalLength.takeIf { it != 0 },
             progressDisplay = "$progress / $displayTotalLength",
             airingTimeFrame = "$startDate${if (endDate.isNotBlank()) " - $endDate" else ""}",
+            entryStatus = entryStatus,
             seriesStatus = seriesStatus,
             isUpdating = false,
             canUpdate = canIncrementProgress
