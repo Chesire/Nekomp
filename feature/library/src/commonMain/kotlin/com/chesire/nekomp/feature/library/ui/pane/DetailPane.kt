@@ -46,6 +46,7 @@ import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.core.ui.NekompTheme
+import com.chesire.nekomp.feature.library.data.title
 import com.chesire.nekomp.feature.library.ui.Entry
 import com.chesire.nekomp.feature.library.ui.ViewAction
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
@@ -150,7 +151,7 @@ fun DetailPane(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 DetailCard(
                     title = "Status",
-                    body = "Completed",
+                    body = stringResource(entry.entryStatus.title),
                     modifier = Modifier.padding(start = 16.dp).weight(1f),
                     icon = {
                         Icon(

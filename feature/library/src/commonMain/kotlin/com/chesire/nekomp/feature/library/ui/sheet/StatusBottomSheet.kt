@@ -118,7 +118,6 @@ internal fun StatusBottomSheet(
                         )
                     }
                 }
-                // TODO: Maybe show the error here as text? Or maybe just show a snackbar for the api error?
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

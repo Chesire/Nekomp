@@ -329,7 +329,7 @@ class LibraryViewModel(
             )
         }
         viewModelScope.launch {
-            libraryRepository.updateEntry(entryId, 0) // TODO: Handle status here
+            libraryRepository.updateEntry(entryId, newStatus)
                 .onSuccess {
                     _uiState.update { state ->
                         state.copy(

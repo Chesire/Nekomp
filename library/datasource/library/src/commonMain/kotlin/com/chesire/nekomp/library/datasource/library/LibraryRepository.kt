@@ -161,15 +161,42 @@ class LibraryRepository(
         newProgress: Int
     ): Result<LibraryEntry, Unit> {
         Logger.d("LibraryRepository") { "Making call to update entry $entryId" }
-        val user = userRepository.user.firstOrNull()
-        if (user?.isAuthenticated != true) {
+        if (!isUserAuthenticated()) {
             Logger.e("LibraryRepository") { "No user object, cancelling update call" }
             return Err(Unit) // TODO: Add custom error type
         }
 
         val updateDto = EntryRequestDto.buildUpdate(entryId = entryId, newProgress = newProgress)
+        return updateUser(entryId, updateDto)
+            .onSuccess { libraryStorage.updateEntry(it) }
+    }
+
+    suspend fun updateEntry(
+        entryId: Int,
+        newStatus: EntryStatus
+    ): Result<LibraryEntry, Unit> {
+        Logger.d("LibraryRepository") { "Making call to update entry $entryId" }
+        if (!isUserAuthenticated()) {
+            Logger.e("LibraryRepository") { "No user object, cancelling update call" }
+            return Err(Unit) // TODO: Add custom error type
+        }
+
+        val updateDto = EntryRequestDto.buildUpdate(
+            entryId = entryId,
+            newStatus = newStatus.toString()
+        )
+        return updateUser(entryId, updateDto)
+            .onSuccess { libraryStorage.updateEntry(it) }
+    }
+
+    private suspend fun isUserAuthenticated(): Boolean {
+        val user = userRepository.user.firstOrNull()
+        return user?.isAuthenticated == true
+    }
+
+    private suspend fun updateUser(entryId: Int, dto: EntryRequestDto): Result<LibraryEntry, Unit> {
         return libraryApi
-            .updateItem(entryId = entryId, data = updateDto)
+            .updateItem(entryId = entryId, data = dto)
             .map {
                 val id = it.data.relationships.anime?.data?.id
                     ?: it.data.relationships.manga?.data?.id
@@ -179,9 +206,6 @@ class LibraryRepository(
                         buildEntry(included, it.data)
                     }
                     ?: return Err(Unit)
-            }
-            .onSuccess {
-                libraryStorage.updateEntry(it)
             }
             .mapBoth(
                 success = { Ok(it) },
