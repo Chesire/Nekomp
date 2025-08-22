@@ -44,6 +44,9 @@
     <string name="library_view_type_grid">Grid</string>
 
     <!-- Library Detail -->
+    <string name="library_detail_sheet_cancel_cta">Cancel</string>
+    <string name="library_detail_sheet_update_cta">Update</string>
+    <string name="library_detail_sheet_api_error">Failed to update, please try again</string>
     <string name="library_detail_progress_sheet_title">Update Progress</string>
     <plurals name="library_detail_progress_sheet_anime_subtitle">
         <item quantity="one">episode watched</item>
@@ -55,11 +58,21 @@
     </plurals>
     <string name="library_detail_progress_sheet_anime_label">Episodes Watched</string>
     <string name="library_detail_progress_sheet_manga_label">Chapters Read</string>
-    <string name="library_detail_progress_sheet_cancel_cta">Cancel</string>
-    <string name="library_detail_progress_sheet_update_cta">Update</string>
     <string name="library_detail_progress_sheet_update_success">Progress successfully updated</string>
     <string name="library_detail_progress_sheet_input_error">Please enter a valid number</string>
-    <string name="library_detail_progress_sheet_api_error">Failed to update, please try again</string>
+    <string name="library_detail_status_sheet_title">Update Status</string>
+    <string name="library_detail_status_sheet_status_subtitle">Select new status:</string>
+    <string name="library_detail_status_sheet_status_current_title">Current</string>
+    <string name="library_detail_status_sheet_status_on_hold_title">On Hold</string>
+    <string name="library_detail_status_sheet_status_planned_title">Planned</string>
+    <string name="library_detail_status_sheet_status_completed_title">Completed</string>
+    <string name="library_detail_status_sheet_status_dropped_title">Dropped</string>
+    <string name="library_detail_status_sheet_status_current_description">Currently watching/reading</string>
+    <string name="library_detail_status_sheet_status_on_hold_description">Paused temporarily</string>
+    <string name="library_detail_status_sheet_status_planned_description">Want to watch/read</string>
+    <string name="library_detail_status_sheet_status_completed_description">Finished</string>
+    <string name="library_detail_status_sheet_status_dropped_description">Stopped watching/reading</string>
+    <string name="library_detail_status_sheet_update_success">Status successfully updated</string>
 
     <!-- Discover -->
     <string name="discover_detail_kitsu_link">https://kitsu.app/%1$s/%2$s</string>

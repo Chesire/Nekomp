@@ -33,7 +33,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_update_success
+import nekomp.core.resources.generated.resources.library_detail_status_sheet_update_success
 import org.jetbrains.compose.resources.getString
+
+// TODO: Refactor this ViewModel to MVI to split it up a bit.
 
 @Suppress("TooManyFunctions")
 class LibraryViewModel(
@@ -134,6 +137,7 @@ class LibraryViewModel(
             is ViewAction.ProgressUpdated -> onProgressUpdated(action.entryId, action.newProgress)
             is ViewAction.RatingCardClick -> onRatingCardClick(action.entry)
             is ViewAction.StatusCardClick -> onStatusCardClick(action.entry)
+            is ViewAction.StatusUpdated -> onStatusUpdated(action.entryId, action.newStatus)
 
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -310,7 +314,42 @@ class LibraryViewModel(
     }
 
     private fun onStatusUpdated(entryId: Int, newStatus: EntryStatus?) {
-        
+        val currentSheet = _uiState.value.bottomSheet as? LibraryBottomSheet.StatusBottomSheet
+        if (newStatus == null || currentSheet == null) {
+            _uiState.update { state ->
+                state.copy(bottomSheet = null)
+            }
+            return
+        }
+
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = currentSheet.copy(state = LibraryBottomSheet.BottomSheetState.Updating)
+            )
+        }
+        viewModelScope.launch {
+            libraryRepository.updateEntry(entryId, 0) // TODO: Handle status here
+                .onSuccess {
+                    _uiState.update { state ->
+                        state.copy(
+                            bottomSheet = null,
+                            viewEvent = ViewEvent.SeriesUpdated(
+                                getString(NekoRes.string.library_detail_status_sheet_update_success)
+                            )
+                        )
+                    }
+                }
+                .onFailure {
+                    // Check again if the bottom sheet is as expected, as we have waited for an api call
+                    _uiState.update { state ->
+                        (_uiState.value.bottomSheet as? LibraryBottomSheet.StatusBottomSheet)?.let {
+                            state.copy(
+                                bottomSheet = it.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
+                            )
+                        } ?: state
+                    }
+                }
+        }
     }
 
     private fun onObservedViewEvent() {
