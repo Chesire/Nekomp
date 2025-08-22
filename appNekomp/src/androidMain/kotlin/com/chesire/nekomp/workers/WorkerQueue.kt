@@ -40,7 +40,7 @@ class WorkerQueue(private val workManager: WorkManager) {
     }
 
     fun enqueueLibraryRefresh() {
-        val request = PeriodicWorkRequestBuilder<RefreshLibraryWorker>(12, TimeUnit.HOURS)
+        val request = PeriodicWorkRequestBuilder<RefreshLibraryWorker>(6, TimeUnit.HOURS)
             .setConstraints(constraints)
             .addTag(LIBRARY_REFRESH_TAG)
             .build()

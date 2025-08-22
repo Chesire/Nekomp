@@ -20,6 +20,7 @@ import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -33,9 +34,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.ui.component.SettingSheet
+import com.chesire.nekomp.feature.library.ui.ViewAction.SortChosen
+import com.chesire.nekomp.feature.library.ui.ViewAction.ViewTypeChosen
 import com.chesire.nekomp.feature.library.ui.pane.DetailPane
 import com.chesire.nekomp.feature.library.ui.pane.ListPane
+import com.chesire.nekomp.feature.library.ui.sheet.ProgressBottomSheet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.launch
@@ -61,12 +66,16 @@ private fun Render(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val navigator = rememberListDetailPaneScaffoldNavigator<Entry>()
+    val paneState = rememberPaneExpansionState().apply {
+        setFirstPaneProportion(0.65f)
+    }
     val isListAndDetailVisible =
         navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded &&
             navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
 
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
+            is ViewEvent.SeriesUpdated -> snackbarHostState.showSnackbar(state.viewEvent.message)
             null -> Unit
         }
 
@@ -113,15 +122,18 @@ private fun Render(
                         AnimatedPane {
                             DetailPane(
                                 entry = state.selectedEntry,
-                                showBack = navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
+                                showBack = !isListAndDetailVisible &&
+                                    navigator.scaffoldValue.primary == PaneAdaptedValue.Expanded,
                                 goBack = {
                                     scope.launch {
                                         navigator.navigateBack()
                                     }
-                                }
+                                },
+                                execute = execute
                             )
                         }
-                    }
+                    },
+                    paneExpansionState = paneState
                 )
             }
         }
@@ -164,7 +176,7 @@ private fun BottomSheetEventHandler(
                 .associateWith { stringResource(it.displayString) }
                 .toPersistentMap(),
             selectedEntry = sheet.selectedType,
-            execute = { execute(ViewAction.ViewTypeChosen(it)) }
+            execute = { execute(ViewTypeChosen(it)) }
         )
 
         is LibraryBottomSheet.SortBottomSheet -> SettingSheet(
@@ -175,7 +187,19 @@ private fun BottomSheetEventHandler(
                 .associateWith { stringResource(it.displayString) }
                 .toPersistentMap(),
             selectedEntry = sheet.selectedOption,
-            execute = { execute(ViewAction.SortChosen(it)) }
+            execute = { execute(SortChosen(it)) }
+        )
+
+        is LibraryBottomSheet.ProgressBottomSheet -> ProgressBottomSheet(
+            sheetState = sheetState,
+            initialProgress = sheet.currentProgress,
+            maxProgress = sheet.maxProgress,
+            seriesTitle = sheet.title,
+            seriesType = sheet.type,
+            state = sheet.state,
+            execute = {
+                execute(ViewAction.ProgressUpdated(entryId = sheet.entryId, newProgress = it))
+            }
         )
 
         null -> Unit
@@ -189,12 +213,16 @@ private fun Preview() {
         entries = persistentListOf(
             Entry(
                 entryId = 0,
+                type = Type.Anime,
                 title = "Title1",
                 posterImage = "",
                 coverImage = "",
                 progressPercent = 0f,
                 progress = 0,
+                maxProgress = null,
                 progressDisplay = "0 / -",
+                airingTimeFrame = "2025-01-01",
+                seriesStatus = "Airing",
                 isUpdating = false,
                 canUpdate = true
             )

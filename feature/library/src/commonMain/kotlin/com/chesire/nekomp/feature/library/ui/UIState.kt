@@ -31,17 +31,37 @@ sealed interface LibraryBottomSheet {
         val options: ImmutableList<SortChoice>,
         val selectedOption: SortChoice
     ) : LibraryBottomSheet
+
+    data class ProgressBottomSheet(
+        val entryId: Int,
+        val currentProgress: Int,
+        val maxProgress: Int?,
+        val title: String,
+        val type: Type,
+        val state: BottomSheetState = BottomSheetState.Default
+    ) : LibraryBottomSheet
+
+    sealed interface BottomSheetState {
+        data object Default : BottomSheetState
+        data object Updating : BottomSheetState
+        data object InvalidInput : BottomSheetState
+        data object ApiError : BottomSheetState
+    }
 }
 
 @Stable
 data class Entry(
     val entryId: Int,
+    val type: Type,
     val title: String,
     val posterImage: String,
     val coverImage: String,
     val progressPercent: Float,
     val progress: Int,
+    val maxProgress: Int?,
     val progressDisplay: String,
+    val airingTimeFrame: String,
+    val seriesStatus: String,
     val isUpdating: Boolean,
     val canUpdate: Boolean
 )

@@ -19,5 +19,10 @@ sealed interface ViewAction {
     data class ItemSelect(val entry: Entry) : ViewAction
     data class ItemPlusOneClick(val entry: Entry) : ViewAction
 
+    data class ProgressCardClick(val entry: Entry) : ViewAction
+    data class ProgressUpdated(val entryId: Int, val newProgress: String?) : ViewAction
+    data class RatingCardClick(val entry: Entry) : ViewAction
+    data class StatusCardClick(val entry: Entry) : ViewAction
+
     data object ObservedViewEvent : ViewAction
 }

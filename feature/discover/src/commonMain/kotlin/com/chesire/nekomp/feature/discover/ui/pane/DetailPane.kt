@@ -133,7 +133,9 @@ internal fun DetailPane(
                     Text(
                         text = detailState.currentItem?.title
                             ?: stringResource(NekoRes.string.discover_detail_no_entry),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                 },
                 navigationIcon = {
@@ -156,20 +158,18 @@ internal fun DetailPane(
             )
         }
     ) { innerPadding ->
-        Box {
-            if (detailState.currentItem != null) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .padding(horizontal = 16.dp)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Chips(detailState.currentItem)
-                    Actions(detailState.currentItem, execute)
-                    Synopsis(detailState.currentItem.synopsis)
-                }
+        if (detailState.currentItem != null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Chips(detailState.currentItem)
+                Actions(detailState.currentItem, execute)
+                Synopsis(detailState.currentItem.synopsis)
             }
         }
     }

@@ -148,12 +148,16 @@ private fun Preview() {
         entries = persistentListOf(
             Entry(
                 entryId = 0,
+                type = Type.Anime,
                 title = "Title1",
                 posterImage = "",
                 coverImage = "",
                 progressPercent = 0f,
                 progress = 0,
+                maxProgress = null,
                 progressDisplay = "1 / -",
+                airingTimeFrame = "2025-01-01",
+                seriesStatus = "Airing",
                 isUpdating = false,
                 canUpdate = true
             )

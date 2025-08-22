@@ -58,9 +58,17 @@ class ProfileViewModel(
             val completedManga = manga.count { it.entryStatus == EntryStatus.Completed }
             CompletedData(
                 animeProgress = "$completedAnime/${anime.count()}",
-                animePercent = completedAnime.toFloat() / anime.count().toFloat(),
+                animePercent = if (anime.isEmpty()) {
+                    0f
+                } else {
+                    completedAnime.toFloat() / anime.count().toFloat()
+                },
                 mangaProgress = "$completedManga/${manga.count()}",
-                mangaPercent = completedManga.toFloat() / manga.count().toFloat()
+                mangaPercent = if (manga.isEmpty()) {
+                    0f
+                } else {
+                    completedManga.toFloat() / manga.count().toFloat()
+                }
             )
         }
     private val _favoritesData: Flow<FavoritesData>
