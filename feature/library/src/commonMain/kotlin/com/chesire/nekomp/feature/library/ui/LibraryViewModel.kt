@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_update_success
+import nekomp.core.resources.generated.resources.library_detail_sheet_api_error
 import nekomp.core.resources.generated.resources.library_detail_status_sheet_update_success
 import org.jetbrains.compose.resources.getString
 
@@ -284,7 +285,7 @@ class LibraryViewModel(
                     .onFailure {
                         // Check again if the bottom sheet is as expected, as we have waited for an api call
                         _uiState.update { state ->
-                            (_uiState.value.bottomSheet as? LibraryBottomSheet.ProgressBottomSheet)?.let {
+                            (state.bottomSheet as? LibraryBottomSheet.ProgressBottomSheet)?.let {
                                 state.copy(
                                     bottomSheet = it.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
                                 )
@@ -340,13 +341,16 @@ class LibraryViewModel(
                     }
                 }
                 .onFailure {
-                    // Check again if the bottom sheet is as expected, as we have waited for an api call
                     _uiState.update { state ->
-                        (_uiState.value.bottomSheet as? LibraryBottomSheet.StatusBottomSheet)?.let {
-                            state.copy(
-                                bottomSheet = it.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
+                        val updatedSheet =
+                            (state.bottomSheet as? LibraryBottomSheet.StatusBottomSheet)
+                                ?.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
+                        state.copy(
+                            bottomSheet = updatedSheet,
+                            viewEvent = ViewEvent.SeriesUpdateFailed(
+                                getString(NekoRes.string.library_detail_sheet_api_error)
                             )
-                        } ?: state
+                        )
                     }
                 }
         }

@@ -78,6 +78,7 @@ private fun Render(
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
             is ViewEvent.SeriesUpdated -> snackbarHostState.showSnackbar(state.viewEvent.message)
+            is ViewEvent.SeriesUpdateFailed -> snackbarHostState.showSnackbar(state.viewEvent.message)
             null -> Unit
         }
 
