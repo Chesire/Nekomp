@@ -8,10 +8,9 @@ enum class EntryStatus {
     Dropped;
 
     override fun toString(): String {
-        return if (this == OnHold) {
-            "on_hold"
-        } else {
-            this.name.lowercase()
+        return when (this) {
+            OnHold -> "on_hold"
+            else -> name.lowercase()
         }
     }
 
