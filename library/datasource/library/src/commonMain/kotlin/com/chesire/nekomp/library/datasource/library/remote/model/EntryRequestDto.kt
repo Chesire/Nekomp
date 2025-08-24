@@ -41,27 +41,17 @@ data class EntryRequestDto(
             )
         }
 
-        fun buildUpdate(entryId: Int, newProgress: Int): EntryRequestDto {
+        fun buildUpdate(
+            entryId: Int,
+            newProgress: Int? = null,
+            newStatus: String? = null
+        ): EntryRequestDto {
             return EntryRequestDto(
                 data = EntryDataRequestDto(
                     id = entryId,
                     type = "libraryEntries",
                     attributes = EntryAttributesRequestDto(
                         progress = newProgress,
-                        status = null
-                    ),
-                    relationships = null
-                )
-            )
-        }
-
-        fun buildUpdate(entryId: Int, newStatus: String): EntryRequestDto {
-            return EntryRequestDto(
-                data = EntryDataRequestDto(
-                    id = entryId,
-                    type = "libraryEntries",
-                    attributes = EntryAttributesRequestDto(
-                        progress = null,
                         status = newStatus
                     ),
                     relationships = null
