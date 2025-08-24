@@ -332,13 +332,18 @@ class LibraryViewModel(
             libraryRepository.updateEntry(entryId, newStatus)
                 .onSuccess {
                     _uiState.update { state ->
-                        state.copy(
-                            // Update the selectedEntry here since it will likely be removed from
-                            // the entries if the status is changed
-                            selectedEntry = it.toEntry(
+                        // Update the selectedEntry here since it will likely be removed from
+                        // the entries if the status is changed
+                        val newSelectedEntry = if (state.selectedEntry?.entryId == entryId) {
+                            it.toEntry(
                                 imageQuality = applicationSettings.imageQuality.first(),
                                 titleLanguage = applicationSettings.titleLanguage.first()
-                            ),
+                            )
+                        } else {
+                            state.selectedEntry
+                        }
+                        state.copy(
+                            selectedEntry = newSelectedEntry,
                             bottomSheet = null,
                             viewEvent = ViewEvent.SeriesUpdated(
                                 getString(NekoRes.string.library_detail_status_sheet_update_success)
