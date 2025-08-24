@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.ui.component.SettingSheet
 import com.chesire.nekomp.feature.library.ui.ViewAction.SortChosen
@@ -41,6 +42,7 @@ import com.chesire.nekomp.feature.library.ui.ViewAction.ViewTypeChosen
 import com.chesire.nekomp.feature.library.ui.pane.DetailPane
 import com.chesire.nekomp.feature.library.ui.pane.ListPane
 import com.chesire.nekomp.feature.library.ui.sheet.ProgressBottomSheet
+import com.chesire.nekomp.feature.library.ui.sheet.StatusBottomSheet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.launch
@@ -76,6 +78,7 @@ private fun Render(
     LaunchedEffect(state.viewEvent) {
         when (state.viewEvent) {
             is ViewEvent.SeriesUpdated -> snackbarHostState.showSnackbar(state.viewEvent.message)
+            is ViewEvent.SeriesUpdateFailed -> snackbarHostState.showSnackbar(state.viewEvent.message)
             null -> Unit
         }
 
@@ -202,6 +205,17 @@ private fun BottomSheetEventHandler(
             }
         )
 
+        is LibraryBottomSheet.StatusBottomSheet -> StatusBottomSheet(
+            sheetState = sheetState,
+            currentStatus = sheet.currentStatus,
+            allStatus = sheet.allStatus,
+            seriesTitle = sheet.title,
+            state = sheet.state,
+            execute = {
+                execute(ViewAction.StatusUpdated(entryId = sheet.entryId, newStatus = it))
+            }
+        )
+
         null -> Unit
     }
 }
@@ -222,6 +236,7 @@ private fun Preview() {
                 maxProgress = null,
                 progressDisplay = "0 / -",
                 airingTimeFrame = "2025-01-01",
+                entryStatus = EntryStatus.Current,
                 seriesStatus = "Airing",
                 isUpdating = false,
                 canUpdate = true

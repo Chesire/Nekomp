@@ -158,6 +158,7 @@ private fun Preview() {
                 progressDisplay = "1 / -",
                 airingTimeFrame = "2025-01-01",
                 seriesStatus = "Airing",
+                entryStatus = EntryStatus.Current,
                 isUpdating = false,
                 canUpdate = true
             )
