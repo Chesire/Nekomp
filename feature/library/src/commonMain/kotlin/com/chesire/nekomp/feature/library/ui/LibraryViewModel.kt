@@ -307,8 +307,7 @@ class LibraryViewModel(
                     entryId = entry.entryId,
                     currentStatus = entry.entryStatus,
                     allStatus = EntryStatus.entries.toPersistentSet(),
-                    title = entry.title,
-                    type = entry.type
+                    title = entry.title
                 )
             )
         }

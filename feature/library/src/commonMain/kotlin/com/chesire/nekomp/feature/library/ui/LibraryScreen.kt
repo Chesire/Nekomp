@@ -210,7 +210,6 @@ private fun BottomSheetEventHandler(
             currentStatus = sheet.currentStatus,
             allStatus = sheet.allStatus,
             seriesTitle = sheet.title,
-            seriesType = sheet.type,
             state = sheet.state,
             execute = {
                 execute(ViewAction.StatusUpdated(entryId = sheet.entryId, newStatus = it))

@@ -35,15 +35,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.chesire.nekomp.core.model.EntryStatus
-import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.library.data.description
 import com.chesire.nekomp.feature.library.data.title
 import com.chesire.nekomp.feature.library.ui.LibraryBottomSheet
 import kotlinx.collections.immutable.PersistentSet
-import nekomp.core.resources.generated.resources.library_detail_sheet_api_error
 import nekomp.core.resources.generated.resources.library_detail_sheet_cancel_cta
 import nekomp.core.resources.generated.resources.library_detail_sheet_update_cta
+import nekomp.core.resources.generated.resources.library_detail_status_sheet_status_current_status
 import nekomp.core.resources.generated.resources.library_detail_status_sheet_status_subtitle
 import nekomp.core.resources.generated.resources.library_detail_status_sheet_title
 import org.jetbrains.compose.resources.stringResource
@@ -54,14 +53,10 @@ internal fun StatusBottomSheet(
     currentStatus: EntryStatus,
     allStatus: PersistentSet<EntryStatus>,
     seriesTitle: String,
-    seriesType: Type,
     state: LibraryBottomSheet.BottomSheetState,
     execute: (EntryStatus?) -> Unit
 ) {
     var dirtyStatus by remember { mutableStateOf(currentStatus) }
-    val isError = state is LibraryBottomSheet.BottomSheetState.ApiError ||
-        state is LibraryBottomSheet.BottomSheetState.InvalidInput
-    val errorText = stringResource(NekoRes.string.library_detail_sheet_api_error)
 
     ModalBottomSheet(
         onDismissRequest = { execute(null) },
@@ -91,7 +86,10 @@ internal fun StatusBottomSheet(
                     )
 
                     Text(
-                        text = "Current status: ${currentStatus.name}", // TODO: Get string for this
+                        text = stringResource(
+                            NekoRes.string.library_detail_status_sheet_status_current_status,
+                            currentStatus.name
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

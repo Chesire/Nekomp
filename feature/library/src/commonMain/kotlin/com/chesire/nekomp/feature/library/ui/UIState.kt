@@ -47,7 +47,6 @@ sealed interface LibraryBottomSheet {
         val currentStatus: EntryStatus,
         val allStatus: PersistentSet<EntryStatus>,
         val title: String,
-        val type: Type,
         val state: BottomSheetState = BottomSheetState.Default
     ) : LibraryBottomSheet
 
