@@ -92,7 +92,7 @@ class LibraryViewModel(
                         }
                         state.copy(
                             entries = updatedEntries.toImmutableList(),
-                            selectedEntry = updatedEntry
+                            selectedEntry = updatedEntry ?: state.selectedEntry
                         )
                     }
                 }
@@ -333,6 +333,12 @@ class LibraryViewModel(
                 .onSuccess {
                     _uiState.update { state ->
                         state.copy(
+                            // Update the selectedEntry here since it will likely be removed from
+                            // the entries if the status is changed
+                            selectedEntry = it.toEntry(
+                                imageQuality = applicationSettings.imageQuality.first(),
+                                titleLanguage = applicationSettings.titleLanguage.first()
+                            ),
                             bottomSheet = null,
                             viewEvent = ViewEvent.SeriesUpdated(
                                 getString(NekoRes.string.library_detail_status_sheet_update_success)
