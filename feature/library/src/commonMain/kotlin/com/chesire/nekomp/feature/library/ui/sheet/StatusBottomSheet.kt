@@ -131,7 +131,8 @@ internal fun StatusBottomSheet(
 
                     Button(
                         onClick = { execute(dirtyStatus) },
-                        enabled = state !is LibraryBottomSheet.BottomSheetState.Updating && currentStatus != dirtyStatus,
+                        enabled = state !is LibraryBottomSheet.BottomSheetState.Updating &&
+                            currentStatus != dirtyStatus,
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {

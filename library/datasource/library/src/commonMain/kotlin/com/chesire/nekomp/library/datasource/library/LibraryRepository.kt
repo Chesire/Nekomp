@@ -33,6 +33,7 @@ private const val LIMIT = 20
 
 // TODO: Add a remote data source that converts the dtos appropriately?
 // TODO: Handle errors and maybe retrying?
+@Suppress("TooManyFunctions")
 class LibraryRepository(
     private val libraryApi: LibraryApi,
     private val libraryStorage: LibraryStorage,

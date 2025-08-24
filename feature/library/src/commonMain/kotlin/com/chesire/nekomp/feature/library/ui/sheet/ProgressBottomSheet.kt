@@ -44,6 +44,7 @@ import nekomp.core.resources.generated.resources.library_detail_sheet_update_cta
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
+@Suppress("CyclomaticComplexMethod")
 @Composable
 internal fun ProgressBottomSheet(
     sheetState: SheetState,
@@ -146,7 +147,9 @@ internal fun ProgressBottomSheet(
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
-                    } else null,
+                    } else {
+                        null
+                    },
                     isError = isError,
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),

@@ -120,6 +120,7 @@ class LibraryViewModel(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod")
     fun execute(action: ViewAction) {
         when (action) {
             ViewAction.ViewTypeClick -> onViewTypeClick()
@@ -297,7 +298,7 @@ class LibraryViewModel(
     }
 
     private fun onRatingCardClick(entry: Entry) {
-
+        // TBD
     }
 
     private fun onStatusCardClick(entry: Entry) = viewModelScope.launch {
