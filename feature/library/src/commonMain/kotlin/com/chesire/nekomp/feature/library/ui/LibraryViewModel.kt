@@ -137,9 +137,10 @@ class LibraryViewModel(
 
             is ViewAction.ProgressCardClick -> onProgressCardClick(action.entry)
             is ViewAction.ProgressUpdated -> onProgressUpdated(action.entryId, action.newProgress)
-            is ViewAction.RatingCardClick -> onRatingCardClick(action.entry)
             is ViewAction.StatusCardClick -> onStatusCardClick(action.entry)
             is ViewAction.StatusUpdated -> onStatusUpdated(action.entryId, action.newStatus)
+            is ViewAction.RatingCardClick -> onRatingCardClick(action.entry)
+            is ViewAction.RatingUpdated -> onRatingUpdated(action.entryId, action.newRating)
 
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -297,10 +298,6 @@ class LibraryViewModel(
         }
     }
 
-    private fun onRatingCardClick(entry: Entry) {
-        // TBD
-    }
-
     private fun onStatusCardClick(entry: Entry) = viewModelScope.launch {
         _uiState.update { state ->
             state.copy(
@@ -367,6 +364,22 @@ class LibraryViewModel(
         }
     }
 
+    private fun onRatingCardClick(entry: Entry) = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = LibraryBottomSheet.RatingBottomSheet(
+                    entryId = entry.entryId,
+                    currentRating = entry.rating,
+                    title = entry.title
+                )
+            )
+        }
+    }
+
+    private fun onRatingUpdated(entryId: Int, newRating: Int?) {
+        // Do the stuff the other methods do
+    }
+
     private fun onObservedViewEvent() {
         _uiState.update {
             it.copy(viewEvent = null)
@@ -390,6 +403,7 @@ class LibraryViewModel(
             airingTimeFrame = "$startDate${if (endDate.isNotBlank()) " - $endDate" else ""}",
             entryStatus = entryStatus,
             seriesStatus = seriesStatus,
+            rating = rating,
             isUpdating = false,
             canUpdate = canIncrementProgress
         )

@@ -322,6 +322,7 @@ private fun Preview() {
                 airingTimeFrame = "2025-01-01",
                 seriesStatus = "Airing",
                 entryStatus = EntryStatus.Current,
+                rating = 0,
                 isUpdating = false,
                 canUpdate = true
             ),

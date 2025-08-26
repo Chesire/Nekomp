@@ -50,6 +50,13 @@ sealed interface LibraryBottomSheet {
         val state: BottomSheetState = BottomSheetState.Default
     ) : LibraryBottomSheet
 
+    data class RatingBottomSheet(
+        val entryId: Int,
+        val currentRating: Int,
+        val title: String,
+        val state: BottomSheetState = BottomSheetState.Default
+    ) : LibraryBottomSheet
+
     sealed interface BottomSheetState {
         data object Default : BottomSheetState
         data object Updating : BottomSheetState
@@ -72,6 +79,7 @@ data class Entry(
     val airingTimeFrame: String,
     val entryStatus: EntryStatus,
     val seriesStatus: String,
+    val rating: Int,
     val isUpdating: Boolean,
     val canUpdate: Boolean
 )
