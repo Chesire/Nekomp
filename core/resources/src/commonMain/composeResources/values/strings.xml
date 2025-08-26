@@ -92,6 +92,7 @@
     <string name="library_detail_rating_sheet_status_lt_95">Excellent</string>
     <string name="library_detail_rating_sheet_status_lt_10">Masterpiece</string>
     <string name="library_detail_rating_sheet_status_10">Perfect</string>
+    <string name="library_detail_rating_sheet_update_success">Rating successfully updated</string>
 
     <!-- Discover -->
     <string name="discover_detail_kitsu_link">https://kitsu.app/%1$s/%2$s</string>

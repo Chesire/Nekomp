@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_update_success
+import nekomp.core.resources.generated.resources.library_detail_rating_sheet_update_success
 import nekomp.core.resources.generated.resources.library_detail_sheet_api_error
 import nekomp.core.resources.generated.resources.library_detail_status_sheet_update_success
 import org.jetbrains.compose.resources.getString
@@ -397,7 +398,7 @@ class LibraryViewModel(
                         state.copy(
                             bottomSheet = null,
                             viewEvent = ViewEvent.SeriesUpdated(
-                                getString(NekoRes.string.library_detail_progress_sheet_update_success)
+                                getString(NekoRes.string.library_detail_rating_sheet_update_success)
                             )
                         )
                     }
