@@ -81,7 +81,17 @@
     <string name="library_detail_rating_sheet_status_subtitle">Select your rating:</string>
     <string name="library_detail_rating_sheet_status_current_rating">Current rating: %1$s/10</string>
     <string name="library_detail_rating_sheet_status_no_rating">Not rated yet</string>
-    <string name="library_detail_rating_sheet_status_rating">%1$s / 10</string>
+    <string name="library_detail_rating_sheet_status_rating">/ 10</string>
+    <string name="library_detail_rating_sheet_status_0">Not Rated</string>
+    <string name="library_detail_rating_sheet_status_lt_3">Poor</string>
+    <string name="library_detail_rating_sheet_status_lt_5">Below Average</string>
+    <string name="library_detail_rating_sheet_status_lt_6">Average</string>
+    <string name="library_detail_rating_sheet_status_lt_7">Good</string>
+    <string name="library_detail_rating_sheet_status_lt_8">Very Good</string>
+    <string name="library_detail_rating_sheet_status_lt_9">Great</string>
+    <string name="library_detail_rating_sheet_status_lt_95">Excellent</string>
+    <string name="library_detail_rating_sheet_status_lt_10">Masterpiece</string>
+    <string name="library_detail_rating_sheet_status_10">Perfect</string>
 
     <!-- Discover -->
     <string name="discover_detail_kitsu_link">https://kitsu.app/%1$s/%2$s</string>
