@@ -34,16 +34,17 @@ import com.chesire.nekomp.core.resources.NekoRes
 import com.chesire.nekomp.feature.library.ui.LibraryBottomSheet
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_anime_label
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_anime_subtitle
-import nekomp.core.resources.generated.resources.library_detail_progress_sheet_api_error
-import nekomp.core.resources.generated.resources.library_detail_progress_sheet_cancel_cta
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_input_error
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_manga_label
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_manga_subtitle
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_title
-import nekomp.core.resources.generated.resources.library_detail_progress_sheet_update_cta
+import nekomp.core.resources.generated.resources.library_detail_sheet_api_error
+import nekomp.core.resources.generated.resources.library_detail_sheet_cancel_cta
+import nekomp.core.resources.generated.resources.library_detail_sheet_update_cta
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
+@Suppress("CyclomaticComplexMethod")
 @Composable
 internal fun ProgressBottomSheet(
     sheetState: SheetState,
@@ -76,7 +77,7 @@ internal fun ProgressBottomSheet(
         state is LibraryBottomSheet.BottomSheetState.InvalidInput
     val errorText = when (state) {
         is LibraryBottomSheet.BottomSheetState.ApiError ->
-            stringResource(NekoRes.string.library_detail_progress_sheet_api_error)
+            stringResource(NekoRes.string.library_detail_sheet_api_error)
 
         is LibraryBottomSheet.BottomSheetState.InvalidInput ->
             stringResource(NekoRes.string.library_detail_progress_sheet_input_error)
@@ -146,7 +147,9 @@ internal fun ProgressBottomSheet(
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
-                    } else null,
+                    } else {
+                        null
+                    },
                     isError = isError,
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
@@ -166,7 +169,7 @@ internal fun ProgressBottomSheet(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text(stringResource(NekoRes.string.library_detail_progress_sheet_cancel_cta))
+                        Text(stringResource(NekoRes.string.library_detail_sheet_cancel_cta))
                     }
 
                     Button(
@@ -175,7 +178,7 @@ internal fun ProgressBottomSheet(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text(stringResource(NekoRes.string.library_detail_progress_sheet_update_cta))
+                        Text(stringResource(NekoRes.string.library_detail_sheet_update_cta))
                     }
                 }
             }

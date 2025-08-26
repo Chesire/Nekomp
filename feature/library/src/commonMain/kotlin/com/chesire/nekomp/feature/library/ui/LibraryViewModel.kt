@@ -22,6 +22,7 @@ import com.github.michaelbull.result.onSuccess
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +33,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_update_success
+import nekomp.core.resources.generated.resources.library_detail_sheet_api_error
+import nekomp.core.resources.generated.resources.library_detail_status_sheet_update_success
 import org.jetbrains.compose.resources.getString
+
+// TODO: Refactor this ViewModel to MVI to split it up a bit.
 
 @Suppress("TooManyFunctions")
 class LibraryViewModel(
@@ -87,7 +92,7 @@ class LibraryViewModel(
                         }
                         state.copy(
                             entries = updatedEntries.toImmutableList(),
-                            selectedEntry = updatedEntry
+                            selectedEntry = updatedEntry ?: state.selectedEntry
                         )
                     }
                 }
@@ -115,6 +120,7 @@ class LibraryViewModel(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod")
     fun execute(action: ViewAction) {
         when (action) {
             ViewAction.ViewTypeClick -> onViewTypeClick()
@@ -133,6 +139,7 @@ class LibraryViewModel(
             is ViewAction.ProgressUpdated -> onProgressUpdated(action.entryId, action.newProgress)
             is ViewAction.RatingCardClick -> onRatingCardClick(action.entry)
             is ViewAction.StatusCardClick -> onStatusCardClick(action.entry)
+            is ViewAction.StatusUpdated -> onStatusUpdated(action.entryId, action.newStatus)
 
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -279,7 +286,7 @@ class LibraryViewModel(
                     .onFailure {
                         // Check again if the bottom sheet is as expected, as we have waited for an api call
                         _uiState.update { state ->
-                            (_uiState.value.bottomSheet as? LibraryBottomSheet.ProgressBottomSheet)?.let {
+                            (state.bottomSheet as? LibraryBottomSheet.ProgressBottomSheet)?.let {
                                 state.copy(
                                     bottomSheet = it.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
                                 )
@@ -291,11 +298,73 @@ class LibraryViewModel(
     }
 
     private fun onRatingCardClick(entry: Entry) {
-
+        // TBD
     }
 
-    private fun onStatusCardClick(entry: Entry) {
+    private fun onStatusCardClick(entry: Entry) = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = LibraryBottomSheet.StatusBottomSheet(
+                    entryId = entry.entryId,
+                    currentStatus = entry.entryStatus,
+                    allStatus = EntryStatus.entries.toPersistentSet(),
+                    title = entry.title
+                )
+            )
+        }
+    }
 
+    private fun onStatusUpdated(entryId: Int, newStatus: EntryStatus?) {
+        val currentSheet = _uiState.value.bottomSheet as? LibraryBottomSheet.StatusBottomSheet
+        if (newStatus == null || currentSheet == null) {
+            _uiState.update { state ->
+                state.copy(bottomSheet = null)
+            }
+            return
+        }
+
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = currentSheet.copy(state = LibraryBottomSheet.BottomSheetState.Updating)
+            )
+        }
+        viewModelScope.launch {
+            libraryRepository.updateEntry(entryId, newStatus)
+                .onSuccess {
+                    _uiState.update { state ->
+                        // Update the selectedEntry here since it will likely be removed from
+                        // the entries if the status is changed
+                        val newSelectedEntry = if (state.selectedEntry?.entryId == entryId) {
+                            it.toEntry(
+                                imageQuality = applicationSettings.imageQuality.first(),
+                                titleLanguage = applicationSettings.titleLanguage.first()
+                            )
+                        } else {
+                            state.selectedEntry
+                        }
+                        state.copy(
+                            selectedEntry = newSelectedEntry,
+                            bottomSheet = null,
+                            viewEvent = ViewEvent.SeriesUpdated(
+                                getString(NekoRes.string.library_detail_status_sheet_update_success)
+                            )
+                        )
+                    }
+                }
+                .onFailure {
+                    _uiState.update { state ->
+                        val updatedSheet =
+                            (state.bottomSheet as? LibraryBottomSheet.StatusBottomSheet)
+                                ?.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
+                        state.copy(
+                            bottomSheet = updatedSheet,
+                            viewEvent = ViewEvent.SeriesUpdateFailed(
+                                getString(NekoRes.string.library_detail_sheet_api_error)
+                            )
+                        )
+                    }
+                }
+        }
     }
 
     private fun onObservedViewEvent() {
@@ -319,6 +388,7 @@ class LibraryViewModel(
             maxProgress = totalLength.takeIf { it != 0 },
             progressDisplay = "$progress / $displayTotalLength",
             airingTimeFrame = "$startDate${if (endDate.isNotBlank()) " - $endDate" else ""}",
+            entryStatus = entryStatus,
             seriesStatus = seriesStatus,
             isUpdating = false,
             canUpdate = canIncrementProgress

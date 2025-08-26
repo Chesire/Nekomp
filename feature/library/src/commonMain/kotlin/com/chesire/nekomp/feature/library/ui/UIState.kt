@@ -7,6 +7,7 @@ import com.chesire.nekomp.feature.library.data.SortChoice
 import com.chesire.nekomp.feature.library.data.ViewType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 
@@ -41,6 +42,14 @@ sealed interface LibraryBottomSheet {
         val state: BottomSheetState = BottomSheetState.Default
     ) : LibraryBottomSheet
 
+    data class StatusBottomSheet(
+        val entryId: Int,
+        val currentStatus: EntryStatus,
+        val allStatus: PersistentSet<EntryStatus>,
+        val title: String,
+        val state: BottomSheetState = BottomSheetState.Default
+    ) : LibraryBottomSheet
+
     sealed interface BottomSheetState {
         data object Default : BottomSheetState
         data object Updating : BottomSheetState
@@ -61,6 +70,7 @@ data class Entry(
     val maxProgress: Int?,
     val progressDisplay: String,
     val airingTimeFrame: String,
+    val entryStatus: EntryStatus,
     val seriesStatus: String,
     val isUpdating: Boolean,
     val canUpdate: Boolean

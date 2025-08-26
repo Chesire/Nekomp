@@ -41,14 +41,18 @@ data class EntryRequestDto(
             )
         }
 
-        fun buildUpdate(entryId: Int, newProgress: Int): EntryRequestDto {
+        fun buildUpdate(
+            entryId: Int,
+            newProgress: Int? = null,
+            newStatus: String? = null
+        ): EntryRequestDto {
             return EntryRequestDto(
                 data = EntryDataRequestDto(
                     id = entryId,
                     type = "libraryEntries",
                     attributes = EntryAttributesRequestDto(
                         progress = newProgress,
-                        status = null
+                        status = newStatus
                     ),
                     relationships = null
                 )
@@ -72,7 +76,7 @@ data class EntryDataRequestDto(
 @Serializable
 data class EntryAttributesRequestDto(
     @SerialName("progress")
-    val progress: Int,
+    val progress: Int?,
     @SerialName("status")
     val status: String?
 )
