@@ -406,7 +406,7 @@ class LibraryViewModel(
                 .onFailure {
                     _uiState.update { state ->
                         val updatedSheet =
-                            (state.bottomSheet as? LibraryBottomSheet.StatusBottomSheet)
+                            (state.bottomSheet as? LibraryBottomSheet.RatingBottomSheet)
                                 ?.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
                         state.copy(
                             bottomSheet = updatedSheet,
