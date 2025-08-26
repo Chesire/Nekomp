@@ -165,7 +165,7 @@ fun DetailPane(
                 }
                 DetailCard(
                     title = "Rating",
-                    body = "0",
+                    body = "${entry.rating.toFloat() / 2}",
                     modifier = Modifier.padding(end = 16.dp).weight(1f),
                     icon = {
                         Icon(

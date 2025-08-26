@@ -273,7 +273,7 @@ class LibraryViewModel(
                 )
             }
             viewModelScope.launch {
-                libraryRepository.updateEntry(entryId, progress)
+                libraryRepository.updateEntry(entryId = entryId, newProgress = progress)
                     .onSuccess {
                         _uiState.update { state ->
                             state.copy(
@@ -326,7 +326,7 @@ class LibraryViewModel(
             )
         }
         viewModelScope.launch {
-            libraryRepository.updateEntry(entryId, newStatus)
+            libraryRepository.updateEntry(entryId = entryId, newStatus = newStatus)
                 .onSuccess {
                     _uiState.update { state ->
                         // Update the selectedEntry here since it will likely be removed from
@@ -377,7 +377,45 @@ class LibraryViewModel(
     }
 
     private fun onRatingUpdated(entryId: Int, newRating: Int?) {
-        // Do the stuff the other methods do
+        val currentSheet = _uiState.value.bottomSheet as? LibraryBottomSheet.RatingBottomSheet
+        if (newRating == null || currentSheet == null) {
+            _uiState.update { state ->
+                state.copy(bottomSheet = null)
+            }
+            return
+        }
+
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = currentSheet.copy(state = LibraryBottomSheet.BottomSheetState.Updating)
+            )
+        }
+        viewModelScope.launch {
+            libraryRepository.updateEntry(entryId = entryId, newRating = newRating)
+                .onSuccess {
+                    _uiState.update { state ->
+                        state.copy(
+                            bottomSheet = null,
+                            viewEvent = ViewEvent.SeriesUpdated(
+                                getString(NekoRes.string.library_detail_progress_sheet_update_success)
+                            )
+                        )
+                    }
+                }
+                .onFailure {
+                    _uiState.update { state ->
+                        val updatedSheet =
+                            (state.bottomSheet as? LibraryBottomSheet.StatusBottomSheet)
+                                ?.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
+                        state.copy(
+                            bottomSheet = updatedSheet,
+                            viewEvent = ViewEvent.SeriesUpdateFailed(
+                                getString(NekoRes.string.library_detail_sheet_api_error)
+                            )
+                        )
+                    }
+                }
+        }
     }
 
     private fun onObservedViewEvent() {

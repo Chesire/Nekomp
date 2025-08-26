@@ -79,7 +79,7 @@
 
     <string name="library_detail_rating_sheet_title">Update Rating</string>
     <string name="library_detail_rating_sheet_status_subtitle">Select your rating:</string>
-    <string name="library_detail_rating_sheet_status_current_rating">Current rating: %1$s/10</string>
+    <string name="library_detail_rating_sheet_status_current_rating">Current rating: %1$s / 10</string>
     <string name="library_detail_rating_sheet_status_no_rating">Not rated yet</string>
     <string name="library_detail_rating_sheet_status_rating">/ 10</string>
     <string name="library_detail_rating_sheet_status_0">Not Rated</string>

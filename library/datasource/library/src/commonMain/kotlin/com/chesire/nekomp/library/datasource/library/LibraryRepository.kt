@@ -159,24 +159,16 @@ class LibraryRepository(
     @Suppress("ReturnCount")
     suspend fun updateEntry(
         entryId: Int,
-        newProgress: Int
+        newProgress: Int? = null,
+        newStatus: EntryStatus? = null,
+        newRating: Int? = null
     ): Result<LibraryEntry, Unit> {
-        Logger.d("LibraryRepository") { "Making call to update entry $entryId" }
-        if (!isUserAuthenticated()) {
-            Logger.e("LibraryRepository") { "No user object, cancelling update call" }
-            return Err(Unit) // TODO: Add custom error type
+        Logger.d("LibraryRepository") {
+            "Making call to update entry $entryId with values\n" +
+                "newProgress - $newProgress\n" +
+                "newStatus - $newStatus\n" +
+                "newRating - $newRating"
         }
-
-        val updateDto = EntryRequestDto.buildUpdate(entryId = entryId, newProgress = newProgress)
-        return updateUser(entryId, updateDto)
-            .onSuccess { libraryStorage.updateEntry(it) }
-    }
-
-    suspend fun updateEntry(
-        entryId: Int,
-        newStatus: EntryStatus
-    ): Result<LibraryEntry, Unit> {
-        Logger.d("LibraryRepository") { "Making call to update entry $entryId" }
         if (!isUserAuthenticated()) {
             Logger.e("LibraryRepository") { "No user object, cancelling update call" }
             return Err(Unit) // TODO: Add custom error type
@@ -184,7 +176,9 @@ class LibraryRepository(
 
         val updateDto = EntryRequestDto.buildUpdate(
             entryId = entryId,
-            newStatus = newStatus.toString()
+            newProgress = newProgress,
+            newStatus = newStatus?.toString(),
+            newRating = newRating
         )
         return updateUser(entryId, updateDto)
             .onSuccess { libraryStorage.updateEntry(it) }
