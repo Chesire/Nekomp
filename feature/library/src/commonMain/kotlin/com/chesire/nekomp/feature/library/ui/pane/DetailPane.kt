@@ -190,12 +190,7 @@ private fun ImageLoadingOrError() {
             .background(Color.LightGray.copy(alpha = 0.2f)),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = Icons.Filled.Movie,
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-            tint = Color.Red.copy(alpha = 0.5f)
-        )
+        // No body
     }
 }
 
