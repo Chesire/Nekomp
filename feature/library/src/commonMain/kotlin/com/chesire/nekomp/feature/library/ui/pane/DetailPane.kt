@@ -49,6 +49,7 @@ import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.feature.library.data.title
 import com.chesire.nekomp.feature.library.ui.Entry
 import com.chesire.nekomp.feature.library.ui.ViewAction
+import nekomp.core.resources.generated.resources.library_detail_rating_sheet_status_no_rating
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -165,7 +166,11 @@ fun DetailPane(
                 }
                 DetailCard(
                     title = "Rating",
-                    body = "${entry.rating.toFloat() / 2}",
+                    body = if (entry.rating == 0) {
+                        stringResource(NekoRes.string.library_detail_rating_sheet_status_no_rating)
+                    } else {
+                        "${entry.rating.toFloat() / 2}"
+                    },
                     modifier = Modifier.padding(end = 16.dp).weight(1f),
                     icon = {
                         Icon(
