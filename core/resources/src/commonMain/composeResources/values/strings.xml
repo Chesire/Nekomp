@@ -47,6 +47,7 @@
     <string name="library_detail_sheet_cancel_cta">Cancel</string>
     <string name="library_detail_sheet_update_cta">Update</string>
     <string name="library_detail_sheet_api_error">Failed to update, please try again</string>
+
     <string name="library_detail_progress_sheet_title">Update Progress</string>
     <plurals name="library_detail_progress_sheet_anime_subtitle">
         <item quantity="one">episode watched</item>
@@ -60,6 +61,7 @@
     <string name="library_detail_progress_sheet_manga_label">Chapters Read</string>
     <string name="library_detail_progress_sheet_update_success">Progress successfully updated</string>
     <string name="library_detail_progress_sheet_input_error">Please enter a valid number</string>
+
     <string name="library_detail_status_sheet_title">Update Status</string>
     <string name="library_detail_status_sheet_status_subtitle">Select new status:</string>
     <string name="library_detail_status_sheet_status_current_status">Current status: %1$s</string>
@@ -74,6 +76,23 @@
     <string name="library_detail_status_sheet_status_completed_description">Finished</string>
     <string name="library_detail_status_sheet_status_dropped_description">Stopped watching/reading</string>
     <string name="library_detail_status_sheet_update_success">Status successfully updated</string>
+
+    <string name="library_detail_rating_sheet_title">Update Rating</string>
+    <string name="library_detail_rating_sheet_status_subtitle">Select your rating:</string>
+    <string name="library_detail_rating_sheet_status_current_rating">Current rating: %1$s / 10</string>
+    <string name="library_detail_rating_sheet_status_no_rating">Not rated yet</string>
+    <string name="library_detail_rating_sheet_status_rating">/ 10</string>
+    <string name="library_detail_rating_sheet_status_0">Not Rated</string>
+    <string name="library_detail_rating_sheet_status_lt_3">Poor</string>
+    <string name="library_detail_rating_sheet_status_lt_5">Below Average</string>
+    <string name="library_detail_rating_sheet_status_lt_6">Average</string>
+    <string name="library_detail_rating_sheet_status_lt_7">Good</string>
+    <string name="library_detail_rating_sheet_status_lt_8">Very Good</string>
+    <string name="library_detail_rating_sheet_status_lt_9">Great</string>
+    <string name="library_detail_rating_sheet_status_lt_95">Excellent</string>
+    <string name="library_detail_rating_sheet_status_lt_10">Masterpiece</string>
+    <string name="library_detail_rating_sheet_status_10">Perfect</string>
+    <string name="library_detail_rating_sheet_update_success">Rating successfully updated</string>
 
     <!-- Discover -->
     <string name="discover_detail_kitsu_link">https://kitsu.app/%1$s/%2$s</string>

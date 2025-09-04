@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nekomp.core.resources.generated.resources.library_detail_progress_sheet_update_success
+import nekomp.core.resources.generated.resources.library_detail_rating_sheet_update_success
 import nekomp.core.resources.generated.resources.library_detail_sheet_api_error
 import nekomp.core.resources.generated.resources.library_detail_status_sheet_update_success
 import org.jetbrains.compose.resources.getString
@@ -137,9 +138,10 @@ class LibraryViewModel(
 
             is ViewAction.ProgressCardClick -> onProgressCardClick(action.entry)
             is ViewAction.ProgressUpdated -> onProgressUpdated(action.entryId, action.newProgress)
-            is ViewAction.RatingCardClick -> onRatingCardClick(action.entry)
             is ViewAction.StatusCardClick -> onStatusCardClick(action.entry)
             is ViewAction.StatusUpdated -> onStatusUpdated(action.entryId, action.newStatus)
+            is ViewAction.RatingCardClick -> onRatingCardClick(action.entry)
+            is ViewAction.RatingUpdated -> onRatingUpdated(action.entryId, action.newRating)
 
             ViewAction.ObservedViewEvent -> onObservedViewEvent()
         }
@@ -272,7 +274,7 @@ class LibraryViewModel(
                 )
             }
             viewModelScope.launch {
-                libraryRepository.updateEntry(entryId, progress)
+                libraryRepository.updateEntry(entryId = entryId, newProgress = progress)
                     .onSuccess {
                         _uiState.update { state ->
                             state.copy(
@@ -295,10 +297,6 @@ class LibraryViewModel(
                     }
             }
         }
-    }
-
-    private fun onRatingCardClick(entry: Entry) {
-        // TBD
     }
 
     private fun onStatusCardClick(entry: Entry) = viewModelScope.launch {
@@ -329,7 +327,7 @@ class LibraryViewModel(
             )
         }
         viewModelScope.launch {
-            libraryRepository.updateEntry(entryId, newStatus)
+            libraryRepository.updateEntry(entryId = entryId, newStatus = newStatus)
                 .onSuccess {
                     _uiState.update { state ->
                         // Update the selectedEntry here since it will likely be removed from
@@ -367,6 +365,60 @@ class LibraryViewModel(
         }
     }
 
+    private fun onRatingCardClick(entry: Entry) = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = LibraryBottomSheet.RatingBottomSheet(
+                    entryId = entry.entryId,
+                    currentRating = entry.rating,
+                    title = entry.title
+                )
+            )
+        }
+    }
+
+    private fun onRatingUpdated(entryId: Int, newRating: Int?) {
+        val currentSheet = _uiState.value.bottomSheet as? LibraryBottomSheet.RatingBottomSheet
+        if (newRating == null || currentSheet == null) {
+            _uiState.update { state ->
+                state.copy(bottomSheet = null)
+            }
+            return
+        }
+
+        _uiState.update { state ->
+            state.copy(
+                bottomSheet = currentSheet.copy(state = LibraryBottomSheet.BottomSheetState.Updating)
+            )
+        }
+        viewModelScope.launch {
+            libraryRepository.updateEntry(entryId = entryId, newRating = newRating)
+                .onSuccess {
+                    _uiState.update { state ->
+                        state.copy(
+                            bottomSheet = null,
+                            viewEvent = ViewEvent.SeriesUpdated(
+                                getString(NekoRes.string.library_detail_rating_sheet_update_success)
+                            )
+                        )
+                    }
+                }
+                .onFailure {
+                    _uiState.update { state ->
+                        val updatedSheet =
+                            (state.bottomSheet as? LibraryBottomSheet.RatingBottomSheet)
+                                ?.copy(state = LibraryBottomSheet.BottomSheetState.ApiError)
+                        state.copy(
+                            bottomSheet = updatedSheet,
+                            viewEvent = ViewEvent.SeriesUpdateFailed(
+                                getString(NekoRes.string.library_detail_sheet_api_error)
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
     private fun onObservedViewEvent() {
         _uiState.update {
             it.copy(viewEvent = null)
@@ -390,6 +442,7 @@ class LibraryViewModel(
             airingTimeFrame = "$startDate${if (endDate.isNotBlank()) " - $endDate" else ""}",
             entryStatus = entryStatus,
             seriesStatus = seriesStatus,
+            rating = rating,
             isUpdating = false,
             canUpdate = canIncrementProgress
         )

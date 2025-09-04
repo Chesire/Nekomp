@@ -49,6 +49,7 @@ import com.chesire.nekomp.core.ui.NekompTheme
 import com.chesire.nekomp.feature.library.data.title
 import com.chesire.nekomp.feature.library.ui.Entry
 import com.chesire.nekomp.feature.library.ui.ViewAction
+import nekomp.core.resources.generated.resources.library_detail_rating_sheet_status_no_rating
 import nekomp.core.resources.generated.resources.nav_content_description_go_back
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -165,7 +166,11 @@ fun DetailPane(
                 }
                 DetailCard(
                     title = "Rating",
-                    body = "0",
+                    body = if (entry.rating == 0) {
+                        stringResource(NekoRes.string.library_detail_rating_sheet_status_no_rating)
+                    } else {
+                        "${entry.rating.toFloat() / 2}"
+                    },
                     modifier = Modifier.padding(end = 16.dp).weight(1f),
                     icon = {
                         Icon(
@@ -190,12 +195,7 @@ private fun ImageLoadingOrError() {
             .background(Color.LightGray.copy(alpha = 0.2f)),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = Icons.Filled.Movie,
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-            tint = Color.Red.copy(alpha = 0.5f)
-        )
+        // No body
     }
 }
 
@@ -322,6 +322,7 @@ private fun Preview() {
                 airingTimeFrame = "2025-01-01",
                 seriesStatus = "Airing",
                 entryStatus = EntryStatus.Current,
+                rating = 0,
                 isUpdating = false,
                 canUpdate = true
             ),

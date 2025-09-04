@@ -37,11 +37,17 @@ import androidx.compose.ui.backhandler.BackHandler
 import com.chesire.nekomp.core.model.EntryStatus
 import com.chesire.nekomp.core.model.Type
 import com.chesire.nekomp.core.ui.component.SettingSheet
+import com.chesire.nekomp.feature.library.ui.ViewAction.ItemSelect
+import com.chesire.nekomp.feature.library.ui.ViewAction.ObservedViewEvent
+import com.chesire.nekomp.feature.library.ui.ViewAction.ProgressUpdated
+import com.chesire.nekomp.feature.library.ui.ViewAction.RatingUpdated
 import com.chesire.nekomp.feature.library.ui.ViewAction.SortChosen
+import com.chesire.nekomp.feature.library.ui.ViewAction.StatusUpdated
 import com.chesire.nekomp.feature.library.ui.ViewAction.ViewTypeChosen
 import com.chesire.nekomp.feature.library.ui.pane.DetailPane
 import com.chesire.nekomp.feature.library.ui.pane.ListPane
 import com.chesire.nekomp.feature.library.ui.sheet.ProgressBottomSheet
+import com.chesire.nekomp.feature.library.ui.sheet.RatingBottomSheet
 import com.chesire.nekomp.feature.library.ui.sheet.StatusBottomSheet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentMap
@@ -82,7 +88,7 @@ private fun Render(
             null -> Unit
         }
 
-        execute(ViewAction.ObservedViewEvent)
+        execute(ObservedViewEvent)
     }
 
     // TODO: Switch to predictive
@@ -114,7 +120,7 @@ private fun Render(
                                 execute = execute,
                                 onEntryClick = { entry ->
                                     scope.launch {
-                                        execute(ViewAction.ItemSelect(entry))
+                                        execute(ItemSelect(entry))
                                         navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                     }
                                 }
@@ -201,7 +207,7 @@ private fun BottomSheetEventHandler(
             seriesType = sheet.type,
             state = sheet.state,
             execute = {
-                execute(ViewAction.ProgressUpdated(entryId = sheet.entryId, newProgress = it))
+                execute(ProgressUpdated(entryId = sheet.entryId, newProgress = it))
             }
         )
 
@@ -212,7 +218,17 @@ private fun BottomSheetEventHandler(
             seriesTitle = sheet.title,
             state = sheet.state,
             execute = {
-                execute(ViewAction.StatusUpdated(entryId = sheet.entryId, newStatus = it))
+                execute(StatusUpdated(entryId = sheet.entryId, newStatus = it))
+            }
+        )
+
+        is LibraryBottomSheet.RatingBottomSheet -> RatingBottomSheet(
+            sheetState = sheetState,
+            currentRating = sheet.currentRating,
+            seriesTitle = sheet.title,
+            state = sheet.state,
+            execute = {
+                execute(RatingUpdated(entryId = sheet.entryId, newRating = it))
             }
         )
 
@@ -238,6 +254,7 @@ private fun Preview() {
                 airingTimeFrame = "2025-01-01",
                 entryStatus = EntryStatus.Current,
                 seriesStatus = "Airing",
+                rating = 0,
                 isUpdating = false,
                 canUpdate = true
             )

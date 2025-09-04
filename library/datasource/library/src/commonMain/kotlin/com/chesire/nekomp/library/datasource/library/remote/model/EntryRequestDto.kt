@@ -25,7 +25,8 @@ data class EntryRequestDto(
                     type = "libraryEntries",
                     attributes = EntryAttributesRequestDto(
                         progress = 0,
-                        status = "current"
+                        status = "current",
+                        rating = null
                     ),
                     relationships = EntryRelationshipsRequestDto(
                         anime = if (type == Type.Anime) typeRequestDto else null,
@@ -44,7 +45,8 @@ data class EntryRequestDto(
         fun buildUpdate(
             entryId: Int,
             newProgress: Int? = null,
-            newStatus: String? = null
+            newStatus: String? = null,
+            newRating: Int? = null
         ): EntryRequestDto {
             return EntryRequestDto(
                 data = EntryDataRequestDto(
@@ -52,7 +54,8 @@ data class EntryRequestDto(
                     type = "libraryEntries",
                     attributes = EntryAttributesRequestDto(
                         progress = newProgress,
-                        status = newStatus
+                        status = newStatus,
+                        rating = newRating
                     ),
                     relationships = null
                 )
@@ -78,7 +81,9 @@ data class EntryAttributesRequestDto(
     @SerialName("progress")
     val progress: Int?,
     @SerialName("status")
-    val status: String?
+    val status: String?,
+    @SerialName("ratingTwenty")
+    val rating: Int?
 )
 
 @Serializable
