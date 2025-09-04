@@ -14,13 +14,13 @@ import io.ktor.http.HttpStatusCode
  * [onRefreshError] is called when tokens cannot be refreshed and logout should occur.
  */
 fun HttpClient.installAuth(
-    getTokens: suspend () -> String?, // Return just the access token string
-    refreshTokens: suspend () -> Boolean, // Returns true if refresh failed
+    getToken: suspend () -> String?,
+    refreshTokens: suspend () -> Boolean,
     onRefreshError: suspend () -> Unit
 ) {
     plugin(HttpSend).intercept { request ->
         // Add token to every request
-        val token = getTokens()
+        val token = getToken()
         if (token != null) {
             request.header(HttpHeaders.Authorization, "Bearer $token")
         }
@@ -42,7 +42,7 @@ fun HttpClient.installAuth(
             } else {
                 Logger.i("HttpClient") { "Token refresh successful, retrying request" }
                 // Get fresh token and retry
-                val newToken = getTokens()
+                val newToken = getToken()
                 if (newToken != null) {
                     request.headers.remove(HttpHeaders.Authorization)
                     request.header(HttpHeaders.Authorization, "Bearer $newToken")

@@ -27,7 +27,7 @@ val libraryUserModule = module {
                     installLogging()
                 }.apply {
                     installAuth(
-                        getTokens = {
+                        getToken = {
                             val authRepository = get<AuthRepository>()
                             authRepository.accessToken() ?: ""
                         },
