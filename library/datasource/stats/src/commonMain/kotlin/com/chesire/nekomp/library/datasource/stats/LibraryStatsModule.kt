@@ -12,7 +12,6 @@ import com.chesire.nekomp.library.datasource.stats.remote.StatsApi
 import com.chesire.nekomp.library.datasource.stats.remote.createStatsApi
 import de.jensklingenberg.ktorfit.ktorfitBuilder
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.auth.providers.BearerTokens
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -24,13 +23,11 @@ val libraryStatsModule = module {
                 client = HttpClient {
                     installContentNegotiation()
                     installLogging()
+                }.apply {
                     installAuth(
                         getTokens = {
                             val authRepository = get<AuthRepository>()
-                            BearerTokens(
-                                accessToken = authRepository.accessToken() ?: "",
-                                refreshToken = authRepository.refreshToken()
-                            )
+                            authRepository.accessToken() ?: ""
                         },
                         refreshTokens = {
                             val result = get<AuthRepository>().refresh()
